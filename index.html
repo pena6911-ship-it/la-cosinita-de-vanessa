@@ -889,8 +889,8 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 <script>
 /* ══ Supabase ══════════════════════════════════════════════ */
 const _sb = window.supabase.createClient(
-  'YOUR_SUPABASE_URL',       // ← paste your Project URL here
-  'YOUR_SUPABASE_ANON_KEY'   // ← paste your anon/public key here
+  'https://jelikmeqjkbidgxndapo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ'
 );
 function generateOrderRef() {
   var d   = new Date();
@@ -1612,9 +1612,164 @@ function toggleCustomAck() {
   else { btn.classList.remove('on'); btn.disabled = true; }
 }
 
-/* Initialize */
 const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooters:'🥤', flan:'🍮', cheesecake:'🧁' };
 
-function renderCart() {
-  const list   = document.getElementById('cart-items-list');
-  const ba
+/* Initialize */
+renderCart();
+
+/* ── Category filter ── */
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+  });
+}
+
+/* ── Gallery lightbox ── */
+const CAKES = [
+  {emoji:'🎂', bg:'linear-gradient(135deg,#FCE4EC,#F48FB1)', name:'Quinceañera Rosa',    tag:'5-Tier Floral · 80 Guests'},
+  {emoji:'🍰', bg:'linear-gradient(135deg,#AD1457,#880E4F)', name:'Wedding Elegance',     tag:'Fondant · Ivory & Gold'},
+  {emoji:'🌸', bg:'linear-gradient(135deg,#E91E8C,#B5206E)', name:'Baby Shower Dream',    tag:'Pastel Buttercream'},
+  {emoji:'🎉', bg:'linear-gradient(135deg,#F48FB1,#C2185B)', name:'Cumpleaños Tropical',  tag:'Tres Leches Base'},
+  {emoji:'💍', bg:'linear-gradient(135deg,#4A0E2E,#AD1457)', name:'Anniversary Noir',     tag:'Dark Chocolate & Gold'},
+];
+function openLightbox(i) {
+  const c = CAKES[i], d = document.getElementById('lb-display');
+  d.textContent = c.emoji; d.style.background = c.bg;
+  document.getElementById('lb-caption').textContent = c.name;
+  document.getElementById('lb-sub').textContent = c.tag;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (!e || e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+/* ── Date min (7-day lead time) ── */
+(function () {
+  const d = new Date(); d.setDate(d.getDate() + 7);
+  const el = document.getElementById('delivery-date');
+  if (el) { el.min = el.value = d.toISOString().split('T')[0]; }
+})();
+
+/* ── Custom order form submit (Supabase) ── */
+async function handleSubmit(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const required = ['fname','lname','email','phone','delivery-date','address'];
+  let ok = true;
+  required.forEach(function (id) {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) {
+      if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function () { el.style.borderColor = ''; }, {once: true}); }
+      ok = false;
+    }
+  });
+  if (!ok) { showToast('Please fill in all required fields ✦'); return; }
+
+  const btn = document.getElementById('custom-submit-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  const fname     = document.getElementById('fname').value.trim();
+  const lname     = document.getElementById('lname').value.trim();
+  const email     = document.getElementById('email').value.trim();
+  const phone     = document.getElementById('phone').value.trim();
+  const date      = document.getElementById('delivery-date').value;
+  const timeEl    = document.getElementById('delivery-time');
+  const time      = timeEl ? timeEl.value : '';
+  const address   = document.getElementById('address').value.trim();
+  const notesEl   = document.getElementById('custom-notes') || document.getElementById('instructions');
+  const notes     = notesEl ? notesEl.value.trim() : '';
+  const allergies = (document.getElementById('allergies') || {value: ''}).value.trim();
+  const occasion  = (document.getElementById('occasion')  || {value: ''}).value.trim();
+  const size      = (document.getElementById('custom-size') || {value: ''}).value.trim();
+
+  try {
+    const { data: cust, error: custErr } = await _sb
+      .from('customers')
+      .insert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' })
+      .select('id')
+      .single();
+    if (custErr) throw custErr;
+
+    const { error: orderErr } = await _sb
+      .from('orders')
+      .insert({
+        customer_id:      cust.id,
+        order_ref:        generateOrderRef(),
+        order_type:       'custom',
+        items:            JSON.stringify([{ type: 'custom', occasion: occasion, size: size, notes: notes }]),
+        delivery_date:    date,
+        delivery_time:    time,
+        delivery_address: address,
+        theme_notes:      notes,
+        allergies:        allergies,
+        source:           'web_order'
+      });
+    if (orderErr) throw orderErr;
+
+    document.getElementById('success-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } catch (err) {
+    console.error('Order error:', err);
+    showToast('Something went wrong — please try again or call us directly.');
+    if (btn) { btn.disabled = false; btn.textContent = '🎂 Submit Order Request'; }
+  }
+}
+
+function closeModal(e) {
+  if (!e || e.target.id === 'success-modal' || e.target.tagName === 'BUTTON') {
+    document.getElementById('success-modal').classList.remove('open');
+    document.body.style.overflow = '';
+    if (!e || e.target.tagName === 'BUTTON') window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+/* ── Toast ── */
+let _tt;
+function showToast(msg) {
+  clearTimeout(_tt);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  _tt = setTimeout(() => t.classList.remove('show'), 3400);
+}
+
+/* ── Scroll reveal ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, {threshold: 0.1});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ── SES fix: expose all inline-handler functions to window ── */
+window.openSheet          = openSheet;
+window.closeSheet         = closeSheet;
+window.sheetSizeChange    = sheetSizeChange;
+window.sheetFlavorChange  = sheetFlavorChange;
+window.updateSheetPrice   = updateSheetPrice;
+window.toggleServeGuide   = toggleServeGuide;
+window.addToOrder         = addToOrder;
+window.renderCart         = renderCart;
+window.changeQty          = changeQty;
+window.removeItem         = removeItem;
+window.openCart           = openCart;
+window.closeCart          = closeCart;
+window.proceedToCheckout  = proceedToCheckout;
+window.closeCheckout      = closeCheckout;
+window.submitCartOrder    = submitCartOrder;
+window.showCheckoutStep   = showCheckoutStep;
+window.togglePlaceBtn     = togglePlaceBtn;
+window.submitProductOrder = submitProductOrder;
+window.toggleCustomAck    = toggleCustomAck;
+window.filterCat          = filterCat;
+window.openLightbox       = openLightbox;
+window.closeLightbox      = closeLightbox;
+window.handleSubmit       = handleSubmit;
+window.closeModal         = closeModal;
+window.showToast          = showToast;
+</script>
+</body>
+</html>
