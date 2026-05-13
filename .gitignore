@@ -1,0 +1,11 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Scratch files
+test_check.html
+vanessa_v2.html
+
+# Secrets — never commit real keys
+.env
+.env.local
