@@ -212,7 +212,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 #gallery{background:var(--cream);}
 .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:24px;}
 .gallery-card{position:relative;overflow:hidden;border-radius:10px;background:var(--soft-blush);aspect-ratio:1/1;cursor:pointer;transition:transform 0.14s;-webkit-tap-highlight-color:transparent;}
-.gallery-card img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+.gallery-card img{width:100%;height:100%;object-fit:contain;display:block;}
 .gallery-card:active{transform:scale(0.975);}
 .cake-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(36px,9vw,60px);}
 .gallery-card:nth-child(1) .cake-placeholder{background:linear-gradient(135deg,#FCE4EC,#F48FB1);}
@@ -1637,7 +1637,7 @@ async function loadGallery() {
     grid.innerHTML = _galleryItems.map((item, i) => `
       <div class="gallery-card" onclick="openLightbox(${i})">
         <img src="${item.photo_url}" alt="${escapeHtml(item.title)}"
-             style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;"/>
+             style="width:100%;height:100%;object-fit:contain;display:block;"/>
         <div class="gallery-card-overlay">
           <div class="gallery-card-name">${escapeHtml(item.title)}</div>
           ${item.tag ? `<div class="gallery-card-tag">${escapeHtml(item.tag)}</div>` : ''}
