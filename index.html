@@ -210,8 +210,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 
 /* GALLERY */
 #gallery{background:var(--cream);}
-.gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:24px;}
-.gallery-card{position:relative;overflow:hidden;border-radius:16px;background:var(--soft-blush);aspect-ratio:1/1;cursor:pointer;transition:transform 0.14s;-webkit-tap-highlight-color:transparent;}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:24px;}
+.gallery-card{position:relative;overflow:hidden;border-radius:10px;background:var(--soft-blush);aspect-ratio:1/1;cursor:pointer;transition:transform 0.14s;-webkit-tap-highlight-color:transparent;}
 .gallery-card img{width:100%;height:100%;object-fit:cover;display:block;}
 .gallery-card:active{transform:scale(0.975);}
 .cake-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(36px,9vw,60px);}
@@ -220,9 +220,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .gallery-card:nth-child(3) .cake-placeholder{background:linear-gradient(135deg,#E91E8C,#B5206E);font-size:clamp(28px,7vw,46px);}
 .gallery-card:nth-child(4) .cake-placeholder{background:linear-gradient(135deg,#F48FB1,#C2185B);font-size:clamp(28px,7vw,46px);}
 .gallery-card:nth-child(5) .cake-placeholder{background:linear-gradient(135deg,#4A0E2E,#AD1457);font-size:clamp(28px,7vw,46px);}
-.gallery-card-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(74,14,46,0.86));padding:26px 13px 13px;}
-.gallery-card-name{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,3.8vw,18px);font-weight:400;color:var(--cream);font-style:italic;}
-.gallery-card-tag{font-size:10px;color:var(--gold);letter-spacing:0.07em;text-transform:uppercase;margin-top:2px;}
+.gallery-card-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(74,14,46,0.86));padding:16px 7px 7px;}
+.gallery-card-name{font-family:'Cormorant Garamond',serif;font-size:clamp(10px,2.4vw,13px);font-weight:400;color:var(--cream);font-style:italic;line-height:1.2;}
+.gallery-card-tag{font-size:8px;color:var(--gold);letter-spacing:0.05em;text-transform:uppercase;margin-top:1px;}
 .gallery-load-more{text-align:center;margin-top:18px;}
 
 /* LIGHTBOX */
@@ -350,7 +350,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
   .nav-logo{font-size:13px;} .nav-links a{font-size:9px;padding:0 7px;}
   .hero-title{font-size:36px;} .field-row,.datetime-row,.sq-field-row,.co-field-row{grid-template-columns:1fr;}
   .product-grid{grid-template-columns:1fr;} .size-chips{gap:6px;}
-  .gallery-grid{grid-template-columns:1fr;}
+  .gallery-grid{grid-template-columns:repeat(3,1fr);gap:4px;}
 }
 @media(min-width:600px){
   .form-card{padding:36px 32px;} .product-grid{grid-template-columns:repeat(3,1fr);}
