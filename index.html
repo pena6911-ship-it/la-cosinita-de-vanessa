@@ -1616,15 +1616,18 @@ let _galleryItems = [];
 
 async function loadGallery() {
   const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
   try {
-    const { data, error } = await _sb
-      .from('gallery')
-      .select('id, title, tag, photo_url')
-      .order('sort_order', { ascending: true })
-      .order('created_at', { ascending: false });
-    if (error) throw error;
+    const SUPA_URL  = 'https://jelikmeqjkbidgxndapo.supabase.co';
+    const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ';
+    const resp = await fetch(
+      SUPA_URL + '/rest/v1/gallery?select=id,title,tag,photo_url&order=sort_order.asc,created_at.desc',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!resp.ok) throw new Error('Gallery fetch failed: ' + resp.status);
+    const data = await resp.json();
 
-    _galleryItems = data || [];
+    _galleryItems = Array.isArray(data) ? data : [];
 
     if (_galleryItems.length === 0) {
       grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:48px 0;color:var(--text-mid);font-size:13px;">Photos coming soon — check back! 📸</p>';
@@ -1734,13 +1737,4 @@ async function handleSubmit(e) {
     document.body.style.overflow = 'hidden';
   } catch (err) {
     console.error('Order error:', err);
-    showToast('Something went wrong — please try again or call us directly.');
-    if (btn) { btn.disabled = false; btn.textContent = '🎂 Submit Order Request'; }
-  }
-}
-
-function closeModal(e) {
-  if (!e || e.target.id === 'success-modal' || e.target.tagName === 'BUTTON') {
-    document.getElementById('success-modal').classList.remove('open');
-    document.body.style.overflow = '';
-    if (!e || e.target.tagName === 'BUTTON') window.scro
+    sh
