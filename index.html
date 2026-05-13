@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="theme-color" content="#E91E8C"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>La Cocinita de Vanessa — New York's Tres Leches Specialist</title>
@@ -43,7 +44,7 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;overscroll-behavior-y:none;}
 img{display:block;max-width:100%;height:auto;}
-button{cursor:pointer;font-family:inherit;}
+button{cursor:pointer;font-family:inherit;touch-action:manipulation;}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--safe-top)) 16px 10px;border-top:3px solid #E91E8C;background:rgba(240,248,250,0.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
@@ -110,7 +111,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .sheet{background:white;border-radius:24px 24px 0 0;width:100%;max-height:93dvh;display:flex;flex-direction:column;position:relative;animation:slideUp 0.36s cubic-bezier(0.34,1.25,0.64,1) both;}
 .sheet-handle{width:36px;height:4px;background:rgba(233,30,140,0.3);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
 .sheet-close{position:absolute;top:14px;right:16px;background:var(--soft-blush);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text-dark);-webkit-tap-highlight-color:transparent;z-index:2;}
-.sheet-body{overflow-y:auto;flex:1;padding:4px 20px calc(28px + var(--safe-bottom));}
+.sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding:4px 20px calc(28px + var(--safe-bottom));}
 
 /* Product image */
 .sheet-img-wrap{width:100%;border-radius:16px;overflow:hidden;margin:14px 0;aspect-ratio:4/3;background:var(--soft-blush);}
@@ -179,7 +180,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .cart-header-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--mocha);}
 .cart-header-title em{color:#E91E8C;font-style:italic;}
 .cart-close-btn{background:var(--soft-blush);border:none;width:36px;height:36px;border-radius:50%;font-size:17px;color:var(--text-dark);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
-.cart-items-wrap{flex:1;overflow-y:auto;padding:0 20px;}
+.cart-items-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;}
 .cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;gap:12px;color:var(--text-mid);text-align:center;padding:40px 0;}
 .cart-empty-icon{font-size:52px;opacity:0.45;}
 .cart-empty p{font-size:14px;line-height:1.7;}
@@ -210,8 +211,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 /* GALLERY */
 #gallery{background:var(--cream);}
 .gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:24px;}
-.gallery-card{position:relative;overflow:hidden;border-radius:16px;background:var(--soft-blush);aspect-ratio:3/4;cursor:pointer;transition:transform 0.14s;-webkit-tap-highlight-color:transparent;}
-.gallery-card:first-child{grid-column:1/-1;aspect-ratio:16/9;}
+.gallery-card{position:relative;overflow:hidden;border-radius:16px;background:var(--soft-blush);aspect-ratio:1/1;cursor:pointer;transition:transform 0.14s;-webkit-tap-highlight-color:transparent;}
+.gallery-card img{width:100%;height:100%;object-fit:cover;display:block;}
 .gallery-card:active{transform:scale(0.975);}
 .cake-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(36px,9vw,60px);}
 .gallery-card:nth-child(1) .cake-placeholder{background:linear-gradient(135deg,#FCE4EC,#F48FB1);}
@@ -347,8 +348,9 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 
 @media(max-width:360px){
   .nav-logo{font-size:13px;} .nav-links a{font-size:9px;padding:0 7px;}
-  .hero-title{font-size:36px;} .field-row,.datetime-row,.sq-field-row{grid-template-columns:1fr;}
+  .hero-title{font-size:36px;} .field-row,.datetime-row,.sq-field-row,.co-field-row{grid-template-columns:1fr;}
   .product-grid{grid-template-columns:1fr;} .size-chips{gap:6px;}
+  .gallery-grid{grid-template-columns:1fr;}
 }
 @media(min-width:600px){
   .form-card{padding:36px 32px;} .product-grid{grid-template-columns:repeat(3,1fr);}
@@ -1741,52 +1743,4 @@ function closeModal(e) {
   if (!e || e.target.id === 'success-modal' || e.target.tagName === 'BUTTON') {
     document.getElementById('success-modal').classList.remove('open');
     document.body.style.overflow = '';
-    if (!e || e.target.tagName === 'BUTTON') window.scrollTo({top: 0, behavior: 'smooth'});
-  }
-}
-
-/* ── Toast ── */
-let _tt;
-function showToast(msg) {
-  clearTimeout(_tt);
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  _tt = setTimeout(() => t.classList.remove('show'), 3400);
-}
-
-/* ── Scroll reveal ── */
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-}, {threshold: 0.1});
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-/* ── SES fix: expose all inline-handler functions to window ── */
-window.openSheet          = openSheet;
-window.closeSheet         = closeSheet;
-window.sheetSizeChange    = sheetSizeChange;
-window.sheetFlavorChange  = sheetFlavorChange;
-window.updateSheetPrice   = updateSheetPrice;
-window.toggleServeGuide   = toggleServeGuide;
-window.addToOrder         = addToOrder;
-window.renderCart         = renderCart;
-window.changeQty          = changeQty;
-window.removeItem         = removeItem;
-window.openCart           = openCart;
-window.closeCart          = closeCart;
-window.proceedToCheckout  = proceedToCheckout;
-window.closeCheckout      = closeCheckout;
-window.submitCartOrder    = submitCartOrder;
-window.showCheckoutStep   = showCheckoutStep;
-window.togglePlaceBtn     = togglePlaceBtn;
-window.submitProductOrder = submitProductOrder;
-window.toggleCustomAck    = toggleCustomAck;
-window.filterCat          = filterCat;
-window.loadGallery        = loadGallery;
-window.openLightbox       = openLightbox;
-window.closeLightbox      = closeLightbox;
-window.handleSubmit       = handleSubmit;
-window.closeModal         = closeModal;
-window.showToast          = showToast;
-</script>
-</body>
-</html>
+    if (!e || e.target.tag
