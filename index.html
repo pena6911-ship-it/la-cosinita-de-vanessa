@@ -1737,4 +1737,61 @@ async function handleSubmit(e) {
     document.body.style.overflow = 'hidden';
   } catch (err) {
     console.error('Order error:', err);
-    sh
+    showToast('Something went wrong — please try again or call us directly.');
+    if (btn) { btn.disabled = false; btn.textContent = '🎂 Submit Order Request'; }
+  }
+}
+
+function closeModal(e) {
+  if (!e || e.target.id === 'success-modal' || e.target.tagName === 'BUTTON') {
+    document.getElementById('success-modal').classList.remove('open');
+    document.body.style.overflow = '';
+    if (!e || e.target.tagName === 'BUTTON') window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+/* ── Toast ── */
+let _tt;
+function showToast(msg) {
+  clearTimeout(_tt);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  _tt = setTimeout(() => t.classList.remove('show'), 3400);
+}
+
+/* ── Scroll reveal ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, {threshold: 0.1});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ── SES fix: expose all inline-handler functions to window ── */
+window.openSheet          = openSheet;
+window.closeSheet         = closeSheet;
+window.sheetSizeChange    = sheetSizeChange;
+window.sheetFlavorChange  = sheetFlavorChange;
+window.updateSheetPrice   = updateSheetPrice;
+window.toggleServeGuide   = toggleServeGuide;
+window.addToOrder         = addToOrder;
+window.renderCart         = renderCart;
+window.changeQty          = changeQty;
+window.removeItem         = removeItem;
+window.openCart           = openCart;
+window.closeCart          = closeCart;
+window.proceedToCheckout  = proceedToCheckout;
+window.closeCheckout      = closeCheckout;
+window.submitCartOrder    = submitCartOrder;
+window.showCheckoutStep   = showCheckoutStep;
+window.togglePlaceBtn     = togglePlaceBtn;
+window.submitProductOrder = submitProductOrder;
+window.toggleCustomAck    = toggleCustomAck;
+window.filterCat          = filterCat;
+window.loadGallery        = loadGallery;
+window.openLightbox       = openLightbox;
+window.closeLightbox      = closeLightbox;
+window.handleSubmit       = handleSubmit;
+window.closeModal         = closeModal;
+window.showToast          = showToast;
+</script>
+</body>
+</html>
