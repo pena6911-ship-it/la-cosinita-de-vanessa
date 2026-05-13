@@ -229,7 +229,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .lightbox.open{display:flex;}
 .lightbox-inner{width:100%;max-width:480px;position:relative;}
 .lightbox-close{position:absolute;top:-14px;right:-6px;background:#E91E8C;color:#fff;border:none;width:42px;height:42px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
-.lightbox-display{width:100%;border-radius:18px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:clamp(70px,18vw,110px);}
+.lightbox-display{width:100%;border-radius:18px;aspect-ratio:4/3;overflow:hidden;background:var(--soft-blush);}
+.lightbox-display img{width:100%;height:100%;object-fit:cover;display:block;}
 .lightbox-caption{padding:16px 4px 0;font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);font-style:italic;}
 .lightbox-sub{font-size:11px;color:var(--caramel);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;}
 
@@ -663,27 +664,8 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
     <h2 class="section-title">Every cake<br>tells a <em>story</em></h2>
     <p class="section-desc">Browse our most loved creations — each one built on our signature Tres Leches base, dressed for your occasion.</p>
   </div>
-  <div class="gallery-grid reveal">
-    <div class="gallery-card" onclick="openLightbox(0)">
-      <div class="cake-placeholder">🎂</div>
-      <div class="gallery-card-overlay"><div class="gallery-card-name">Quinceañera Rosa</div><div class="gallery-card-tag">5-Tier Floral · 80 Guests</div></div>
-    </div>
-    <div class="gallery-card" onclick="openLightbox(1)">
-      <div class="cake-placeholder">🍰</div>
-      <div class="gallery-card-overlay"><div class="gallery-card-name">Wedding Elegance</div><div class="gallery-card-tag">Fondant · Ivory &amp; Gold</div></div>
-    </div>
-    <div class="gallery-card" onclick="openLightbox(2)">
-      <div class="cake-placeholder">🌸</div>
-      <div class="gallery-card-overlay"><div class="gallery-card-name">Baby Shower Dream</div><div class="gallery-card-tag">Pastel Buttercream</div></div>
-    </div>
-    <div class="gallery-card" onclick="openLightbox(3)">
-      <div class="cake-placeholder">🎉</div>
-      <div class="gallery-card-overlay"><div class="gallery-card-name">Cumpleaños Tropical</div><div class="gallery-card-tag">Tres Leches Base</div></div>
-    </div>
-    <div class="gallery-card" onclick="openLightbox(4)">
-      <div class="cake-placeholder">💍</div>
-      <div class="gallery-card-overlay"><div class="gallery-card-name">Anniversary Noir</div><div class="gallery-card-tag">Dark Chocolate &amp; Gold</div></div>
-    </div>
+  <div class="gallery-grid reveal" id="gallery-grid">
+    <div style="grid-column:1/-1;text-align:center;padding:48px 0;color:var(--text-mid);font-size:13px;">Loading gallery…</div>
   </div>
   <div class="gallery-load-more reveal">
     <button class="btn-ghost" onclick="showToast('More photos coming soon! 📸')">Load More Projects</button>
@@ -847,7 +829,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
   <div class="lightbox-inner">
     <button class="lightbox-close" onclick="closeLightbox()">×</button>
-    <div class="lightbox-display" id="lb-display">🎂</div>
+    <div class="lightbox-display" id="lb-display"><img id="lb-img" src="" alt="" loading="lazy"/></div>
     <div class="lightbox-caption" id="lb-caption"></div>
     <div class="lightbox-sub" id="lb-sub"></div>
   </div>
@@ -1616,6 +1598,7 @@ const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooter
 
 /* Initialize */
 renderCart();
+loadGallery();
 
 /* ── Category filter ── */
 function filterCat(cat, btn) {
@@ -1626,19 +1609,52 @@ function filterCat(cat, btn) {
   });
 }
 
-/* ── Gallery lightbox ── */
-const CAKES = [
-  {emoji:'🎂', bg:'linear-gradient(135deg,#FCE4EC,#F48FB1)', name:'Quinceañera Rosa',    tag:'5-Tier Floral · 80 Guests'},
-  {emoji:'🍰', bg:'linear-gradient(135deg,#AD1457,#880E4F)', name:'Wedding Elegance',     tag:'Fondant · Ivory & Gold'},
-  {emoji:'🌸', bg:'linear-gradient(135deg,#E91E8C,#B5206E)', name:'Baby Shower Dream',    tag:'Pastel Buttercream'},
-  {emoji:'🎉', bg:'linear-gradient(135deg,#F48FB1,#C2185B)', name:'Cumpleaños Tropical',  tag:'Tres Leches Base'},
-  {emoji:'💍', bg:'linear-gradient(135deg,#4A0E2E,#AD1457)', name:'Anniversary Noir',     tag:'Dark Chocolate & Gold'},
-];
+/* ── Gallery — loads from Supabase ── */
+let _galleryItems = [];
+
+async function loadGallery() {
+  const grid = document.getElementById('gallery-grid');
+  try {
+    const { data, error } = await _sb
+      .from('gallery')
+      .select('id, title, tag, photo_url')
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+
+    _galleryItems = data || [];
+
+    if (_galleryItems.length === 0) {
+      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:48px 0;color:var(--text-mid);font-size:13px;">Photos coming soon — check back! 📸</p>';
+      return;
+    }
+
+    grid.innerHTML = _galleryItems.map((item, i) => `
+      <div class="gallery-card" onclick="openLightbox(${i})">
+        <img src="${item.photo_url}" alt="${escapeHtml(item.title)}" loading="lazy"
+             style="width:100%;height:100%;object-fit:cover;display:block;"/>
+        <div class="gallery-card-overlay">
+          <div class="gallery-card-name">${escapeHtml(item.title)}</div>
+          ${item.tag ? `<div class="gallery-card-tag">${escapeHtml(item.tag)}</div>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (err) {
+    console.error('Gallery load error:', err);
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:48px 0;color:var(--text-mid);font-size:13px;">Unable to load gallery right now.</p>';
+  }
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function openLightbox(i) {
-  const c = CAKES[i], d = document.getElementById('lb-display');
-  d.textContent = c.emoji; d.style.background = c.bg;
-  document.getElementById('lb-caption').textContent = c.name;
-  document.getElementById('lb-sub').textContent = c.tag;
+  const c = _galleryItems[i];
+  if (!c) return;
+  document.getElementById('lb-img').src = c.photo_url;
+  document.getElementById('lb-img').alt = c.title;
+  document.getElementById('lb-caption').textContent = c.title;
+  document.getElementById('lb-sub').textContent = c.tag || '';
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1765,6 +1781,7 @@ window.togglePlaceBtn     = togglePlaceBtn;
 window.submitProductOrder = submitProductOrder;
 window.toggleCustomAck    = toggleCustomAck;
 window.filterCat          = filterCat;
+window.loadGallery        = loadGallery;
 window.openLightbox       = openLightbox;
 window.closeLightbox      = closeLightbox;
 window.handleSubmit       = handleSubmit;
