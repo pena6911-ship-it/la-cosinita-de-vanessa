@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <style>
 :root {
   /* ══ Dominican Republic Color Palette ══
@@ -876,6 +877,8 @@ const _sb = window.supabase.createClient(
   'https://jelikmeqjkbidgxndapo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ'
 );
+emailjs.init('q62O3cYHsOLIk7497');
+
 function generateOrderRef() {
   var d   = new Date();
   var dt  = d.toISOString().slice(0, 10).replace(/-/g, '');
@@ -1392,6 +1395,7 @@ async function submitCartOrder() {
   })));
 
   try {
+    const cartOrderRef = generateOrderRef();
     const { data: customer, error: custErr } = await _sb
       .from('customers')
       .insert({ first_name: fname, last_name: lname, email, phone, source: 'web_order' })
@@ -1403,7 +1407,7 @@ async function submitCartOrder() {
       .from('orders')
       .insert({
         customer_id:      customer.id,
-        order_reference:  generateOrderRef(),
+        order_reference:  cartOrderRef,
         order_type:       'cart',
         order_items:      items,
         order_subtotal:   subtotal,
@@ -1417,6 +1421,11 @@ async function submitCartOrder() {
         source:           'web_order'
       });
     if (orderErr) throw orderErr;
+
+    const cartItemsSummary = cart.map(i => i.qty + '× ' + i.size + ' ' + i.badge + ' — $' + (i.price * i.qty)).join('\n');
+    sendOrderEmails({ name: fname + ' ' + lname, email, phone,
+      orderRef: cartOrderRef, items: cartItemsSummary,
+      date, time, address, notes });
 
     document.getElementById('checkout-overlay').classList.remove('open');
     document.body.style.overflow = '';
@@ -1551,6 +1560,7 @@ async function submitProductOrder() {
   }]);
 
   try {
+    var prodOrderRef = generateOrderRef();
     var custRes = await _sb
       .from('customers')
       .insert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' })
@@ -1562,7 +1572,7 @@ async function submitProductOrder() {
       .from('orders')
       .insert({
         customer_id:      custRes.data.id,
-        order_reference:  generateOrderRef(),
+        order_reference:  prodOrderRef,
         order_type:       'product',
         order_items:      items,
         order_subtotal:   price,
@@ -1576,6 +1586,11 @@ async function submitProductOrder() {
         source:           'web_order'
       });
     if (orderRes.error) throw orderRes.error;
+
+    var prodItemSummary = size.label + ' ' + p.badge + (detail ? ' — ' + detail : '') + ' — $' + price;
+    sendOrderEmails({ name: fname + ' ' + lname, email: email, phone: phone,
+      orderRef: prodOrderRef, items: prodItemSummary,
+      date: date, time: time, address: address, notes: notes });
 
     document.getElementById('sheet-overlay').classList.remove('open');
     document.body.style.overflow = '';
@@ -1601,6 +1616,27 @@ const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooter
 /* Initialize */
 renderCart();
 loadGallery();
+
+
+/* ── Email confirmations (EmailJS) ── */
+function sendOrderEmails(params) {
+  var ep = {
+    customer_name:    params.name,
+    customer_email:   params.email,
+    customer_phone:   params.phone,
+    order_ref:        params.orderRef,
+    order_items:      params.items,
+    delivery_date:    params.date,
+    delivery_time:    params.time || 'TBD',
+    delivery_address: params.address,
+    notes:            params.notes || '—'
+  };
+  emailjs.send('service_wa7tjhr', 'customer_confirmation', ep)
+    .catch(function(e){ console.warn('Customer email failed:', e); });
+  emailjs.send('service_wa7tjhr', 'Owner_confirmation',
+    Object.assign({}, ep, { to_email: 'vcruz1928@gmail.com' }))
+    .catch(function(e){ console.warn('Owner email failed:', e); });
+}
 
 /* ── Category filter ── */
 function filterCat(cat, btn) {
@@ -1710,6 +1746,7 @@ async function handleSubmit(e) {
   const size      = (document.getElementById('custom-size') || {value: ''}).value.trim();
 
   try {
+    const customOrderRef = generateOrderRef();
     const { data: cust, error: custErr } = await _sb
       .from('customers')
       .insert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' })
@@ -1721,7 +1758,7 @@ async function handleSubmit(e) {
       .from('orders')
       .insert({
         customer_id:      cust.id,
-        order_ref:        generateOrderRef(),
+        order_ref:        customOrderRef,
         order_type:       'custom',
         items:            JSON.stringify([{ type: 'custom', occasion: occasion, size: size, notes: notes }]),
         delivery_date:    date,
@@ -1732,6 +1769,10 @@ async function handleSubmit(e) {
         source:           'web_order'
       });
     if (orderErr) throw orderErr;
+
+    sendOrderEmails({ name: fname + ' ' + lname, email: email, phone: phone,
+      orderRef: customOrderRef, items: 'Custom cake order — see notes',
+      date: date, time: time, address: address, notes: notes });
 
     document.getElementById('success-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
