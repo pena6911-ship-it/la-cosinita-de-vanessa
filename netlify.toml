@@ -21,6 +21,5 @@
         https://fonts.gstatic.com;
       connect-src 'self'
         https://*.supabase.co
-        https://cdn.jsdelivr.net;
-      img-src 'self' data: https:;
-    """
+        https://cdn.jsdelivr.net
+        https://api.
