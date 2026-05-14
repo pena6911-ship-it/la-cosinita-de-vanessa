@@ -1423,7 +1423,7 @@ async function submitCartOrder() {
     const cartOrderRef = generateOrderRef();
     const { data: customer, error: custErr } = await _sb
       .from('customers')
-      .insert({ first_name: fname, last_name: lname, email, phone, source: 'web_order' })
+      .upsert({ first_name: fname, last_name: lname, email, phone, source: 'web_order' }, { onConflict: 'email', ignoreDuplicates: false })
       .select()
       .single();
     if (custErr) throw custErr;
@@ -1588,7 +1588,7 @@ async function submitProductOrder() {
     var prodOrderRef = generateOrderRef();
     var custRes = await _sb
       .from('customers')
-      .insert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' })
+      .upsert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' }, { onConflict: 'email', ignoreDuplicates: false })
       .select()
       .single();
     if (custRes.error) throw custRes.error;
@@ -1780,7 +1780,7 @@ async function handleSubmit(e) {
     const customOrderRef = generateOrderRef();
     const { data: cust, error: custErr } = await _sb
       .from('customers')
-      .insert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' })
+      .upsert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' }, { onConflict: 'email', ignoreDuplicates: false })
       .select('id')
       .single();
     if (custErr) throw custErr;
