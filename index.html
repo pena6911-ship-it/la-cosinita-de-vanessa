@@ -613,6 +613,18 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
       </div>
     </div>
 
+    <div class="product-card" data-cat="test" onclick="openSheet('testproduct')" style="opacity:0.6;border:2px dashed #E91E8C;">
+      <div class="product-card-img">
+        <div class="product-card-emoji">🧪</div>
+        <span class="product-card-badge" style="background:#888;">TEST</span>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">Test Product</div>
+        <div class="product-card-desc">Internal test only — do not order.</div>
+        <div class="product-card-from">$2.00</div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1051,6 +1063,20 @@ const PRODUCTS = {
     ],
     flavors: [],
     priceNote: '& up',
+    serveGuide: null
+  },
+  testproduct: {
+    name: '🧪 <em>Test Product</em>',
+    badge: 'TEST',
+    desc: 'Internal test item — do not order. Used to verify payment flow.',
+    img: null, emoji: '🧪',
+    emojiStyle: '',
+    type: 'test',
+    sizes: [
+      {id:'test-1', label:'Test', price:2, serves:'N/A'},
+    ],
+    flavors: [],
+    priceNote: '',
     serveGuide: null
   }
 };
@@ -1644,7 +1670,7 @@ function toggleCustomAck() {
   }
 }
 
-const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooters:'🥤', flan:'🍮', cheesecake:'🧁' };
+const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooters:'🥤', flan:'🍮', cheesecake:'🧁', testproduct:'🧪' };
 
 /* Initialize */
 renderCart();
