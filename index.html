@@ -1758,9 +1758,9 @@ async function handleSubmit(e) {
       .from('orders')
       .insert({
         customer_id:      cust.id,
-        order_ref:        customOrderRef,
+        order_reference:  customOrderRef,
         order_type:       'custom',
-        items:            JSON.stringify([{ type: 'custom', occasion: occasion, size: size, notes: notes }]),
+        order_items:      JSON.stringify([{ type: 'custom', occasion: occasion, size: size, notes: notes }]),
         delivery_date:    date,
         delivery_time:    time,
         delivery_address: address,
