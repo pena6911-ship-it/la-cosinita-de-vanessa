@@ -1341,8 +1341,13 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
+var currentCheckoutFlow = 'cart';
+var _coPayPalRendered = false;
+
 function proceedToCheckout() {
   if (!cart.length) return;
+  currentCheckoutFlow = 'cart';
+  _coPayPalRendered = false;
   closeCart();
 
   const minDate = new Date();
@@ -1397,7 +1402,10 @@ function proceedToCheckout() {
         '<span>I understand that <strong>$' + total + '</strong> is the base total and additional charges for customization may apply — to be agreed upon before my order is confirmed.</span>' +
       '</label>' +
     '</div>' +
-    '<button class="place-order-btn" id="co-place-btn" onclick="submitCartOrder()" disabled>🎂 &nbsp;Confirm Order Request</button>' +
+    '<div class="deposit-amount-display" style="margin:14px 0 10px">' +'<span>Deposit due today (50%)</span><strong id="co-deposit-text">$' + (total * 0.5).toFixed(2) + '</strong></div>' +
+    '<div id="co-paypal-container" class="paypal-wrapper" style="display:none;"></div>' +
+    '<div class="paypal-ack-hint" id="co-paypal-hint">☝️ Check the acknowledgement above to unlock payment</div>' +
+    '<div class="secure-badge">🔒 Payments processed securely via PayPal — PCI DSS Compliant</div>' +
     '<div class="co-footer-note">📍 Manhattan & The Bronx only · Vanessa will contact you within 24 hrs.</div>';
 
   body.scrollTop = 0;
@@ -1412,7 +1420,8 @@ function closeCheckout(e) {
   }
 }
 
-async function submitCartOrder() {
+async function submitCartOrder(paypalDetails) {
+  const paypalOrderId = paypalDetails ? paypalDetails.id : null;
   const required = ['co-fname','co-lname','co-email','co-phone','co-date','co-address'];
   let ok = true;
   required.forEach(function(id) {
@@ -1466,7 +1475,8 @@ async function submitCartOrder() {
         order_items:      items,
         order_subtotal:   subtotal,
         order_total:      subtotal,
-        payment_status:   'pending',
+        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        paypal_order_id:  paypalOrderId,
         delivery_date:    date,
         delivery_time:    time,
         delivery_address: address,
@@ -1497,6 +1507,8 @@ async function submitCartOrder() {
 
 /* ══ Flow 1: Product Checkout Step 2 ══ */
 function showCheckoutStep() {
+  currentCheckoutFlow = 'product';
+  _coPayPalRendered = false;
   var p    = PRODUCTS[currentProduct];
   var size = p.sizes[currentSizeIdx];
   var flavorEl  = document.getElementById('sheet-flavor');
@@ -1552,7 +1564,11 @@ function showCheckoutStep() {
   html +=     '<span>I understand that <strong>$' + price + '</strong> is the base price and additional charges for customization may apply — to be agreed upon before my order is confirmed.</span>';
   html +=   '</label>';
   html += '</div>';
-  html += '<button class="place-order-btn" id="co-place-btn" onclick="submitProductOrder()" disabled>&#127874; Submit Order Request</button>';
+  html += '<div class="deposit-amount-display" style="margin:14px 0 10px">' +
+           '<span>Deposit due today (50%)</span><strong id="co-deposit-text">$' + (price * 0.5).toFixed(2) + '</strong></div>';
+  html += '<div id="co-paypal-container" class="paypal-wrapper" style="display:none;"></div>';
+  html += '<div class="paypal-ack-hint" id="co-paypal-hint">&#9757;&#65039; Check the acknowledgement above to unlock payment</div>';
+  html += '<div class="secure-badge">&#128274; Payments processed securely via PayPal &mdash; PCI DSS Compliant</div>';
   html += '<div class="co-footer-note">&#128205; Delivery to Manhattan &amp; The Bronx only<br>Vanessa will contact you within 24 hours to confirm.</div>';
 
   var body = document.getElementById('sheet-body');
@@ -1561,13 +1577,70 @@ function showCheckoutStep() {
 }
 
 function togglePlaceBtn() {
-  var btn = document.getElementById('co-place-btn');
-  var ack = document.getElementById('co-ack');
-  if (ack && ack.checked) { btn.classList.add('on'); btn.disabled = false; }
-  else { btn.classList.remove('on'); btn.disabled = true; }
+  var ack       = document.getElementById('co-ack');
+  var container = document.getElementById('co-paypal-container');
+  var hint      = document.getElementById('co-paypal-hint');
+  if (!ack) return;
+  if (ack.checked) {
+    if (container) container.style.display = 'block';
+    if (hint)      hint.style.display      = 'none';
+    renderCheckoutPayPal();
+  } else {
+    if (container) container.style.display = 'none';
+    if (hint)      hint.style.display      = 'block';
+  }
 }
 
-async function submitProductOrder() {
+function renderCheckoutPayPal() {
+  if (_coPayPalRendered) return;
+  if (!window.paypal) { console.warn('PayPal SDK not loaded'); return; }
+  _coPayPalRendered = true;
+
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+
+    createOrder: function(data, actions) {
+      var required = ['co-fname','co-lname','co-email','co-phone','co-date','co-address'];
+      var ok = true;
+      required.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+          if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function(){ el.style.borderColor=''; }, {once:true}); }
+          ok = false;
+        }
+      });
+      if (!ok) { showToast('Please fill in all required fields ✦'); return Promise.reject(new Error('validation')); }
+
+      var total = currentCheckoutFlow === 'cart'
+        ? cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0)
+        : getSheetPrice();
+      var deposit = (total * 0.5).toFixed(2);
+
+      return actions.order.create({
+        purchase_units: [{ description: 'La Cocinita de Vanessa — Deposit (50%)', amount: { currency_code: 'USD', value: deposit } }]
+      });
+    },
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        if (currentCheckoutFlow === 'cart') { submitCartOrder(details); }
+        else { submitProductOrder(details); }
+      });
+    },
+
+    onError: function(err) {
+      console.error('PayPal error:', err);
+      showToast('Payment error — please try again or contact us directly.');
+    },
+
+    onCancel: function() {
+      showToast("Payment cancelled — complete payment when you're ready.");
+    }
+  }).render('#co-paypal-container');
+}
+
+async function submitProductOrder(paypalDetails) {
+  var paypalOrderId = paypalDetails ? paypalDetails.id : null;
   var required = ['co-fname','co-lname','co-email','co-phone','co-date','co-address'];
   var ok = true;
   required.forEach(function(id) {
@@ -1579,9 +1652,7 @@ async function submitProductOrder() {
   });
   if (!ok) { showToast('Please fill in all required fields ✶'); return; }
 
-  /* Loading state */
-  var btn = document.getElementById('co-place-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  /* Loading state handled by PayPal SDK */
 
   /* Product info from current sheet state */
   var p      = PRODUCTS[currentProduct];
@@ -1631,7 +1702,8 @@ async function submitProductOrder() {
         order_items:      items,
         order_subtotal:   price,
         order_total:      price,
-        payment_status:   'pending',
+        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        paypal_order_id:  paypalOrderId,
         delivery_date:    date,
         delivery_time:    time,
         delivery_address: address,
