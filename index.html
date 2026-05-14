@@ -255,9 +255,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .form-section-title:first-child{margin-top:0;}
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:6px;}
-.field input,.field select,.field textarea{width:100%;font-size:16px;padding:13px 14px;border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--text-dark);background:var(--warm-white);outline:none;appearance:none;-webkit-appearance:none;transition:border-color 0.2s,box-shadow 0.2s;min-height:var(--tap);}
+.field input,.field select,.field textarea{width:100%;font-size:16px;padding:13px 14px;border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--text-dark);background:var(--warm-white);outline:none;appearance:none;-webkit-appearance:none;transition:border-color 0.2s,box-shadow 0.2s;min-height:var(--tap);touch-action:manipulation;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#E91E8C;box-shadow:0 0 0 3px rgba(233,30,140,0.1);}
-.field textarea{resize:vertical;min-height:128px;line-height:1.6;font-size:15px;}
+.field textarea{resize:vertical;min-height:128px;line-height:1.6;font-size:16px;}
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 4.5L11 1' stroke='%23E91E8C' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .product-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
@@ -353,11 +353,57 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 @keyframes slideUp{from{opacity:0;transform:translateY(56px);}to{opacity:1;transform:translateY(0);}}
 
-@media(max-width:360px){
-  .nav-logo{font-size:13px;} .nav-links a{font-size:9px;padding:0 7px;}
-  .hero-title{font-size:36px;} .field-row,.datetime-row,.sq-field-row,.co-field-row{grid-template-columns:1fr;}
-  .product-grid{grid-template-columns:1fr;} .size-chips{gap:6px;}
-  .gallery-grid{grid-template-columns:repeat(3,1fr);gap:4px;}
+@media(max-width:599px){
+  /* ── Section spacing ── */
+  .section{padding:44px 18px;}
+  .section-desc{margin-bottom:24px;}
+
+  /* ── Nav ── */
+  .nav-links a{font-size:10px;padding:0 8px;min-height:40px;}
+
+  /* ── Hero ── */
+  .hero-content{padding:0 18px;}
+  .hero-sub{max-width:100%;}
+
+  /* ── Form grids → single column on all phones ── */
+  .field-row,
+  .datetime-row,
+  .sq-field-row,
+  .co-field-row{grid-template-columns:1fr;}
+
+  /* ── Prevent iOS auto-zoom: all inputs ≥ 16px ── */
+  .field input,.field select,.field textarea,
+  .co-field input,.co-field select,.co-field textarea{font-size:16px;}
+
+  /* ── Gallery → 2 columns on phone (4 is too tight) ── */
+  .gallery-grid{grid-template-columns:repeat(2,1fr);gap:6px;}
+
+  /* ── Cart item detail: allow wrapping ── */
+  .cart-item-detail{white-space:normal;overflow:visible;text-overflow:unset;}
+
+  /* ── Product grid ── */
+  .product-grid{gap:10px;}
+
+  /* ── Custom product card aspect ratio ── */
+  .custom-product-img-wrap{aspect-ratio:16/9;}
+
+  /* ── Size chips ── */
+  .size-chips{gap:6px;}
+
+  /* ── Sheet & modal ── */
+  .sheet-body{padding-left:16px;padding-right:16px;}
+
+  /* ── Checkout summary price ── */
+  .checkout-summary-price{font-size:22px;}
+}
+
+/* ── Very small phones (SE, Galaxy A series < 380px) ── */
+@media(max-width:380px){
+  .nav-logo{font-size:13px;}
+  .nav-links a{font-size:9px;padding:0 6px;}
+  .hero-title{font-size:36px;}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);gap:4px;}
+  .product-grid{grid-template-columns:1fr;}
 }
 @media(min-width:600px){
   .form-card{padding:36px 32px;} .product-grid{grid-template-columns:repeat(3,1fr);}
@@ -381,7 +427,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 .co-step-label{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mid);margin:18px 0 10px;}
 .co-field{margin-bottom:13px;}
 .co-field label{display:block;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:6px;}
-.co-field input,.co-field select,.co-field textarea{width:100%;font-size:15px;padding:12px 14px;border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--text-dark);background:var(--warm-white);outline:none;appearance:none;-webkit-appearance:none;min-height:48px;transition:border-color 0.2s;box-sizing:border-box;}
+.co-field input,.co-field select,.co-field textarea{width:100%;font-size:16px;padding:12px 14px;border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--text-dark);background:var(--warm-white);outline:none;appearance:none;-webkit-appearance:none;min-height:48px;transition:border-color 0.2s;box-sizing:border-box;}
 .co-field textarea{min-height:88px;resize:none;line-height:1.6;}
 .co-field input:focus,.co-field textarea:focus{border-color:#E91E8C;}
 .co-field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
