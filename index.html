@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AS4ZoIHQQO8Ni6TmdZuADI1zQ7ceOznqxcZQrapdGjla4invuZNkzBNT9uP5E1ZIOoTa42SBhgBX-vlW&currency=USD" data-sdk-integration-source="button-factory"></script>
 <style>
 :root {
   /* ══ Dominican Republic Color Palette ══
@@ -304,6 +305,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .payment-logos{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
 .payment-badge{background:var(--warm-white);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:10px;font-weight:700;color:var(--text-mid);}
 .secure-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:#AD1457;margin-bottom:14px;}
+
+.deposit-amount-display{background:linear-gradient(135deg,#4A0E2E,#2D0A1E);border-radius:12px;padding:14px 16px;margin:14px 0 10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:rgba(249,243,236,0.7);}
+.deposit-amount-display strong{font-size:20px;color:#F48FB1;font-family:'Cormorant Garamond',serif;font-weight:600;}
+.paypal-wrapper{margin-top:14px;border-radius:14px;overflow:hidden;}
+.paypal-ack-hint{text-align:center;font-size:12px;color:var(--text-mid);margin-top:14px;padding:10px;border:1.5px dashed rgba(233,30,140,0.2);border-radius:10px;}
 .deposit-note{background:rgba(233,30,140,0.08);border:1px solid rgba(233,30,140,0.24);border-radius:10px;padding:12px 13px;font-size:12px;line-height:1.65;color:var(--text-mid);margin-bottom:16px;}
 .deposit-note strong{color:#AD1457;}
 .sq-field{background:var(--warm-white);border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;padding:13px 14px;min-height:var(--tap);margin-bottom:10px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-mid);}
@@ -818,18 +824,14 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
     </div>
 
     <div class="form-section-title">💳 Secure Payment</div>
-    <div class="payment-logos">
-      <div class="payment-badge">VISA</div><div class="payment-badge">MC</div>
-      <div class="payment-badge">AMEX</div><div class="payment-badge">DISCOVER</div><div class="payment-badge">Apple Pay</div>
+    <div class="deposit-note"><strong>50% deposit required to confirm your order.</strong> The deposit is charged today via PayPal. The remaining balance will be agreed with Vanessa before your order is confirmed, and is due 48 hrs before delivery.</div>
+    <div class="deposit-amount-display">
+      <span>Deposit due today (50%)</span>
+      <strong id="deposit-amount-text">$49.00</strong>
     </div>
-    <div class="secure-badge">🔒 Secured by Square — PCI DSS Compliant</div>
-    <div class="deposit-note"><strong>50% deposit required to confirm.</strong> Remaining balance due 48 hrs before delivery. Card charged only after Vanessa confirms your design.</div>
-    <div id="card-container">
-      <div class="sq-field">💳 &nbsp;Card Number — powered by Square</div>
-      <div class="sq-field-row"><div class="sq-field">MM / YY</div><div class="sq-field">CVV</div></div>
-      <div class="sq-field">ZIP Code</div>
-    </div>
-    <button class="place-order-btn" id="custom-submit-btn" onclick="handleSubmit()" disabled>🎂 &nbsp;Submit Custom Order Request</button>
+    <div id="paypal-button-container" class="paypal-wrapper" style="display:none;"></div>
+    <div class="paypal-ack-hint" id="paypal-ack-hint">☝️ Check the acknowledgement above to unlock payment</div>
+    <div class="secure-badge">🔒 Payments processed securely via PayPal — PCI DSS Compliant</div>
   </div>
 </section>
 
@@ -850,7 +852,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 <footer>
   <div class="footer-logo">La <em>Cocinita</em> de Vanessa</div>
   <div class="footer-tagline">Tres Leches Specialist · Manhattan &amp; The Bronx</div>
-  <div class="footer-legal">© 2026 La Cocinita de Vanessa. All rights reserved.<br>Payments processed securely via Square.</div>
+  <div class="footer-legal">© 2026 La Cocinita de Vanessa. All rights reserved.<br>Payments processed securely via PayPal.</div>
 </footer>
 
 <!-- LIGHTBOX -->
@@ -1629,11 +1631,17 @@ async function submitProductOrder() {
 }
 
 function toggleCustomAck() {
-  var btn = document.getElementById('custom-submit-btn');
-  var ack = document.getElementById('custom-ack');
-  if (!btn || !ack) return;
-  if (ack.checked) { btn.classList.add('on'); btn.disabled = false; }
-  else { btn.classList.remove('on'); btn.disabled = true; }
+  var ack       = document.getElementById('custom-ack');
+  var container = document.getElementById('paypal-button-container');
+  var hint      = document.getElementById('paypal-ack-hint');
+  if (!ack) return;
+  if (ack.checked) {
+    if (container) container.style.display = 'block';
+    if (hint)      hint.style.display      = 'none';
+  } else {
+    if (container) container.style.display = 'none';
+    if (hint)      hint.style.display      = 'block';
+  }
 }
 
 const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooters:'🥤', flan:'🍮', cheesecake:'🧁' };
@@ -1739,23 +1747,62 @@ function closeLightbox(e) {
   if (el) { el.min = el.value = d.toISOString().split('T')[0]; }
 })();
 
-/* ── Custom order form submit (Supabase) ── */
-async function handleSubmit(e) {
-  if (e && e.preventDefault) e.preventDefault();
+/* ── Deposit amount helper ── */
+function getDepositAmount() {
+  var checked = document.querySelector('input[name="cust-sz"]:checked');
+  var price   = checked ? parseFloat(checked.value) : 98;
+  return (price * 0.5).toFixed(2);
+}
+function updateDepositDisplay() {
+  var el = document.getElementById('deposit-amount-text');
+  if (el) el.textContent = '$' + getDepositAmount();
+}
+document.querySelectorAll('input[name="cust-sz"]').forEach(function(inp) {
+  inp.addEventListener('change', updateDepositDisplay);
+});
 
-  const required = ['fname','lname','email','phone','delivery-date','address','address-city','address-zip'];
-  let ok = true;
-  required.forEach(function (id) {
-    const el = document.getElementById(id);
-    if (!el || !el.value.trim()) {
-      if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function () { el.style.borderColor = ''; }, {once: true}); }
-      ok = false;
+/* ── PayPal button init ── */
+(function initPayPal() {
+  if (!window.paypal) { console.warn('PayPal SDK not loaded'); return; }
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+
+    createOrder: function(data, actions) {
+      var required = ['fname','lname','email','phone','delivery-date','address','address-city','address-zip'];
+      var ok = true;
+      required.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+          if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function(){ el.style.borderColor=''; }, {once:true}); }
+          ok = false;
+        }
+      });
+      if (!ok) { showToast('Please fill in all required fields ✦'); return Promise.reject(new Error('validation')); }
+      return actions.order.create({
+        purchase_units: [{ description: 'La Cocinita de Vanessa — Custom Cake Deposit (50%)', amount: { currency_code: 'USD', value: getDepositAmount() } }]
+      });
+    },
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        handleSubmit(details);
+      });
+    },
+
+    onError: function(err) {
+      console.error('PayPal error:', err);
+      showToast('Payment error — please try again or call us directly.');
+    },
+
+    onCancel: function() {
+      showToast('Payment cancelled — complete payment when you're ready.');
     }
-  });
-  if (!ok) { showToast('Please fill in all required fields ✦'); return; }
+  }).render('#paypal-button-container');
+})();
 
-  const btn = document.getElementById('custom-submit-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+/* ── Custom order form submit (called by PayPal onApprove) ── */
+async function handleSubmit(paypalDetails) {
+  const paypalOrderId = paypalDetails ? paypalDetails.id : null;
 
   const fname     = document.getElementById('fname').value.trim();
   const lname     = document.getElementById('lname').value.trim();
@@ -1774,7 +1821,9 @@ async function handleSubmit(e) {
   const notes     = notesEl ? notesEl.value.trim() : '';
   const allergies = (document.getElementById('allergies') || {value: ''}).value.trim();
   const occasion  = (document.getElementById('occasion')  || {value: ''}).value.trim();
-  const size      = (document.getElementById('custom-size') || {value: ''}).value.trim();
+  const sizeEl    = document.querySelector('input[name="cust-sz"]:checked');
+  const size      = sizeEl ? sizeEl.value : '';
+  const deposit   = getDepositAmount();
 
   try {
     const customOrderRef = generateOrderRef();
@@ -1792,17 +1841,22 @@ async function handleSubmit(e) {
         order_reference:  customOrderRef,
         order_type:       'custom',
         order_items:      JSON.stringify([{ type: 'custom', occasion: occasion, size: size, notes: notes }]),
+        order_subtotal:   parseFloat(size) || null,
+        order_total:      parseFloat(size) || null,
         delivery_date:    date,
         delivery_time:    time,
         delivery_address: fullAddress,
         theme_notes:      notes,
         allergies:        allergies,
+        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        paypal_order_id:  paypalOrderId,
         source:           'web_order'
       });
     if (orderErr) throw orderErr;
 
     sendOrderEmails({ name: fname + ' ' + lname, email: email, phone: phone,
-      orderRef: customOrderRef, items: 'Custom cake order — see notes',
+      orderRef: customOrderRef,
+      items: 'Custom Cake — ' + (size ? size + ' inch base ($' + size + ')' : 'size TBD') + '\nDeposit paid: $' + deposit + ' (PayPal ' + (paypalOrderId || 'N/A') + ')',
       date: date, time: time, address: fullAddress, notes: notes });
 
     document.getElementById('success-modal').classList.add('open');
@@ -1810,7 +1864,6 @@ async function handleSubmit(e) {
   } catch (err) {
     console.error('Order error:', err);
     showToast('Something went wrong — please try again or call us directly.');
-    if (btn) { btn.disabled = false; btn.textContent = '🎂 Submit Order Request'; }
   }
 }
 
