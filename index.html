@@ -1623,6 +1623,7 @@ function sendOrderEmails(params) {
   var ep = {
     customer_name:    params.name,
     customer_email:   params.email,
+    to_email:         params.email,
     customer_phone:   params.phone,
     order_ref:        params.orderRef,
     order_items:      params.items,
