@@ -22,4 +22,6 @@
       connect-src 'self'
         https://*.supabase.co
         https://cdn.jsdelivr.net
-        https://api.
+        https://api.emailjs.com;
+      img-src 'self' data: https:;
+    """
