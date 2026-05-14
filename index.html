@@ -767,8 +767,33 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
     </div>
     <p class="datetime-info">ℹ️ Please book at least 7 days in advance. Delivery to Manhattan &amp; the Bronx only.</p>
     <div class="field" style="margin-top:12px">
-      <label>Delivery Address</label>
-      <input type="text" id="address" placeholder="123 Main St, Manhattan / Bronx, NY" autocomplete="street-address"/>
+      <label>Street Address</label>
+      <input type="text" id="address" placeholder="123 Main St" autocomplete="address-line1"/>
+    </div>
+    <div class="field">
+      <label>Apt / Suite / Floor <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input type="text" id="address-apt" placeholder="Apt 4B" autocomplete="address-line2"/>
+    </div>
+    <div class="field-row" style="margin-bottom:14px">
+      <div class="field" style="margin-bottom:0">
+        <label>City</label>
+        <input type="text" id="address-city" placeholder="Bronx" autocomplete="address-level2"/>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>State</label>
+        <select id="address-state" autocomplete="address-level1">
+          <option value="">— State —</option>
+          <option value="NY" selected>NY</option>
+          <option value="NJ">NJ</option>
+          <option value="CT">CT</option>
+          <option value="PA">PA</option>
+          <option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option><option value="CA">CA</option><option value="CO">CO</option><option value="DE">DE</option><option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option><option value="IA">IA</option><option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option><option value="ME">ME</option><option value="MD">MD</option><option value="MA">MA</option><option value="MI">MI</option><option value="MN">MN</option><option value="MS">MS</option><option value="MO">MO</option><option value="MT">MT</option><option value="NE">NE</option><option value="NV">NV</option><option value="NH">NH</option><option value="NM">NM</option><option value="NC">NC</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option><option value="OR">OR</option><option value="RI">RI</option><option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option><option value="WI">WI</option><option value="WY">WY</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>ZIP Code</label>
+      <input type="text" id="address-zip" placeholder="10451" autocomplete="postal-code" maxlength="10" inputmode="numeric"/>
     </div>
 
     <div class="form-section-title">✏️ Design Instructions</div>
@@ -1718,7 +1743,7 @@ function closeLightbox(e) {
 async function handleSubmit(e) {
   if (e && e.preventDefault) e.preventDefault();
 
-  const required = ['fname','lname','email','phone','delivery-date','address'];
+  const required = ['fname','lname','email','phone','delivery-date','address','address-city','address-zip'];
   let ok = true;
   required.forEach(function (id) {
     const el = document.getElementById(id);
@@ -1740,6 +1765,11 @@ async function handleSubmit(e) {
   const timeEl    = document.getElementById('delivery-time');
   const time      = timeEl ? timeEl.value : '';
   const address   = document.getElementById('address').value.trim();
+  const addrApt   = (document.getElementById('address-apt')  || {value:''}).value.trim();
+  const addrCity  = document.getElementById('address-city').value.trim();
+  const addrState = document.getElementById('address-state').value.trim();
+  const addrZip   = document.getElementById('address-zip').value.trim();
+  const fullAddress = [address, addrApt, addrCity, addrState, addrZip].filter(Boolean).join(', ');
   const notesEl   = document.getElementById('custom-notes') || document.getElementById('instructions');
   const notes     = notesEl ? notesEl.value.trim() : '';
   const allergies = (document.getElementById('allergies') || {value: ''}).value.trim();
@@ -1764,7 +1794,7 @@ async function handleSubmit(e) {
         order_items:      JSON.stringify([{ type: 'custom', occasion: occasion, size: size, notes: notes }]),
         delivery_date:    date,
         delivery_time:    time,
-        delivery_address: address,
+        delivery_address: fullAddress,
         theme_notes:      notes,
         allergies:        allergies,
         source:           'web_order'
@@ -1773,7 +1803,7 @@ async function handleSubmit(e) {
 
     sendOrderEmails({ name: fname + ' ' + lname, email: email, phone: phone,
       orderRef: customOrderRef, items: 'Custom cake order — see notes',
-      date: date, time: time, address: address, notes: notes });
+      date: date, time: time, address: fullAddress, notes: notes });
 
     document.getElementById('success-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
