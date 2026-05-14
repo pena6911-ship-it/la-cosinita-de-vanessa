@@ -1246,11 +1246,12 @@ function getSheetPrice() {
 function addToOrder() {
   const p = PRODUCTS[currentProduct];
   const size = p.sizes[currentSizeIdx];
-  const flavor = document.getElementById('sheet-flavor').value;
+  const flavorEl = document.getElementById('sheet-flavor');
+  const flavor = flavorEl ? flavorEl.value : '';
   const fillingEl = document.getElementById('sheet-filling');
   const dulceEl = document.getElementById('sheet-dulce');
   const freshEl = document.getElementById('sheet-fresh-fruits');
-  let detail = fillingEl ? `${flavor} · ${fillingEl.value}` : flavor;
+  let detail = fillingEl ? (flavor ? `${flavor} · ${fillingEl.value}` : fillingEl.value) : flavor;
   if (dulceEl && dulceEl.checked) detail += ' · Dulce de Leche (+$5)';
   if (freshEl && freshEl.checked) detail += ' · Fresh Fruits (+$5)';
   const price = getSheetPrice();
