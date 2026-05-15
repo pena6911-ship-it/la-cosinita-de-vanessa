@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#E91E8C"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>La Cosinita de Vanessa — New York's Tres Leches Specialist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AUFMTLWkfArSRabV7iwL8a9wG8XL0q0jwH_AwhoRrAMFbOqnr4QVfXlMDldaWVrm2HHksfe1ZjK1nx3A&currency=USD" data-sdk-integration-source="button-factory"></script>
+<style>
+:root {
+  /* ══ Dominican Republic Color Palette ══
+     · DR Flag:    red #E91E8C  · white #FAFCFE  · navy #4A0E2E
+     · Larimar:    sky #F48FB1  · deep #AD1457   · pale #FCE4EC
+     · Caribbean:  sand #FCE4EC · foam #FFF0F5   · ocean #3D1040
+     · Gold:       warm #F8BBD9 (contrast accent on dark backgrounds)
+  ══════════════════════════════════════════ */
+  --cream:        #FFF0F5;   /* caribbean foam — page background      */
+  --warm-white:   #FFFAFA;   /* ocean mist — card & input background  */
+  --caramel:      #E91E8C;   /* DR flag red — primary CTA & accents   */
+  --dark-caramel: #B5206E;   /* DR flag dark red — hover states       */
+  --espresso:     #4A0E2E;   /* DR flag navy — dark section bg        */
+  --mocha:        #3D1040;   /* deep caribbean night — headings       */
+  --soft-blush:   #FCE4EC;   /* larimar pale — placeholder / card bg  */
+  --blush:        #F48FB1;   /* larimar sky — mid accent              */
+  --gold:         #F8BBD9;   /* warm gold — price & stat highlights   */
+  --sage:         #AD1457;   /* larimar deep — addon / zone accent    */
+  --text-dark:    #4A0E2E;   /* flag navy — primary body text         */
+  --text-mid:     #880E4F;   /* larimar dark — secondary text         */
+  --border:       rgba(233,30,140,0.22);
+  --larimar:      #F48FB1;   /* larimar sky — utility alias           */
+  --larimar-deep: #AD1457;   /* larimar deep — utility alias          */
+  --red:          #E91E8C;   /* DR flag red — utility alias           */
+  --sand:         #FCE4EC;   /* white sand beach                      */
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --tap:48px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;overscroll-behavior-y:none;}
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url('assets/la-cosinita-logo-stamped-bg.png');background-size:min(1800px,150vw) auto;background-position:center top;background-repeat:repeat;opacity:.24;}
+img{display:block;max-width:100%;height:auto;}
+button{cursor:pointer;font-family:inherit;touch-action:manipulation;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--safe-top)) 16px 10px;border-top:3px solid #E91E8C;background:rgba(240,248,250,0.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,3.8vw,20px);font-weight:600;color:var(--mocha);line-height:1.1;}
+.nav-logo span{color:var(--caramel);font-style:italic;}
+.nav-links{display:flex;gap:2px;}
+.nav-links a{display:flex;align-items:center;justify-content:center;min-height:var(--tap);padding:0 10px;font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-mid);text-decoration:none;border-radius:100px;transition:background 0.18s,color 0.18s;-webkit-tap-highlight-color:transparent;}
+.nav-links a:active,.nav-links a.active{background:#E91E8C;color:#fff;}
+
+/* HERO */
+.hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;padding-top:calc(70px + var(--safe-top));padding-bottom:calc(52px + var(--safe-bottom));position:relative;overflow:hidden;background:var(--espresso);}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(155deg,#4A0E2E 0%,#3D1040 45%,#2D0A1E 100%);}
+.hero-glow{position:absolute;inset:0;pointer-events:none;}
+.hero-glow::before{content:'';position:absolute;width:min(400px,88vw);height:min(400px,88vw);border-radius:50%;background:radial-gradient(circle,rgba(233,30,140,0.22) 0%,transparent 68%);top:-80px;right:-80px;}
+.hero-glow::after{content:'';position:absolute;width:min(260px,68vw);height:min(260px,68vw);border-radius:50%;background:radial-gradient(circle,rgba(173,20,87,0.16) 0%,transparent 70%);bottom:80px;left:-60px;}
+.hero-strip{position:absolute;top:0;right:0;width:38%;height:100%;display:flex;flex-direction:column;gap:3px;opacity:0.42;-webkit-mask-image:linear-gradient(to left,rgba(0,0,0,.65),transparent);mask-image:linear-gradient(to left,rgba(0,0,0,.65),transparent);}
+.hero-strip div{flex:1;}
+.hero-content{position:relative;z-index:2;padding:0 22px;}
+.section > *,#contact > *,footer > *{position:relative;z-index:2;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--caramel);border:1px solid rgba(233,30,140,0.45);border-radius:100px;padding:7px 14px;margin-bottom:16px;animation:fadeUp 0.7s ease both;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,11.5vw,68px);font-weight:300;line-height:0.94;color:var(--cream);margin-bottom:6px;animation:fadeUp 0.7s 0.1s ease both;}
+.hero-title em{font-style:italic;color:#F48FB1;display:block;}
+.hero-sub{font-size:14px;font-weight:300;line-height:1.7;color:rgba(249,243,236,0.56);margin-bottom:30px;max-width:300px;animation:fadeUp 0.7s 0.18s ease both;}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;animation:fadeUp 0.7s 0.26s ease both;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:8px;min-height:var(--tap);padding:0 22px;background:var(--caramel);color:#fff;border:none;border-radius:100px;font-size:13px;font-weight:500;letter-spacing:0.05em;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background 0.18s,transform 0.12s;}
+.btn-primary:active{background:var(--dark-caramel);transform:scale(0.97);}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;min-height:var(--tap);padding:0 22px;background:transparent;color:var(--cream);border:1px solid rgba(249,243,236,0.28);border-radius:100px;font-size:13px;font-weight:500;letter-spacing:0.05em;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:border-color 0.18s,color 0.18s;}
+.btn-outline:active{border-color:var(--caramel);color:var(--caramel);}
+.btn-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:var(--tap);padding:0 28px;background:transparent;border:1px solid var(--border);color:var(--text-mid);border-radius:100px;font-size:13px;font-weight:500;-webkit-tap-highlight-color:transparent;transition:border-color 0.18s,color 0.18s;}
+.btn-ghost:active{border-color:var(--caramel);color:var(--caramel);}
+
+/* SECTIONS */
+.section{padding:60px 20px;}
+.section-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#AD1457;font-weight:500;margin-bottom:10px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,8vw,46px);font-weight:300;line-height:1.08;color:var(--mocha);margin-bottom:12px;}
+.section-title em{font-style:italic;color:#E91E8C;}
+.section-desc{font-size:14px;font-weight:300;line-height:1.8;color:var(--text-mid);margin-bottom:32px;}
+
+/* ══ SHOP CATALOG ══ */
+#shop{background:var(--warm-white);}
+.cat-pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:none;}
+.cat-pills::-webkit-scrollbar{display:none;}
+.cat-pill{flex-shrink:0;padding:8px 16px;border-radius:100px;border:1.5px solid var(--border);font-size:12px;font-weight:500;color:var(--text-mid);background:white;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.18s;white-space:nowrap;min-height:var(--tap);display:flex;align-items:center;}
+.cat-pill.active{background:#E91E8C;color:#fff;border-color:#E91E8C;}
+
+.product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.product-card{background:white;border-radius:18px;overflow:hidden;box-shadow:0 2px 12px rgba(74,14,46,0.07);border:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 0.14s,box-shadow 0.14s;}
+.product-card:active{transform:scale(0.97);}
+.product-card-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:var(--soft-blush);}
+.product-card-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.product-card-emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(36px,10vw,56px);}
+.product-card-badge{position:absolute;top:8px;left:8px;background:var(--red);color:#fff;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:100px;}
+.product-card-body{padding:11px 12px 14px;}
+.product-card-name{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,3.8vw,17px);font-weight:600;color:var(--mocha);line-height:1.2;margin-bottom:3px;}
+.product-card-desc{font-size:11px;color:var(--text-mid);line-height:1.5;margin-bottom:8px;}
+.product-card-from{font-size:12px;font-weight:600;color:#E91E8C;}
+.product-card-serves{font-size:10px;color:var(--text-mid);margin-top:2px;}
+
+/* ══ PRODUCT DETAIL SHEET ══ */
+.sheet-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(74,14,46,0.80);align-items:flex-end;justify-content:center;}
+.sheet-overlay.open{display:flex;}
+.sheet{background:white;border-radius:24px 24px 0 0;width:100%;max-height:93dvh;display:flex;flex-direction:column;position:relative;animation:slideUp 0.36s cubic-bezier(0.34,1.25,0.64,1) both;}
+.sheet-handle{width:36px;height:4px;background:rgba(233,30,140,0.3);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.sheet-close{position:absolute;top:14px;right:16px;background:var(--soft-blush);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text-dark);-webkit-tap-highlight-color:transparent;z-index:2;}
+.sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding:4px 20px calc(28px + var(--safe-bottom));}
+
+/* Product image */
+.sheet-img-wrap{width:100%;border-radius:16px;overflow:hidden;margin:14px 0;aspect-ratio:4/3;background:var(--soft-blush);}
+.sheet-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.sheet-img-emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:80px;}
+
+/* Sheet header */
+.sheet-badge{display:inline-block;background:#E91E8C;color:#fff;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:8px;}
+.sheet-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--mocha);line-height:1.1;margin-bottom:6px;}
+.sheet-name em{font-style:italic;color:#E91E8C;}
+.sheet-desc{font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:18px;}
+.sheet-price{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:#E91E8C;margin-bottom:20px;}
+.sheet-price small{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-mid);font-weight:300;}
+
+/* Selector labels */
+.sel-label{display:block;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-mid);margin-bottom:8px;}
+
+/* Size chips */
+.size-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+.sz-radio{display:none;}
+.sz-label{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 12px;border-radius:12px;border:2px solid rgba(233,30,140,0.2);background:var(--warm-white);cursor:pointer;min-width:72px;text-align:center;-webkit-tap-highlight-color:transparent;transition:all 0.18s;}
+.sz-radio:checked + .sz-label{border-color:#E91E8C;background:rgba(233,30,140,0.07);box-shadow:0 0 0 3px rgba(233,30,140,0.12);}
+.sz-label:active{transform:scale(0.95);}
+.sz-inch{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--mocha);line-height:1;}
+.sz-serves{font-size:9px;color:var(--text-mid);line-height:1.4;}
+.sz-price{font-size:12px;font-weight:600;color:var(--caramel);margin-top:3px;}
+.sz-badge{font-size:8px;background:var(--caramel);color:#fff;padding:1px 5px;border-radius:4px;margin-top:2px;}
+
+/* Serving guide */
+.serve-toggle{display:flex;justify-content:space-between;align-items:center;background:rgba(233,30,140,0.07);border:1px solid var(--border);border-radius:12px;padding:11px 14px;margin:10px 0 18px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:12px;font-weight:500;color:#AD1457;}
+.serve-toggle-arrow{transition:transform 0.22s;}
+.serve-toggle.open .serve-toggle-arrow{transform:rotate(180deg);}
+.serve-table{display:none;margin-top:10px;border-collapse:collapse;width:100%;font-size:11px;}
+.serve-toggle.open + .serve-table{display:table;}
+.serve-table td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--text-mid);}
+.serve-table td:first-child{font-weight:500;color:var(--text-dark);width:110px;}
+
+/* Flavor selector */
+.flavor-wrap{margin-bottom:18px;}
+.flavor-sel{width:100%;font-size:16px;padding:13px 38px 13px 14px;border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--text-dark);background:var(--warm-white);outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 4.5L11 1' stroke='%23E91E8C' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;min-height:var(--tap);transition:border-color 0.2s;}
+.flavor-sel:focus{border-color:#E91E8C;}
+.gf-note{font-size:11px;color:var(--sage);margin-top:6px;padding-left:2px;}
+
+/* Delivery zone pill */
+.zone-box{display:flex;align-items:flex-start;gap:10px;background:rgba(233,30,140,0.08);border:1px solid rgba(233,30,140,0.24);border-radius:12px;padding:12px 14px;margin-bottom:20px;}
+.zone-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.zone-text{font-size:12px;line-height:1.6;color:var(--text-mid);}
+.zone-text strong{color:var(--text-dark);display:block;margin-bottom:2px;}
+
+/* Add to order */
+.add-btn{width:100%;min-height:56px;background:linear-gradient(135deg,#E91E8C,#B5206E);color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:500;letter-spacing:0.04em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 22px rgba(233,30,140,0.26);-webkit-tap-highlight-color:transparent;transition:transform 0.12s,box-shadow 0.12s;}
+.add-btn:active{transform:scale(0.98);box-shadow:0 4px 10px rgba(233,30,140,0.18);}
+.custom-order-link{display:block;text-align:center;margin-top:14px;font-size:13px;color:var(--caramel);text-decoration:none;padding:10px;}
+
+/* ══ CART BUTTON (nav) ══ */
+.cart-btn{position:relative;display:flex;align-items:center;justify-content:center;min-height:40px;min-width:40px;background:rgba(233,30,140,0.10);border:1.5px solid rgba(233,30,140,0.32);border-radius:50%;font-size:17px;color:var(--caramel);-webkit-tap-highlight-color:transparent;transition:background 0.18s;flex-shrink:0;}
+.cart-btn:active{background:rgba(233,30,140,0.22);}
+.cart-badge{position:absolute;top:-5px;right:-5px;background:#E91E8C;color:#fff;font-size:9px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 3px;font-family:'DM Sans',sans-serif;border:2px solid #FFF0F5;}
+
+/* ══ CART DRAWER ══ */
+.cart-overlay{display:none;position:fixed;inset:0;z-index:490;background:rgba(74,14,46,0.55);}
+.cart-overlay.open{display:block;}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(390px,100vw);background:#fff;z-index:491;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.34s cubic-bezier(0.34,1.25,0.64,1);box-shadow:-6px 0 36px rgba(74,14,46,0.16);}
+.cart-drawer.open{transform:translateX(0);}
+.cart-header{display:flex;align-items:center;justify-content:space-between;padding:calc(18px + var(--safe-top)) 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:#fff;}
+.cart-header-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--mocha);}
+.cart-header-title em{color:#E91E8C;font-style:italic;}
+.cart-close-btn{background:var(--soft-blush);border:none;width:36px;height:36px;border-radius:50%;font-size:17px;color:var(--text-dark);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.cart-items-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;gap:12px;color:var(--text-mid);text-align:center;padding:40px 0;}
+.cart-empty-icon{font-size:52px;opacity:0.45;}
+.cart-empty p{font-size:14px;line-height:1.7;}
+.cart-item{display:flex;gap:12px;align-items:flex-start;padding:16px 0;border-bottom:1px solid rgba(233,30,140,0.09);}
+.cart-item:last-child{border-bottom:none;}
+.cart-item-emoji{font-size:28px;flex-shrink:0;width:50px;height:50px;border-radius:12px;background:var(--soft-blush);display:flex;align-items:center;justify-content:center;}
+.cart-item-info{flex:1;min-width:0;}
+.cart-item-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--mocha);line-height:1.2;margin-bottom:3px;}
+.cart-item-detail{font-size:11px;color:var(--text-mid);line-height:1.5;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cart-item-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.cart-item-price{font-size:15px;font-weight:600;color:#E91E8C;white-space:nowrap;}
+.cart-item-controls{display:flex;align-items:center;gap:6px;}
+.cart-qty-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(233,30,140,0.3);background:#fff;color:var(--caramel);font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:background 0.14s;flex-shrink:0;}
+.cart-qty-btn:active{background:rgba(233,30,140,0.12);}
+.cart-qty-num{font-size:14px;font-weight:600;color:var(--text-dark);min-width:20px;text-align:center;}
+.cart-remove-btn{background:none;border:none;color:rgba(74,14,46,0.28);font-size:20px;padding:2px 4px;-webkit-tap-highlight-color:transparent;transition:color 0.14s;line-height:1;cursor:pointer;}
+.cart-remove-btn:active{color:#E91E8C;}
+.cart-footer{padding:16px 20px calc(22px + var(--safe-bottom));border-top:1px solid var(--border);flex-shrink:0;background:#fff;}
+.cart-subtotal-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.cart-subtotal-label{font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mid);}
+.cart-subtotal-amount{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--mocha);}
+.cart-subtotal-amount em{color:#E91E8C;font-style:normal;}
+.cart-items-count{font-size:11px;color:var(--text-mid);margin-bottom:14px;}
+.cart-checkout-btn{width:100%;min-height:54px;background:linear-gradient(135deg,#E91E8C,#B5206E);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:500;letter-spacing:0.04em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 22px rgba(233,30,140,0.26);-webkit-tap-highlight-color:transparent;transition:transform 0.12s,box-shadow 0.12s;}
+.cart-checkout-btn:active{transform:scale(0.98);box-shadow:0 3px 10px rgba(233,30,140,0.16);}
+.cart-continue-btn{display:block;text-align:center;font-size:12px;color:var(--text-mid);margin-top:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:4px;}
+
+/* GALLERY */
+#gallery{background:var(--cream);}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:24px;}
+.gallery-card{position:relative;overflow:hidden;border-radius:10px;background:var(--soft-blush);aspect-ratio:1/1;cursor:pointer;transition:transform 0.14s;-webkit-tap-highlight-color:transparent;}
+.gallery-card img{width:100%;height:100%;object-fit:contain;display:block;}
+.gallery-card:active{transform:scale(0.975);}
+.cake-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(36px,9vw,60px);}
+.gallery-card:nth-child(1) .cake-placeholder{background:linear-gradient(135deg,#FCE4EC,#F48FB1);}
+.gallery-card:nth-child(2) .cake-placeholder{background:linear-gradient(135deg,#AD1457,#880E4F);font-size:clamp(28px,7vw,46px);}
+.gallery-card:nth-child(3) .cake-placeholder{background:linear-gradient(135deg,#E91E8C,#B5206E);font-size:clamp(28px,7vw,46px);}
+.gallery-card:nth-child(4) .cake-placeholder{background:linear-gradient(135deg,#F48FB1,#C2185B);font-size:clamp(28px,7vw,46px);}
+.gallery-card:nth-child(5) .cake-placeholder{background:linear-gradient(135deg,#4A0E2E,#AD1457);font-size:clamp(28px,7vw,46px);}
+.gallery-card-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(74,14,46,0.86));padding:16px 7px 7px;}
+.gallery-card-name{font-family:'Cormorant Garamond',serif;font-size:clamp(10px,2.4vw,13px);font-weight:400;color:var(--cream);font-style:italic;line-height:1.2;}
+.gallery-card-tag{font-size:8px;color:var(--gold);letter-spacing:0.05em;text-transform:uppercase;margin-top:1px;}
+.gallery-load-more{text-align:center;margin-top:18px;}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(74,14,46,0.97);align-items:center;justify-content:center;padding:20px;}
+.lightbox.open{display:flex;}
+.lightbox-inner{width:100%;max-width:480px;position:relative;}
+.lightbox-close{position:absolute;top:-14px;right:-6px;background:#E91E8C;color:#fff;border:none;width:42px;height:42px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+.lightbox-display{width:100%;border-radius:18px;aspect-ratio:4/3;overflow:hidden;background:var(--soft-blush);}
+.lightbox-display img{width:100%;height:100%;object-fit:cover;display:block;}
+.lightbox-caption{padding:16px 4px 0;font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);font-style:italic;}
+.lightbox-sub{font-size:11px;color:var(--caramel);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;}
+
+/* ABOUT STRIP */
+.about-strip{background:linear-gradient(160deg,#4A0E2E 0%,#3D1040 60%,#2D0A1E 100%);padding:52px 20px;position:relative;overflow:hidden;}
+.about-strip::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;border:1px solid rgba(233,30,140,0.2);}
+.about-strip::after{content:'';position:absolute;bottom:-70px;left:-30px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(233,30,140,0.14);}
+.about-strip .section-title{color:var(--cream);}
+.about-strip .section-desc{color:rgba(249,243,236,0.6);}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:32px;}
+.stat{text-align:center;padding:16px 6px;background:rgba(255,255,255,0.05);border-radius:14px;border:1px solid rgba(233,30,140,0.18);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,6.5vw,34px);font-weight:300;color:#F8BBD9;display:block;line-height:1;}
+.stat-label{font-size:9px;text-transform:uppercase;letter-spacing:0.09em;color:rgba(249,243,236,0.42);margin-top:6px;display:block;line-height:1.5;}
+
+/* ORDER FORM */
+#order{background:var(--cream);}
+.form-card{background:#fff;border-radius:20px;padding:22px 16px;box-shadow:0 6px 30px rgba(74,14,46,0.08);border:1px solid var(--border);}
+.form-section-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--mocha);margin:24px 0 12px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.form-section-title:first-child{margin-top:0;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;font-size:16px;padding:13px 14px;border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--text-dark);background:var(--warm-white);outline:none;appearance:none;-webkit-appearance:none;transition:border-color 0.2s,box-shadow 0.2s;min-height:var(--tap);touch-action:manipulation;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#E91E8C;box-shadow:0 0 0 3px rgba(233,30,140,0.1);}
+.field textarea{resize:vertical;min-height:128px;line-height:1.6;font-size:16px;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 4.5L11 1' stroke='%23E91E8C' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.product-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.product-tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:15px 10px;border:2px solid rgba(233,30,140,0.2);border-radius:16px;background:var(--warm-white);transition:all 0.18s;min-height:var(--tap);-webkit-tap-highlight-color:transparent;}
+.product-tab:active{transform:scale(0.96);}
+.product-tab.active{border-color:#E91E8C;background:rgba(233,30,140,0.06);box-shadow:0 0 0 3px rgba(233,30,140,0.11);}
+.product-tab-icon{font-size:28px;line-height:1;}
+.product-tab-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--text-dark);margin-top:2px;}
+.product-tab.active .product-tab-name{color:#E91E8C;}
+.product-tab-sub{font-size:10px;color:var(--text-mid);letter-spacing:0.06em;text-transform:uppercase;}
+.tier-panel{animation:fadeUp 0.26s ease both;margin-top:4px;}
+.tier-note{font-size:11px;color:#AD1457;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+.tier-note::before{content:'✦';font-size:8px;}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.tier-radio{display:none;}
+.tier-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:12px 6px;border:2px solid rgba(233,30,140,0.17);border-radius:13px;background:var(--warm-white);cursor:pointer;text-align:center;transition:border-color 0.16s,background 0.16s,box-shadow 0.16s;-webkit-tap-highlight-color:transparent;min-height:var(--tap);}
+.tier-card:active{transform:scale(0.95);}
+.tier-radio:checked + .tier-card{border-color:#E91E8C;background:rgba(233,30,140,0.07);box-shadow:0 0 0 3px rgba(233,30,140,0.12);}
+.tier-card-wide{grid-column:span 3;flex-direction:row;justify-content:space-between;padding:12px 16px;}
+.tier-size{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--mocha);line-height:1;}
+.tier-serves{font-size:9px;color:var(--text-mid);font-weight:400;letter-spacing:0.04em;line-height:1.4;margin:3px 0;}
+.tier-price{font-size:14px;font-weight:600;color:#E91E8C;}
+.tier-up{font-size:9px;font-weight:400;color:var(--text-mid);}
+.addon-row{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:6px;background:rgba(233,30,140,0.06);border:1px dashed rgba(233,30,140,0.3);border-radius:12px;cursor:pointer;min-height:var(--tap);-webkit-tap-highlight-color:transparent;}
+.addon-check{width:20px;height:20px;accent-color:#E91E8C;flex-shrink:0;}
+.addon-label{font-size:13px;color:var(--text-dark);display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;}
+.addon-plus{background:#E91E8C;color:#fff;font-size:11px;font-weight:600;padding:2px 9px;border-radius:100px;}
+.custom-product-card{display:flex;flex-direction:column;gap:0;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px;background:var(--warm-white);}
+.custom-product-img-wrap{position:relative;width:100%;aspect-ratio:16/7;overflow:hidden;background:var(--soft-blush);}
+.custom-product-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 60%;}
+.custom-product-emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:64px;}
+.custom-product-badge{position:absolute;top:10px;left:10px;background:#E91E8C;color:#fff;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;}
+.custom-product-info{padding:16px;}
+.custom-product-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--mocha);line-height:1.2;margin-bottom:8px;}
+.custom-product-name em{font-style:italic;color:#E91E8C;}
+.custom-product-desc{font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:12px;}
+.custom-product-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.custom-tag{font-size:11px;font-weight:500;color:#AD1457;background:rgba(233,30,140,0.1);border:1px solid rgba(233,30,140,0.25);border-radius:100px;padding:4px 10px;}
+.datetime-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.datetime-info{font-size:11px;color:var(--text-mid);margin-top:8px;line-height:1.6;padding-left:2px;}
+.price-estimate{background:linear-gradient(135deg,#4A0E2E,#2D0A1E);border-radius:16px;padding:18px;margin:18px 0;display:flex;justify-content:space-between;align-items:center;}
+.price-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(249,243,236,0.52);}
+.price-note{font-size:10px;color:rgba(249,243,236,0.28);margin-top:4px;}
+.price-value{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:#F8BBD9;}
+.payment-logos{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.payment-badge{background:var(--warm-white);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:10px;font-weight:700;color:var(--text-mid);}
+.secure-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:#AD1457;margin-bottom:14px;}
+
+.deposit-amount-display{background:linear-gradient(135deg,#4A0E2E,#2D0A1E);border-radius:12px;padding:14px 16px;margin:14px 0 10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:rgba(249,243,236,0.7);}
+.deposit-amount-display strong{font-size:20px;color:#F48FB1;font-family:'Cormorant Garamond',serif;font-weight:600;}
+.paypal-wrapper{margin-top:14px;border-radius:14px;overflow:hidden;}
+.paypal-ack-hint{text-align:center;font-size:12px;color:var(--text-mid);margin-top:14px;padding:10px;border:1.5px dashed rgba(233,30,140,0.2);border-radius:10px;}
+.deposit-note{background:rgba(233,30,140,0.08);border:1px solid rgba(233,30,140,0.24);border-radius:10px;padding:12px 13px;font-size:12px;line-height:1.65;color:var(--text-mid);margin-bottom:16px;}
+.deposit-note strong{color:#AD1457;}
+.sq-field{background:var(--warm-white);border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;padding:13px 14px;min-height:var(--tap);margin-bottom:10px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-mid);}
+.sq-field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.sq-field-row .sq-field{margin-bottom:0;}
+.submit-btn{width:100%;min-height:56px;background:linear-gradient(135deg,#E91E8C,#B5206E);color:#fff;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;letter-spacing:0.04em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 22px rgba(233,30,140,0.26);transition:transform 0.12s,box-shadow 0.12s;-webkit-tap-highlight-color:transparent;}
+.submit-btn:active{transform:scale(0.98);box-shadow:0 4px 10px rgba(233,30,140,0.18);}
+
+/* CONTACT */
+#contact{background:linear-gradient(160deg,#4A0E2E,#3D1040);padding:52px 20px calc(52px + var(--safe-bottom));text-align:center;}
+#contact .section-title{color:var(--cream);}
+#contact .section-desc{color:rgba(249,243,236,0.52);margin:0 auto 28px;}
+.contact-links{display:flex;flex-direction:column;gap:10px;align-items:center;}
+.contact-link{display:flex;align-items:center;gap:12px;color:var(--cream);text-decoration:none;font-size:14px;min-height:var(--tap);padding:0 20px;border-radius:100px;border:1px solid rgba(249,243,236,0.13);width:100%;max-width:310px;-webkit-tap-highlight-color:transparent;transition:border-color 0.18s,color 0.18s;}
+.contact-link:active{border-color:#E91E8C;color:#E91E8C;}
+.contact-link-icon{font-size:18px;flex-shrink:0;}
+
+/* FOOTER */
+footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text-align:center;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--cream);margin-bottom:8px;}
+.footer-logo em{font-style:italic;color:#F48FB1;}
+.footer-tagline{font-size:10px;color:rgba(249,243,236,0.26);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:14px;}
+.footer-legal{font-size:10px;color:rgba(249,243,236,0.17);line-height:1.9;}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(74,14,46,0.82);align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:28px 28px 0 0;padding:36px 22px calc(24px + var(--safe-bottom));width:100%;max-width:540px;text-align:center;animation:slideUp 0.36s cubic-bezier(0.34,1.4,0.64,1) both;}
+.modal-icon{font-size:52px;margin-bottom:14px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:300;color:var(--mocha);margin-bottom:10px;}
+.modal-title em{font-style:italic;color:#F48FB1;}
+.modal-body{font-size:14px;line-height:1.75;color:var(--text-mid);margin-bottom:22px;}
+.toast{position:fixed;bottom:calc(18px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(110px);background:#4A0E2E;color:#FFFAFA;padding:12px 20px;border-radius:100px;font-size:13px;z-index:9999;pointer-events:none;text-align:center;max-width:88vw;transition:transform 0.34s cubic-bezier(0.34,1.4,0.64,1);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 0.62s ease,transform 0.62s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-d1{transition-delay:0.08s;}
+.reveal-d2{transition-delay:0.16s;}
+.reveal-d3{transition-delay:0.24s;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(56px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:599px){
+  /* ── Section spacing ── */
+  .section{padding:44px 18px;}
+  .section-desc{margin-bottom:24px;}
+
+  /* ── Nav ── */
+  .nav-links a{font-size:10px;padding:0 8px;min-height:40px;}
+
+  /* ── Hero ── */
+  .hero-content{padding:0 18px;}
+  .hero-sub{max-width:100%;}
+
+  /* ── Form grids → single column on all phones ── */
+  .field-row,
+  .datetime-row,
+  .sq-field-row,
+  .co-field-row{grid-template-columns:1fr;}
+
+  /* ── Prevent iOS auto-zoom: all inputs ≥ 16px ── */
+  .field input,.field select,.field textarea,
+  .co-field input,.co-field select,.co-field textarea{font-size:16px;}
+
+  /* ── Gallery → 2 columns on phone (4 is too tight) ── */
+  .gallery-grid{grid-template-columns:repeat(2,1fr);gap:6px;}
+
+  /* ── Cart item detail: allow wrapping ── */
+  .cart-item-detail{white-space:normal;overflow:visible;text-overflow:unset;}
+
+  /* ── Product grid ── */
+  .product-grid{gap:10px;}
+
+  /* ── Custom product card aspect ratio ── */
+  .custom-product-img-wrap{aspect-ratio:16/9;}
+
+  /* ── Size chips ── */
+  .size-chips{gap:6px;}
+
+  /* ── Sheet & modal ── */
+  .sheet-body{padding-left:16px;padding-right:16px;}
+
+  /* ── Checkout summary price ── */
+  .checkout-summary-price{font-size:22px;}
+}
+
+/* ── Very small phones (SE, Galaxy A series < 380px) ── */
+@media(max-width:380px){
+  .nav-logo{font-size:13px;}
+  .nav-links a{font-size:9px;padding:0 6px;}
+  .hero-title{font-size:36px;}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);gap:4px;}
+  .product-grid{grid-template-columns:1fr;}
+}
+@media(min-width:600px){
+  .form-card{padding:36px 32px;} .product-grid{grid-template-columns:repeat(3,1fr);}
+  .modal-overlay,.sheet-overlay{align-items:center;}
+  .modal{border-radius:28px;max-width:420px;}
+  .sheet{max-width:520px;border-radius:24px;}
+  .product-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(74,14,46,0.12);}
+  .nav-links a:hover{background:var(--caramel);color:#fff;}
+  .btn-primary:hover{background:var(--dark-caramel);}
+  .btn-outline:hover{border-color:var(--caramel);color:var(--caramel);}
+  .contact-link:hover{border-color:var(--caramel);color:var(--caramel);}
+}
+
+/* ── Checkout Step 2 ── */
+.checkout-back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-mid);background:none;border:none;padding:4px 0 18px;cursor:pointer;font-weight:500;}
+.checkout-summary{background:rgba(233,30,140,0.07);border:1.5px solid rgba(233,30,140,0.28);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.checkout-summary-left{flex:1;min-width:0;}
+.checkout-summary-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--mocha);}
+.checkout-summary-detail{font-size:11px;color:var(--text-mid);margin-top:3px;}
+.checkout-summary-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#E91E8C;white-space:nowrap;}
+.co-step-label{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mid);margin:18px 0 10px;}
+.co-field{margin-bottom:13px;}
+.co-field label{display:block;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:6px;}
+.co-field input,.co-field select,.co-field textarea{width:100%;font-size:16px;padding:12px 14px;border:1.5px solid rgba(233,30,140,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--text-dark);background:var(--warm-white);outline:none;appearance:none;-webkit-appearance:none;min-height:48px;transition:border-color 0.2s;box-sizing:border-box;}
+.co-field textarea{min-height:88px;resize:none;line-height:1.6;}
+.co-field input:focus,.co-field textarea:focus{border-color:#E91E8C;}
+.co-field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.price-notice{background:rgba(233,30,140,0.06);border:1.5px solid rgba(233,30,140,0.28);border-radius:14px;padding:14px 16px;margin:20px 0 14px;}
+.price-notice-title{font-size:12px;font-weight:600;color:#B5206E;margin-bottom:6px;}
+.price-notice-text{font-size:12px;color:var(--text-mid);line-height:1.75;}
+.ack-wrap{margin-bottom:18px;}
+.ack-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--text-dark);line-height:1.55;}
+.ack-label input[type=checkbox]{accent-color:#E91E8C;width:18px;height:18px;flex-shrink:0;margin-top:2px;cursor:pointer;}
+.place-order-btn{width:100%;min-height:56px;background:linear-gradient(135deg,#E91E8C,#B5206E);color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 22px rgba(233,30,140,0.18);transition:transform 0.12s,opacity 0.2s;opacity:0.42;cursor:not-allowed;}
+.place-order-btn.on{opacity:1;cursor:pointer;}
+.place-order-btn.on:active{transform:scale(0.98);}
+.co-footer-note{text-align:center;font-size:11px;color:var(--text-mid);margin-top:12px;line-height:1.6;}
+/* ── Custom Order Pricing Card ── */
+.cust-pricing{background:linear-gradient(135deg,var(--espresso),var(--mocha));border-radius:16px;padding:18px 16px;margin-bottom:20px;}
+.cust-pricing-eye{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(249,243,236,0.45);margin-bottom:6px;}
+.cust-pricing-ttl{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--cream);margin-bottom:14px;}
+.cust-sz-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.csz-radio{display:none;}
+.csz-label{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 14px;border-radius:12px;border:2px solid rgba(249,243,236,0.2);background:rgba(255,255,255,0.06);cursor:pointer;min-width:80px;text-align:center;transition:all 0.18s;-webkit-tap-highlight-color:transparent;}
+.csz-radio:checked+.csz-label{border-color:#F48FB1;background:rgba(244,143,177,0.2);}
+.csz-inch{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--cream);line-height:1;}
+.csz-serves{font-size:9px;color:rgba(249,243,236,0.5);line-height:1.4;}
+.csz-price{font-size:13px;font-weight:600;color:#F48FB1;margin-top:3px;}
+.cust-pricing-note{font-size:11px;color:rgba(249,243,236,0.4);margin-top:4px;line-height:1.6;}
+
+/* Fallback: ensure reveal elements become visible */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { animation: revealFallback 0.01s 1.2s forwards; }
+  @keyframes revealFallback { to { opacity: 1; transform: none; } }
+}
+.reveal.visible { animation: none; opacity: 1; transform: none; }
+
+
+/* ── Featured product card ── */
+.featured-card { border: 2px solid rgba(233,30,140,0.35); box-shadow: 0 4px 20px rgba(233,30,140,0.15); }
+.featured-card .product-card-name { color: #E91E8C; }
+
+
+/* ── Why Tres Leches section ── */
+.tl-feature-section { background: var(--warm-white); }
+.tl-pillars { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media(min-width:600px){ .tl-pillars{ grid-template-columns: repeat(3,1fr); } }
+.tl-pillar { background: white; border: 1px solid var(--border); border-radius: 18px; padding: 24px 20px; text-align: center; }
+.tl-pillar-icon { font-size: 38px; margin-bottom: 12px; }
+.tl-pillar-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--mocha); margin-bottom: 8px; }
+.tl-pillar-desc { font-size: 13px; color: var(--text-mid); line-height: 1.75; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">La <span>Cosinita</span> de Vanessa</div>
+    <div class="nav-links">
+      <a href="#tres-leches">Specialty</a>
+      <a href="#shop">Shop</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#order">Custom Order</a>
+    </div>
+    <button class="cart-btn" onclick="openCart()" id="cart-nav-btn" aria-label="View cart">
+      🛒<span class="cart-badge" id="cart-badge" style="display:none">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-strip">
+    <div style="background:linear-gradient(180deg,#E91E8C,#B5206E)"></div>
+    <div style="background:linear-gradient(180deg,#AD1457,#880E4F)"></div>
+    <div style="background:linear-gradient(180deg,#F48FB1,#C2185B)"></div>
+    <div style="background:linear-gradient(180deg,#FCE4EC,#F48FB1)"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-tag">✦ New York's Tres Leches Specialist</div>
+    <h1 class="hero-title">La Cosinita<em>de Vanessa</em></h1>
+    <p class="hero-sub">The finest Tres Leches cakes in New York — soaked to perfection, made fresh to order, and delivered to Manhattan &amp; the Bronx.</p>
+    <div class="hero-ctas">
+      <a href="#shop" class="btn-primary">Shop Cakes ↗</a>
+      <a href="#order" class="btn-outline">Custom Order</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- WAVE DIVIDER -->
+<div style="background:var(--espresso);line-height:0;overflow:hidden;margin-top:-2px;">
+  <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:48px;">
+    <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z" fill="#FFF0F5"/>
+  </svg>
+</div>
+<!-- ══════════ SHOP CATALOG ══════════ -->
+
+<!-- WHY TRES LECHES SECTION -->
+<section class="section tl-feature-section reveal" id="tres-leches">
+  <div class="reveal">
+    <div class="section-label">✦ Our Specialty</div>
+    <h2 class="section-title">Why our<br><em>Tres Leches?</em></h2>
+    <p class="section-desc">Not all Tres Leches are created equal. Here's what makes Vanessa's different.</p>
+  </div>
+  <div class="tl-pillars reveal">
+    <div class="tl-pillar">
+      <div class="tl-pillar-icon">🥛</div>
+      <div class="tl-pillar-title">The Three-Milk Soak</div>
+      <p class="tl-pillar-desc">Every cake is drenched in the perfect blend of evaporated milk, condensed milk, and heavy cream — soaked until every bite is impossibly moist.</p>
+    </div>
+    <div class="tl-pillar">
+      <div class="tl-pillar-icon">🍰</div>
+      <div class="tl-pillar-title">Baked Fresh to Order</div>
+      <p class="tl-pillar-desc">We never pre-bake or freeze. Every Tres Leches is made from scratch when your order is confirmed — so it arrives at peak perfection.</p>
+    </div>
+    <div class="tl-pillar">
+      <div class="tl-pillar-icon">🌺</div>
+      <div class="tl-pillar-title">Dominican Tradition</div>
+      <p class="tl-pillar-desc">Rooted in Caribbean baking tradition, Vanessa's recipe has been refined over years of love — bringing authentic Dominican flavor to every celebration.</p>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:32px;" class="reveal">
+    <a href="#shop" class="btn-primary" style="display:inline-flex">Explore Our Cakes ↗</a>
+  </div>
+</section>
+
+<section class="section" id="shop">
+  <div class="reveal">
+    <div class="section-label">✦ Order Online</div>
+    <h2 class="section-title">Our <em>Tres Leches</em></h2>
+    <p class="section-desc">Every cake starts with our signature Tres Leches base — choose your size, flavor, and let Vanessa do the rest.</p>
+  </div>
+
+  <div class="cat-pills reveal">
+    <button class="cat-pill active" onclick="filterCat('all',this)">All Cakes</button>
+    <button class="cat-pill" onclick="filterCat('whole',this)">Whole Cakes</button>
+    <button class="cat-pill" onclick="filterCat('leches',this)">Tres Leches</button>
+    <button class="cat-pill" onclick="filterCat('chocoflan',this)">Chocoflan</button>
+    <button class="cat-pill" onclick="filterCat('shooters',this)">Shooters</button>
+    <button class="cat-pill" onclick="filterCat('flan',this)">Flan</button>
+    <button class="cat-pill" onclick="filterCat('cheesecake',this)">Cheesecake</button>
+  </div>
+
+  <div class="product-grid reveal" id="product-grid">
+
+    <!-- Tres Leches — FEATURED -->
+    <div class="product-card featured-card" data-cat="leches" data-key="leches" onclick="openSheet('leches')">
+      <div class="product-card-img">
+        <img src="" style="display:none" alt="Tres Leches Cake"/>
+        <div class="product-card-emoji" style="font-size:clamp(44px,12vw,64px)">🍰</div>
+        <span class="product-card-badge" style="background:linear-gradient(135deg,#E91E8C,#B5206E)">★ Our Specialty</span>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">Tres Leches Cake</div>
+        <div class="product-card-desc">Three-milk soaked, made fresh — our house specialty in 6 sizes &amp; endless flavors.</div>
+        <div class="product-card-from">From $35</div>
+        <div class="product-card-serves">Serves 6–50 · 5" to 14"</div>
+      </div>
+    </div>
+
+    <!-- Signature Whole Cake -->
+    <div class="product-card" data-cat="whole" data-key="signature" onclick="openSheet('signature')">
+      <div class="product-card-img">
+        <img src="" style="display:none" alt="La Cosinita Signature Cake"/>
+        <span class="product-card-badge">Signature</span>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">La Cosinita Signature Cake</div>
+        <div class="product-card-desc">Our handcrafted Dominican-style whole cake. Choose your size &amp; flavor.</div>
+        <div class="product-card-from">From $98</div>
+        <div class="product-card-serves">Serves 10–60 · 7" or 10"</div>
+      </div>
+    </div>
+
+
+
+    <!-- Chocoflan -->
+    <div class="product-card" data-cat="chocoflan" data-key="chocoflan" onclick="openSheet('chocoflan')">
+      <div class="product-card-img">
+        <img src="" style="display:none" alt="Chocoflan" style="width:100%;height:100%;object-fit:cover;"/>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">Chocoflan</div>
+        <div class="product-card-desc">Rich chocolate cake with silky flan — a showstopping Dominican classic.</div>
+        <div class="product-card-from">From $20</div>
+        <div class="product-card-serves">Serves 6–30 · 5" to 10"</div>
+      </div>
+    </div>
+
+    <!-- Shooters -->
+    <div class="product-card" data-cat="shooters" data-key="shooters" onclick="openSheet('shooters')">
+      <div class="product-card-img">
+        <img src="" style="display:none" alt="Shooters Tres Leche" style="width:100%;height:100%;object-fit:cover;object-position:center top;"/>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">Shooters Tres Leche</div>
+        <div class="product-card-desc">Our Tres Leches in a cup — perfect for parties, events &amp; sweet tables.</div>
+        <div class="product-card-from">$40 / dozen</div>
+        <div class="product-card-serves">1 Dozen · 12 cups</div>
+      </div>
+    </div>
+
+    <!-- Flan Dozen -->
+    <div class="product-card" data-cat="flan" data-key="flan" onclick="openSheet('flan')">
+      <div class="product-card-img">
+        <img src="" style="display:none" alt="Flan Dozen Mini Treats"/>
+        <div class="product-card-emoji">🍮</div>
+        <span class="product-card-badge">Flan</span>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">Flan Dozen Mini Treats</div>
+        <div class="product-card-desc">Silky Dominican mini flans — Classic, Coconut, or Vanilla.</div>
+        <div class="product-card-from">$35 / dozen</div>
+        <div class="product-card-serves">12 mini flans per order</div>
+      </div>
+    </div>
+
+    <!-- Cheesecake -->
+    <div class="product-card" data-cat="cheesecake" data-key="cheesecake" onclick="openSheet('cheesecake')">
+      <div class="product-card-img">
+        <img src="" style="display:none" alt="Cheesecake"/>
+        <div class="product-card-emoji">🧁</div>
+        <span class="product-card-badge">Cheesecake</span>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">Cheesecake</div>
+        <div class="product-card-desc">Rich, creamy cheesecake by the dozen — Regular, Oreo, or Strawberry.</div>
+        <div class="product-card-from">From $40 / dozen</div>
+        <div class="product-card-serves">Price varies by flavor &amp; design</div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="test" onclick="openSheet('testproduct')" style="opacity:0.6;border:2px dashed #E91E8C;">
+      <div class="product-card-img">
+        <div class="product-card-emoji">🧪</div>
+        <span class="product-card-badge" style="background:#888;">TEST</span>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-name">Test Product</div>
+        <div class="product-card-desc">Internal test only — do not order.</div>
+        <div class="product-card-from">$2.00</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ PRODUCT DETAIL SHEET ══════════ -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet(event)">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+    <div class="sheet-body" id="sheet-body">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <div class="cart-header-title">Your <em>Order</em></div>
+    <button class="cart-close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items-wrap" id="cart-items-list"></div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-subtotal-row">
+      <span class="cart-subtotal-label">Base Total</span>
+      <span style="font-size:22px;font-weight:600;color:#E91E8C">$<span id="cart-subtotal-num">0</span></span>
+    </div>
+    <p style="font-size:11px;color:var(--text-mid);margin:6px 0 14px;line-height:1.6;">Base prices only — final amount confirmed with Vanessa before delivery.</p>
+    <div id="cart-items-count" style="font-size:12px;color:var(--text-mid);margin-bottom:14px;"></div>
+    <button class="cart-checkout-btn" onclick="proceedToCheckout()">🎂 &nbsp;Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- CHECKOUT OVERLAY -->
+<div class="sheet-overlay" id="checkout-overlay" onclick="closeCheckout(event)">
+  <div class="sheet" id="checkout-sheet">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" onclick="closeCheckout()">✕</button>
+    <div class="sheet-body" id="checkout-body">
+      <!-- Populated by proceedToCheckout() -->
+    </div>
+  </div>
+</div>
+
+<!-- WAVE DIVIDER 2 -->
+<div style="background:var(--warm-white);line-height:0;overflow:hidden;margin-top:-2px;">
+  <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:48px;">
+    <path d="M0,20 C360,55 720,0 1080,35 C1260,52 1380,15 1440,20 L1440,60 L0,60 Z" fill="#FFF0F5"/>
+  </svg>
+</div>
+<!-- GALLERY -->
+<section class="section" id="gallery">
+  <div class="reveal">
+    <div class="section-label">✦ The Portfolio</div>
+    <h2 class="section-title">Every cake<br>tells a <em>story</em></h2>
+    <p class="section-desc">Browse our most loved creations — each one built on our signature Tres Leches base, dressed for your occasion.</p>
+  </div>
+  <div class="gallery-grid reveal" id="gallery-grid">
+    <div style="grid-column:1/-1;text-align:center;padding:48px 0;color:var(--text-mid);font-size:13px;">Loading gallery…</div>
+  </div>
+  <div class="gallery-load-more reveal">
+    <button class="btn-ghost" onclick="showToast('More photos coming soon! 📸')">Load More Projects</button>
+  </div>
+</section>
+
+<!-- ABOUT STRIP -->
+<div class="about-strip reveal">
+  <div class="section-label" style="color:#A8DCE8">✦ Why Choose Us</div>
+  <h2 class="section-title">Masters of<br><em>Tres Leches</em></h2>
+  <p class="section-desc">Vanessa has spent years perfecting the art of the Dominican Tres Leches — soaked in three milks, crafted by hand, and made to order for every occasion.</p>
+  <div class="about-stats">
+    <div class="stat reveal reveal-d1"><span class="stat-num">500+</span><span class="stat-label">Cakes Created</span></div>
+    <div class="stat reveal reveal-d2"><span class="stat-num">8</span><span class="stat-label">Years Experience</span></div>
+    <div class="stat reveal reveal-d3"><span class="stat-num">★5.0</span><span class="stat-label">Avg Rating</span></div>
+  </div>
+</div>
+
+<!-- CUSTOM ORDER FORM -->
+<section class="section" id="order">
+  <div class="reveal">
+    <div class="section-label">✦ Custom Order</div>
+    <h2 class="section-title">Design your<br><em>dream cake</em></h2>
+    <p class="section-desc">For fully custom designs — Vanessa will reach out to finalize every detail before confirming.</p>
+  </div>
+  <div class="form-card reveal">
+    <div class="form-section-title">👤 Your Information</div>
+    <div class="field-row">
+      <div class="field"><label>First Name</label><input type="text" id="fname" placeholder="María" autocomplete="given-name"/></div>
+      <div class="field"><label>Last Name</label><input type="text" id="lname" placeholder="Rodríguez" autocomplete="family-name"/></div>
+    </div>
+    <div class="field"><label>Email</label><input type="email" id="email" placeholder="maria@email.com" autocomplete="email" inputmode="email"/></div>
+    <div class="field"><label>Phone</label><input type="tel" id="phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel"/></div>
+
+    <div class="form-section-title">🎂 Cake Details</div>
+    <div class="field">
+      <label>Occasion</label>
+      <select id="occasion">
+        <option value="">Select occasion...</option>
+        <option>Birthday · Cumpleaños</option><option>Wedding · Boda</option>
+        <option>Quinceañera</option><option>Baby Shower</option>
+        <option>Anniversary · Aniversario</option><option>Baptism · Bautizo</option>
+        <option>Graduation · Graduación</option><option>Corporate Event</option><option>Other</option>
+      </select>
+    </div>
+    <!-- Starting Price Card -->
+    <div class="cust-pricing">
+      <div class="cust-pricing-eye">✦ Starting Price</div>
+      <div class="cust-pricing-ttl">La Cosinita <em style="font-style:italic;color:#F48FB1">Signature Cake</em></div>
+      <div class="cust-sz-wrap">
+        <input type="radio" name="cust-sz" id="csz-7" class="csz-radio" value="98" checked/>
+        <label for="csz-7" class="csz-label">
+          <span class="csz-inch">7&quot;</span>
+          <span class="csz-serves">Serves 10–12</span>
+          <span class="csz-price">$98</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-10" class="csz-radio" value="135"/>
+        <label for="csz-10" class="csz-label">
+          <span class="csz-inch">10&quot;</span>
+          <span class="csz-serves">Serves 25–30</span>
+          <span class="csz-price">$135</span>
+        </label>
+      </div>
+      <div class="cust-pricing-note">Base price shown. Final price confirmed after design consultation.</div>
+    </div>
+
+    <!-- PRODUCT — Custom Cake -->
+    <div class="custom-product-card">
+      <div class="custom-product-img-wrap">
+        <img src="https://jelikmeqjkbidgxndapo.supabase.co/storage/v1/object/public/gallery/cake3.jpg" alt="La Cosinita Signature Custom Cake" style="display:block;width:100%;height:100%;object-fit:cover;object-position:center 60%;"/>
+        <div class="custom-product-emoji" style="display:none">🎂</div>
+        <span class="custom-product-badge">Custom Order</span>
+      </div>
+      <div class="custom-product-info">
+        <div class="custom-product-name">La Cosinita <em>Signature Cake</em></div>
+        <div class="custom-product-desc">A fully custom Dominican cake designed just for you. Tell us your vision below — colors, theme, occasion, decorations — and Vanessa will bring it to life.</div>
+        <div class="custom-product-tags">
+          <span class="custom-tag">🎨 Fully Custom Design</span>
+          <span class="custom-tag">🎂 Any Size</span>
+          <span class="custom-tag">📍 Manhattan &amp; Bronx</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section-title">📅 Delivery Details</div>
+    <div class="datetime-row">
+      <div class="field"><label>Delivery Date</label><input type="date" id="delivery-date"/></div>
+      <div class="field">
+        <label>Delivery Time</label>
+        <select id="delivery-time">
+          <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+          <option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option>
+          <option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option>
+        </select>
+      </div>
+    </div>
+    <p class="datetime-info">ℹ️ Please book at least 7 days in advance. Delivery to Manhattan &amp; the Bronx only.</p>
+    <div class="field" style="margin-top:12px">
+      <label>Street Address</label>
+      <input type="text" id="address" placeholder="123 Main St" autocomplete="address-line1"/>
+    </div>
+    <div class="field">
+      <label>Apt / Suite / Floor <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input type="text" id="address-apt" placeholder="Apt 4B" autocomplete="address-line2"/>
+    </div>
+    <div class="field-row" style="margin-bottom:14px">
+      <div class="field" style="margin-bottom:0">
+        <label>City</label>
+        <input type="text" id="address-city" placeholder="Bronx" autocomplete="address-level2"/>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>State</label>
+        <input type="text" id="address-state" value="NY" readonly
+               style="background:var(--warm-white);color:var(--text-mid);cursor:default;"
+               autocomplete="address-level1"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>ZIP Code</label>
+      <input type="text" id="address-zip" placeholder="10451" autocomplete="postal-code" maxlength="10" inputmode="numeric"/>
+    </div>
+
+    <div class="form-section-title">✏️ Design Instructions</div>
+    <div class="field">
+      <label>Tell Vanessa Your Vision</label>
+      <textarea id="instructions" placeholder="Describe your dream cake! Colors, themes, decorations, text, inspiration — the more detail the better. ¡Escribe en inglés o español!"></textarea>
+    </div>
+    <div class="field">
+      <label>Allergies / Dietary Notes</label>
+      <input type="text" id="allergies" placeholder="e.g. nut-free, no dairy..."/>
+    </div>
+
+    <div class="price-notice" style="margin-top:22px;">
+      <div class="price-notice-title">⚠️ Pricing Notice</div>
+      <div class="price-notice-text">The base price for your selected size is shown above. Depending on <strong>materials, customization options, and your required timeframe</strong>, there may be an additional agreed-upon charge that Vanessa will communicate before confirming your order. Any additional amount is due at delivery.</div>
+    </div>
+    <div class="ack-wrap">
+      <label class="ack-label">
+        <input type="checkbox" id="custom-ack" onchange="toggleCustomAck()"/>
+        <span>I understand the listed price is the <strong>base price</strong> and additional charges for customization, materials, and timeframe may apply — to be agreed upon before my order is confirmed.</span>
+      </label>
+    </div>
+
+    <div class="form-section-title">💳 Secure Payment</div>
+    <div class="deposit-note"><strong>50% deposit required to confirm your order.</strong> The deposit is charged today via PayPal. The remaining balance will be agreed with Vanessa before your order is confirmed, and is due 48 hrs before delivery.</div>
+    <div class="deposit-amount-display">
+      <span>Deposit due today (50%)</span>
+      <strong id="deposit-amount-text">$49.00</strong>
+    </div>
+    <div id="paypal-button-container" class="paypal-wrapper" style="display:none;"></div>
+    <div class="paypal-ack-hint" id="paypal-ack-hint">☝️ Check the acknowledgement above to unlock payment</div>
+    <div class="secure-badge">🔒 Payments processed securely via PayPal — PCI DSS Compliant</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label" style="color:#A8DCE8">✦ Get In Touch</div>
+  <h2 class="section-title" style="color:var(--cream);text-align:center">Questions?<br><em>Let's talk.</em></h2>
+  <p class="section-desc">We love talking cake. Vanessa replies within 24 hours.</p>
+  <div class="contact-links">
+    <a href="tel:+16462800105" class="contact-link"><span class="contact-link-icon">📞</span>(646) 280-0105</a>
+    <a href="mailto:lacosinitadevanessa@gmail.com" class="contact-link"><span class="contact-link-icon">✉️</span>lacosinitadevanessa@gmail.com</a>
+    <a href="https://www.instagram.com/la_cosinita_de_vanessa" target="_blank" rel="noopener" class="contact-link"><span class="contact-link-icon">📸</span>@la_cosinita_de_vanessa</a>
+    <a href="https://wa.me/16462800105" target="_blank" rel="noopener" class="contact-link"><span class="contact-link-icon">💬</span>WhatsApp Vanessa</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">La <em>Cosinita</em> de Vanessa</div>
+  <div class="footer-tagline">Tres Leches Specialist · Manhattan &amp; The Bronx</div>
+  <div class="footer-legal">© 2026 La Cosinita de Vanessa. All rights reserved.<br>Payments processed securely via PayPal.</div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <div class="lightbox-display" id="lb-display"><img id="lb-img" src="" alt=""/></div>
+    <div class="lightbox-caption" id="lb-caption"></div>
+    <div class="lightbox-sub" id="lb-sub"></div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="success-modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h3 class="modal-title">¡Gracias!<br>Order <em>Received</em></h3>
+    <p class="modal-body">Vanessa has received your order! Expect a message within 24 hours to finalize your design. ¡Tu pastel será hermoso!</p>
+    <button class="btn-primary" style="width:100%;justify-content:center;font-size:15px" onclick="closeModal()">Perfect — Back to Home</button>
+  </div>
+</div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <div class="cart-header-title">Your <em>Cart</em></div>
+    <button class="cart-close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items-wrap" id="cart-items-list"></div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-subtotal-row">
+      <span class="cart-subtotal-label">Subtotal</span>
+      <span class="cart-subtotal-amount">$<em id="cart-subtotal-num">0</em></span>
+    </div>
+    <div class="cart-items-count" id="cart-items-count"></div>
+    <button class="cart-checkout-btn" onclick="proceedToCheckout()">🎂 &nbsp;Place Order</button>
+    <span class="cart-continue-btn" onclick="closeCart()">← Continue Shopping</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══ Supabase ══════════════════════════════════════════════ */
+const _sb = window.supabase.createClient(
+  'https://jelikmeqjkbidgxndapo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ'
+);
+emailjs.init('q62O3cYHsOLIk7497');
+
+function generateOrderRef() {
+  var d   = new Date();
+  var dt  = d.toISOString().slice(0, 10).replace(/-/g, '');
+  var rnd = Math.random().toString(36).substr(2, 4).toUpperCase();
+  return 'LCV-' + dt + '-' + rnd;
+}
+
+/* ── PRODUCT DATA ── */
+const PRODUCTS = {
+  signature: {
+    name: 'La Cosinita <em>Signature Cake</em>',
+    badge: 'Signature',
+    desc: 'Our handcrafted Dominican-style whole cake, beautifully frosted and decorated. Perfect for birthdays, anniversaries, and every celebration in between. Select your size and flavor below.',
+    img: null,
+    emoji: null,
+    type: 'whole',
+    /* Sizes mirror Evercake: 7" and 10" with serving guide */
+    sizes: [
+      {id:'sig-7', label:'7"', price:98,  priceGF:118, serves:'10–12'},
+      {id:'sig-10',label:'10"',price:135, priceGF:155, serves:'25–30'},
+    ],
+    flavors: [
+      'Vanilla','Chocolate','Strawberry','Oreo','Pistachio',
+      'Lemon Cake','Carrot Cake','Red Velvet','Pumpkin Spice','Piña'
+    ],
+    fillings: [
+      'Piña (Pineapple)','Dulce de Leche','Strawberry',
+      'Chinola (Passion Fruit)','Chocolate Ganache','Cream Cheese Filling'
+    ],
+    serveGuide: [
+      ['7" Regular','Serves 10–12'],
+      ['7" Extra Tall','Serves 16–18'],
+      ['7" Double Height','Serves 20–24'],
+      ['10" Regular','Serves 25–30'],
+      ['10" Extra Tall','Serves 30–36'],
+      ['10" Double Height','Serves 50–60'],
+    ]
+  },
+  leches: {
+    name: 'Tres Leches <em>Cake</em>',
+    badge: 'Tres Leches',
+    desc: 'New York\'s finest Tres Leches — light, incredibly moist, soaked in three milks and made fresh to order. Available in 6 sizes and a variety of fillings.',
+    img: null, emoji: null,
+    emojiStyle: '',
+    type: 'leches',
+    sizes: [
+      {id:'tl-5s', label:'5"',  price:35,  serves:'6'},
+      {id:'tl-6s', label:'6"',  price:90,  serves:'10'},
+      {id:'tl-8s', label:'8"',  price:120, serves:'20'},
+      {id:'tl-10s',label:'10"', price:160, serves:'30'},
+      {id:'tl-12s',label:'12"', price:200, serves:'40'},
+      {id:'tl-14s',label:'14"', price:250, serves:'50'},
+    ],
+    flavors: [
+      {label:'Classic Tres Leches', gf:false},
+      {label:'Tres Leches w/ Dulce de Leche (+$5)', gf:false},
+      {label:'Tres Leches w/ Strawberry Filling', gf:false},
+      {label:'Tres Leches w/ Guava Filling', gf:false},
+      {label:'Tres Leches w/ Pineapple Jam', gf:false},
+      {label:'Tres Leches w/ Coconut Cream', gf:false},
+    ],
+    priceNote: '& up — varies by design',
+    serveGuide: null
+  },
+  chocoflan: {
+    name: '<em>Chocoflan</em>',
+    badge: 'Chocoflan',
+    desc: 'A stunning two-in-one dessert: rich Dominican chocolate cake on the bottom, silky smooth flan on top. A guaranteed crowd-pleaser at any event.',
+    img: null, emoji: null,
+    emojiStyle: '',
+    type: 'chocoflan',
+    sizes: [
+      {id:'cf-dozs',label:'1 Dozen Mini', price:40, serves:'12'},
+      {id:'cf-6s', label:'6"',            price:40, serves:'10'},
+      {id:'cf-8s', label:'8"',            price:60, serves:'20'},
+      {id:'cf-10s',label:'10"',           price:80, serves:'30'},
+    ],
+    dulceUpgrade: true,
+    flavors: [
+      {label:'Classic Chocoflan', gf:false},
+      {label:'Chocoflan w/ Coconut Flan', gf:false},
+      {label:'Chocoflan w/ Vanilla Flan', gf:false},
+    ],
+    serveGuide: null
+  },
+  shooters: {
+    name: 'Shooters <em>Tres Leche</em>',
+    badge: 'Shooters',
+    desc: 'Our signature Tres Leches in individual cups — the perfect party favor or sweet table centerpiece. Sold by the dozen in your choice of flavor.',
+    img: null, emoji: '🥤',
+    emojiStyle: '',
+    type: 'shooters',
+    sizes: [
+      {id:'sh-doz',label:'1 Dozen',price:40,serves:'12 cups'},
+    ],
+    flavors: [
+      {label:'Classic Tres Leches', gf:false},
+      {label:'Dulce de Leche', gf:false},
+      {label:'Strawberry', gf:false},
+      {label:'Guava', gf:false},
+      {label:'Pistachio', gf:false},
+      {label:'Oreo', gf:false},
+      {label:'Chocolate', gf:false},
+      {label:'Carrot', gf:false},
+      {label:'Lemon Cake', gf:false},
+      {label:'Pineapple', gf:false},
+      {label:'Vanilla', gf:false},
+      {label:'Pumpkin Spice', gf:false},
+    ],
+    freshFruitsUpgrade: true,
+    serveGuide: null
+  },
+
+  flan: {
+    name: 'Flan <em>Dozen</em>',
+    badge: 'Flan',
+    desc: 'Silky, creamy Dominican-style mini flan treats — sold by the dozen. A rich, velvety dessert perfect for any occasion.',
+    img: null, emoji: '🍮',
+    emojiStyle: '',
+    type: 'flan',
+    sizes: [
+      {id:'fl-doz',label:'1 Dozen',price:35,serves:'12 mini flans'},
+    ],
+    flavors: [
+      {label:'Classic Flan', gf:false},
+      {label:'Coconut Flan', gf:false},
+      {label:'Vanilla Flan', gf:false},
+    ],
+    serveGuide: null
+  },
+
+  cheesecake: {
+    name: '<em>Cheesecake</em>',
+    badge: 'Cheesecake',
+    desc: 'Rich, creamy cheesecake sold by the dozen. Choose your flavor — price may vary based on design and filling.',
+    img: null, emoji: '🧁',
+    emojiStyle: '',
+    type: 'cheesecake',
+    sizes: [
+      {id:'cc-reg',  label:'Regular', price:40, serves:'1 Dozen'},
+      {id:'cc-oreo', label:'Oreo',    price:40, serves:'1 Dozen'},
+      {id:'cc-str',  label:'Strawberry', price:45, serves:'1 Dozen'},
+    ],
+    flavors: [],
+    priceNote: '& up',
+    serveGuide: null
+  },
+  testproduct: {
+    name: '🧪 <em>Test Product</em>',
+    badge: 'TEST',
+    desc: 'Internal test item — do not order. Used to verify payment flow.',
+    img: null, emoji: '🧪',
+    emojiStyle: '',
+    type: 'test',
+    sizes: [
+      {id:'test-1', label:'Test', price:2, serves:'N/A'},
+    ],
+    flavors: [],
+    priceNote: '',
+    serveGuide: null
+  }
+};
+
+let currentProduct = null;
+let currentSizeIdx = 0;
+let currentFlavorGF = false;
+
+/* ── Open product sheet ── */
+function openSheet(key) {
+  currentProduct = key;
+  currentSizeIdx = 0;
+  currentFlavorGF = false;
+  const p = PRODUCTS[key];
+  const body = document.getElementById('sheet-body');
+
+  /* Build image */
+  let imgHTML = '';
+  if (p.img) {
+    imgHTML = `<div class="sheet-img-wrap"><img src="${p.img}" alt="${p.name}"/></div>`;
+  } else {
+    imgHTML = `<div class="sheet-img-wrap"><div class="sheet-img-emoji" style="${p.emojiStyle||''}">${p.emoji}</div></div>`;
+  }
+
+  /* Build size chips */
+  const sizeChips = p.sizes.map((s,i) => `
+    <input type="radio" name="sheet-size" id="${s.id}" class="sz-radio" value="${i}" ${i===0?'checked':''} onchange="sheetSizeChange(${i})"/>
+    <label for="${s.id}" class="sz-label">
+      <span class="sz-inch">${s.label}</span>
+      <span class="sz-serves">${s.serves}</span>
+      <span class="sz-price">$${s.price}${p.priceNote?'+':''}</span>
+    </label>
+  `).join('');
+
+  /* Build serving guide */
+  let serveHTML = '';
+  if (p.serveGuide) {
+    const rows = p.serveGuide.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+    serveHTML = `
+      <div class="serve-toggle" onclick="toggleServeGuide(this)">
+        <span>📏 Serving Size Guide</span>
+        <span class="serve-toggle-arrow">▾</span>
+      </div>
+      <table class="serve-table"><tbody>${rows}</tbody></table>
+    `;
+  }
+
+  let flavorHTML = '';
+  if (!p.flavors || p.flavors.length === 0) {
+    flavorHTML = ''; // no flavor selector needed (e.g. cheesecake — size = flavor)
+  } else if (p.fillings) {
+    const flavorOpts = p.flavors.map(f=>`<option>${f}</option>`).join('');
+    const fillingOpts = p.fillings.map(f=>`<option>${f}</option>`).join('');
+    flavorHTML = `
+      <div class="flavor-wrap" style="margin-top:16px">
+        <span class="sel-label">Cake Flavor</span>
+        <select class="flavor-sel" id="sheet-flavor">${flavorOpts}</select>
+      </div>
+      <div class="flavor-wrap">
+        <span class="sel-label">Cake Filling</span>
+        <select class="flavor-sel" id="sheet-filling">${fillingOpts}</select>
+      </div>`;
+  } else {
+    const flavorOpts = p.flavors.map(f=>`<option data-gf="${f.gf}">${f.label}</option>`).join('');
+    const gfNote = p.flavors.some(f=>f.gf) ? `<div class="gf-note">✦ GF options add $20 to base price</div>` : '';
+    flavorHTML = `
+      <div class="flavor-wrap" style="margin-top:16px">
+        <span class="sel-label">Flavor</span>
+        <select class="flavor-sel" id="sheet-flavor" onchange="sheetFlavorChange(this)">${flavorOpts}</select>
+        ${gfNote}
+      </div>`;
+  }
+
+  body.innerHTML = `
+    ${imgHTML}
+    <span class="sheet-badge">${p.badge}</span>
+    <h2 class="sheet-name">${p.name}</h2>
+    <p class="sheet-desc">${p.desc}</p>
+
+    <div class="sheet-price" id="sheet-price-display">
+      $${p.sizes[0].price}${p.priceNote?'<small> & up</small>':''}
+    </div>
+
+    <span class="sel-label">Size</span>
+    <div class="size-chips">${sizeChips}</div>
+    ${serveHTML}
+    ${flavorHTML}
+    ${p.dulceUpgrade ? `
+    <div class="flavor-wrap" style="margin-top:12px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#4A0E2E;font-weight:600">
+        <input type="checkbox" id="sheet-dulce" style="accent-color:#E91E8C;width:18px;height:18px">
+        Add Dulce de Leche upgrade <span style="color:#E91E8C">+$5</span>
+      </label>
+    </div>` : ''}
+    ${p.freshFruitsUpgrade ? `
+    <div class="flavor-wrap" style="margin-top:12px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#4A0E2E;font-weight:600">
+        <input type="checkbox" id="sheet-fresh-fruits" style="accent-color:#E91E8C;width:18px;height:18px" onchange="updateSheetPrice()">
+        Add Fresh Fruits <span style="color:#E91E8C">+$5</span>
+      </label>
+    </div>` : ''}
+
+    <div class="zone-box">
+      <span class="zone-icon">🗺️</span>
+      <div class="zone-text">
+        <strong>Delivery Zone</strong>
+        Manhattan &amp; The Bronx only · 2-hour windows, 9 AM – 6 PM daily · Rush orders available — contact Vanessa first.
+      </div>
+    </div>
+
+    <button class="add-btn" onclick="addToOrder()">🛒 &nbsp;Add to Cart</button>
+    <a href="#order" class="custom-order-link" onclick="closeSheet()">Need a fully custom design? →</a>
+  `;
+
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSheet(e) {
+  if (!e || e.target.id==='sheet-overlay') {
+    document.getElementById('sheet-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function sheetSizeChange(idx) {
+  currentSizeIdx = idx;
+  updateSheetPrice();
+}
+
+function sheetFlavorChange(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  currentFlavorGF = opt.getAttribute('data-gf') === 'true';
+  updateSheetPrice();
+}
+
+function updateSheetPrice() {
+  const p = PRODUCTS[currentProduct];
+  const size = p.sizes[currentSizeIdx];
+  let price = size.price;
+  if (currentFlavorGF && size.priceGF) price = size.priceGF;
+  else if (currentFlavorGF) price += 20;
+  const el = document.getElementById('sheet-price-display');
+  if (el) el.innerHTML = `$${price}${p.priceNote?'<small> & up</small>':''}`;
+}
+
+function toggleServeGuide(el) {
+  el.classList.toggle('open');
+}
+
+/* ── CART ── */
+let cart = [];
+
+function getSheetPrice() {
+  const p = PRODUCTS[currentProduct];
+  const size = p.sizes[currentSizeIdx];
+  let price = size.price;
+  if (currentFlavorGF && size.priceGF) price = size.priceGF;
+  else if (currentFlavorGF) price += 20;
+  const dulceEl = document.getElementById('sheet-dulce');
+  if (dulceEl && dulceEl.checked) price += 5;
+  const freshEl = document.getElementById('sheet-fresh-fruits');
+  if (freshEl && freshEl.checked) price += 5;
+  return price;
+}
+
+function addToOrder() {
+  const p = PRODUCTS[currentProduct];
+  const size = p.sizes[currentSizeIdx];
+  const flavorEl = document.getElementById('sheet-flavor');
+  const flavor = flavorEl ? flavorEl.value : '';
+  const fillingEl = document.getElementById('sheet-filling');
+  const dulceEl = document.getElementById('sheet-dulce');
+  const freshEl = document.getElementById('sheet-fresh-fruits');
+  let detail = fillingEl ? (flavor ? `${flavor} · ${fillingEl.value}` : fillingEl.value) : flavor;
+  if (dulceEl && dulceEl.checked) detail += ' · Dulce de Leche (+$5)';
+  if (freshEl && freshEl.checked) detail += ' · Fresh Fruits (+$5)';
+  const price = getSheetPrice();
+  cart.push({
+    id: `${currentProduct}-${size.id}-${Date.now()}`,
+    key: currentProduct,
+    badge: p.badge,
+    size: size.label,
+    detail,
+    price,
+    qty: 1
+  });
+  renderCart();
+  closeSheet();
+  showToast(`✓ ${size.label} ${p.badge} added to cart!`);
+  setTimeout(() => openCart(), 520);
+}
+
+function renderCart() {
+  const list   = document.getElementById('cart-items-list');
+  const badge  = document.getElementById('cart-badge');
+  const footer = document.getElementById('cart-footer');
+  const subEl  = document.getElementById('cart-subtotal-num');
+  const cntEl  = document.getElementById('cart-items-count');
+
+  const totalQty   = cart.reduce((s, i) => s + i.qty, 0);
+  const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  /* Nav badge */
+  if (totalQty > 0) { badge.textContent = totalQty; badge.style.display = 'flex'; }
+  else { badge.style.display = 'none'; }
+
+  /* Footer */
+  footer.style.display = cart.length ? '' : 'none';
+  subEl.textContent = totalPrice;
+  cntEl.textContent = `${totalQty} item${totalQty !== 1 ? 's' : ''} in your order`;
+
+  /* Items list */
+  if (cart.length === 0) {
+    list.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <p>Your cart is empty.<br>Choose a cake to get started!</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = cart.map((item, idx) => `
+    <div class="cart-item">
+      <div class="cart-item-emoji">${CART_EMOJIS[item.key] || '🎂'}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.badge} · ${item.size}</div>
+        <div class="cart-item-detail" title="${item.detail}">${item.detail}</div>
+        <div class="cart-item-row">
+          <span class="cart-item-price">$${item.price * item.qty}</span>
+          <div class="cart-item-controls">
+            <button class="cart-qty-btn" onclick="changeQty(${idx},-1)">−</button>
+            <span class="cart-qty-num">${item.qty}</span>
+            <button class="cart-qty-btn" onclick="changeQty(${idx},1)">+</button>
+            <button class="cart-remove-btn" onclick="removeItem(${idx})" title="Remove">×</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function changeQty(idx, delta) {
+  cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+  renderCart();
+}
+
+function removeItem(idx) {
+  cart.splice(idx, 1);
+  renderCart();
+  if (cart.length === 0) showToast('Cart cleared ✦');
+}
+
+function openCart() { 
+  document.getElementById('cart-overlay').classList.add('open');
+  document.getElementById('cart-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() { 
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+var currentCheckoutFlow = 'cart';
+var _coPayPalRendered = false;
+
+function proceedToCheckout() {
+  if (!cart.length) return;
+  currentCheckoutFlow = 'cart';
+  _coPayPalRendered = false;
+  closeCart();
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 7);
+  const minStr = minDate.toISOString().split('T')[0];
+  const total  = cart.reduce((s,i) => s + i.price * i.qty, 0);
+
+  const summaryRows = cart.map(item =>
+    '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(233,30,140,0.09);font-size:13px;">' +
+    '<span><strong>' + item.qty + '×</strong> ' + item.badge + ' ' + item.size + '<br><span style="font-size:11px;color:var(--text-mid)">' + item.detail + '</span></span>' +
+    '<span style="font-weight:600;color:#E91E8C;white-space:nowrap;padding-left:10px">$' + (item.price * item.qty) + '</span></div>'
+  ).join('');
+
+  const body = document.getElementById('checkout-body');
+  body.innerHTML =
+    '<div style="margin-bottom:18px;">' +
+      '<div class="section-label" style="margin-bottom:4px">✦ Order Summary</div>' +
+      summaryRows +
+      '<div style="display:flex;justify-content:space-between;padding:12px 0 0;font-size:15px;font-weight:600;">' +
+        '<span>Base Total</span><span style="color:#E91E8C">$' + total + '</span>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="co-step-label">👤 Your Information</div>' +
+    '<div class="co-field-row">' +
+      '<div class="co-field"><label>First Name</label><input type="text" id="co-fname" placeholder="María" autocomplete="given-name"/></div>' +
+      '<div class="co-field"><label>Last Name</label><input type="text" id="co-lname" placeholder="Rodríguez" autocomplete="family-name"/></div>' +
+    '</div>' +
+    '<div class="co-field"><label>Email</label><input type="email" id="co-email" placeholder="maria@email.com" autocomplete="email" inputmode="email"/></div>' +
+    '<div class="co-field"><label>Phone</label><input type="tel" id="co-phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel"/></div>' +
+
+    '<div class="co-step-label">📅 Delivery Details</div>' +
+    '<div class="co-field-row">' +
+      '<div class="co-field"><label>Delivery Date</label><input type="date" id="co-date" min="' + minStr + '" value="' + minStr + '"/></div>' +
+      '<div class="co-field"><label>Delivery Time</label>' +
+        '<select id="co-time"><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select>' +
+      '</div>' +
+    '</div>' +
+    '<div class="co-field"><label>Delivery Address</label><input type="text" id="co-address" placeholder="123 Main St, Manhattan / Bronx, NY" autocomplete="street-address"/></div>' +
+
+    '<div class="co-step-label">🎨 Theme & Customization Notes</div>' +
+    '<div class="co-field"><label>Theme, Colors & Decorations</label><textarea id="co-notes" placeholder="Describe your vision — theme, color palette, decorations, text on cake, style... ¡Inglés o español!"></textarea></div>' +
+    '<div class="co-field"><label>Allergies / Dietary Notes <span style="font-size:9px;font-weight:400;letter-spacing:0;text-transform:none">(optional)</span></label><input type="text" id="co-allergies" placeholder="e.g. nut-free, gluten-free, no dairy..."/></div>' +
+
+    '<div class="price-notice">' +
+      '<div class="price-notice-title">⚠️ Pricing Notice</div>' +
+      '<div class="price-notice-text">The total shown (<strong>$' + total + '</strong>) reflects <strong>base prices only</strong>. Depending on materials, customization, and your required timeframe, there may be an <strong>additional agreed-upon charge</strong> communicated before confirmation and due at delivery.</div>' +
+    '</div>' +
+    '<div class="ack-wrap">' +
+      '<label class="ack-label">' +
+        '<input type="checkbox" id="co-ack" onchange="togglePlaceBtn()"/>' +
+        '<span>I understand that <strong>$' + total + '</strong> is the base total and additional charges for customization may apply — to be agreed upon before my order is confirmed.</span>' +
+      '</label>' +
+    '</div>' +
+    '<div class="deposit-amount-display" style="margin:14px 0 10px">' +'<span>Deposit due today (50%)</span><strong id="co-deposit-text">$' + (total * 0.5).toFixed(2) + '</strong></div>' +
+    '<div id="co-paypal-container" class="paypal-wrapper" style="display:none;"></div>' +
+    '<div class="paypal-ack-hint" id="co-paypal-hint">☝️ Check the acknowledgement above to unlock payment</div>' +
+    '<div class="secure-badge">🔒 Payments processed securely via PayPal — PCI DSS Compliant</div>' +
+    '<div class="co-footer-note">📍 Manhattan & The Bronx only · Vanessa will contact you within 24 hrs.</div>';
+
+  body.scrollTop = 0;
+  document.getElementById('checkout-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout(e) {
+  if (!e || e.target.id === 'checkout-overlay' || e.target.classList.contains('sheet-close')) {
+    document.getElementById('checkout-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+async function submitCartOrder(paypalDetails) {
+  const paypalOrderId = paypalDetails ? paypalDetails.id : null;
+  const required = ['co-fname','co-lname','co-email','co-phone','co-date','co-address'];
+  let ok = true;
+  required.forEach(function(id) {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) {
+      if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function(){ el.style.borderColor=''; }, {once:true}); }
+      ok = false;
+    }
+  });
+  if (!ok) { showToast('Please fill in all required fields ✦'); return; }
+
+  /* Loading state */
+  const btn = document.querySelector('#checkout-overlay .place-order-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  /* Collect form values */
+  const fname    = document.getElementById('co-fname').value.trim();
+  const lname    = document.getElementById('co-lname').value.trim();
+  const email    = document.getElementById('co-email').value.trim();
+  const phone    = document.getElementById('co-phone').value.trim();
+  const date     = document.getElementById('co-date').value;
+  const timeEl   = document.getElementById('co-time');
+  const time     = timeEl ? timeEl.value : '';
+  const address  = document.getElementById('co-address').value.trim();
+  const notesEl  = document.getElementById('co-notes');
+  const notes    = notesEl ? notesEl.value.trim() : '';
+  const algEl    = document.getElementById('co-allergies');
+  const allergies = algEl ? algEl.value.trim() : '';
+
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const items    = JSON.stringify(cart.map(i => ({
+    key: i.key, name: i.badge, size: i.size, detail: i.detail,
+    price: i.price, qty: i.qty
+  })));
+
+  try {
+    const cartOrderRef = generateOrderRef();
+    const { data: customer, error: custErr } = await _sb
+      .from('customers')
+      .upsert({ first_name: fname, last_name: lname, email, phone, source: 'web_order' }, { onConflict: 'email', ignoreDuplicates: false })
+      .select()
+      .single();
+    if (custErr) throw custErr;
+
+    const { error: orderErr } = await _sb
+      .from('orders')
+      .insert({
+        customer_id:      customer.id,
+        order_reference:  cartOrderRef,
+        order_type:       'cart',
+        order_items:      items,
+        order_subtotal:   subtotal,
+        order_total:      subtotal,
+        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        paypal_order_id:  paypalOrderId,
+        delivery_date:    date,
+        delivery_time:    time,
+        delivery_address: address,
+        theme_notes:      notes,
+        allergies:        allergies,
+        source:           'web_order'
+      });
+    if (orderErr) throw orderErr;
+
+    const cartItemsSummary = cart.map(i => i.qty + '× ' + i.size + ' ' + i.badge + ' — $' + (i.price * i.qty)).join('\n');
+    sendOrderEmails({ name: fname + ' ' + lname, email, phone,
+      orderRef: cartOrderRef, items: cartItemsSummary,
+      date, time, address, notes });
+
+    document.getElementById('checkout-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    cart = [];
+    renderCart();
+    document.getElementById('success-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } catch (err) {
+    console.error('Order error:', err);
+    showToast('Something went wrong — please try again or call us directly.');
+    if (btn) { btn.disabled = false; btn.textContent = '🎂 Place Order'; }
+  }
+}
+
+
+/* ══ Flow 1: Product Checkout Step 2 ══ */
+function showCheckoutStep() {
+  currentCheckoutFlow = 'product';
+  _coPayPalRendered = false;
+  var p    = PRODUCTS[currentProduct];
+  var size = p.sizes[currentSizeIdx];
+  var flavorEl  = document.getElementById('sheet-flavor');
+  var fillingEl = document.getElementById('sheet-filling');
+  var dulceEl   = document.getElementById('sheet-dulce');
+  var detail = flavorEl ? flavorEl.value : '';
+  if (fillingEl) detail += ' · ' + fillingEl.value;
+  if (dulceEl && dulceEl.checked) detail += ' · Dulce de Leche (+$5)';
+  var price = getSheetPrice();
+  var pKey  = currentProduct;
+
+  var minDate = new Date();
+  minDate.setDate(minDate.getDate() + 7);
+  var minStr = minDate.toISOString().split('T')[0];
+
+  var html = '';
+  html += '<button class="checkout-back-btn" onclick="openSheet(\'' + pKey + '\')">&#8592; Back to product</button>';
+  html += '<div class="checkout-summary">';
+  html +=   '<div class="checkout-summary-left">';
+  html +=     '<div class="checkout-summary-name">' + p.badge + ' &middot; ' + size.label + '</div>';
+  html +=     '<div class="checkout-summary-detail">' + detail + '</div>';
+  html +=   '</div>';
+  html +=   '<div class="checkout-summary-price">$' + price + '</div>';
+  html += '</div>';
+
+  html += '<div class="co-step-label">&#128100; Your Information</div>';
+  html += '<div class="co-field-row">';
+  html +=   '<div class="co-field"><label>First Name</label><input type="text" id="co-fname" placeholder="María" autocomplete="given-name"/></div>';
+  html +=   '<div class="co-field"><label>Last Name</label><input type="text" id="co-lname" placeholder="Rodríguez" autocomplete="family-name"/></div>';
+  html += '</div>';
+  html += '<div class="co-field"><label>Email</label><input type="email" id="co-email" placeholder="maria@email.com" autocomplete="email" inputmode="email"/></div>';
+  html += '<div class="co-field"><label>Phone</label><input type="tel" id="co-phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel"/></div>';
+
+  html += '<div class="co-step-label">&#128197; Delivery Details</div>';
+  html += '<div class="co-field-row">';
+  html +=   '<div class="co-field"><label>Delivery Date</label><input type="date" id="co-date" min="' + minStr + '" value="' + minStr + '"/></div>';
+  html +=   '<div class="co-field"><label>Delivery Time</label>';
+  html +=   '<select id="co-time"><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></div>';
+  html += '</div>';
+  html += '<div class="co-field"><label>Delivery Address</label><input type="text" id="co-address" placeholder="123 Main St, Manhattan / Bronx, NY" autocomplete="street-address"/></div>';
+
+  html += '<div class="co-step-label">&#127912; Theme &amp; Customization Notes</div>';
+  html += '<div class="co-field"><label>Theme, Colors &amp; Decorations</label><textarea id="co-notes" placeholder="Describe your vision — theme, color palette, decorations, text on cake, style... ¡Inglés o español!"></textarea></div>';
+  html += '<div class="co-field"><label>Allergies / Dietary Notes <span style="font-size:9px;font-weight:400;letter-spacing:0;text-transform:none">(optional)</span></label><input type="text" id="co-allergies" placeholder="e.g. nut-free, gluten-free, no dairy..."/></div>';
+
+  html += '<div class="price-notice">';
+  html +=   '<div class="price-notice-title">&#9888;&#65039; Pricing Notice</div>';
+  html +=   '<div class="price-notice-text">The price shown (<strong>$' + price + '</strong>) is the <strong>base price</strong>. Depending on materials, customization options, and your required timeframe, there may be an <strong>additional agreed-upon charge</strong> communicated before confirmation and due at delivery.</div>';
+  html += '</div>';
+  html += '<div class="ack-wrap">';
+  html +=   '<label class="ack-label">';
+  html +=     '<input type="checkbox" id="co-ack" onchange="togglePlaceBtn()"/>';
+  html +=     '<span>I understand that <strong>$' + price + '</strong> is the base price and additional charges for customization may apply — to be agreed upon before my order is confirmed.</span>';
+  html +=   '</label>';
+  html += '</div>';
+  html += '<div class="deposit-amount-display" style="margin:14px 0 10px">' +
+           '<span>Deposit due today (50%)</span><strong id="co-deposit-text">$' + (price * 0.5).toFixed(2) + '</strong></div>';
+  html += '<div id="co-paypal-container" class="paypal-wrapper" style="display:none;"></div>';
+  html += '<div class="paypal-ack-hint" id="co-paypal-hint">&#9757;&#65039; Check the acknowledgement above to unlock payment</div>';
+  html += '<div class="secure-badge">&#128274; Payments processed securely via PayPal &mdash; PCI DSS Compliant</div>';
+  html += '<div class="co-footer-note">&#128205; Delivery to Manhattan &amp; The Bronx only<br>Vanessa will contact you within 24 hours to confirm.</div>';
+
+  var body = document.getElementById('sheet-body');
+  body.innerHTML = html;
+  body.scrollTop = 0;
+}
+
+function togglePlaceBtn() {
+  var ack       = document.getElementById('co-ack');
+  var container = document.getElementById('co-paypal-container');
+  var hint      = document.getElementById('co-paypal-hint');
+  if (!ack) return;
+  if (ack.checked) {
+    if (container) container.style.display = 'block';
+    if (hint)      hint.style.display      = 'none';
+    renderCheckoutPayPal();
+  } else {
+    if (container) container.style.display = 'none';
+    if (hint)      hint.style.display      = 'block';
+  }
+}
+
+function renderCheckoutPayPal() {
+  if (_coPayPalRendered) return;
+  if (!window.paypal) { console.warn('PayPal SDK not loaded'); return; }
+  _coPayPalRendered = true;
+
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+
+    createOrder: function(data, actions) {
+      var required = ['co-fname','co-lname','co-email','co-phone','co-date','co-address'];
+      var ok = true;
+      required.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+          if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function(){ el.style.borderColor=''; }, {once:true}); }
+          ok = false;
+        }
+      });
+      if (!ok) { showToast('Please fill in all required fields ✦'); return Promise.reject(new Error('validation')); }
+
+      var total = currentCheckoutFlow === 'cart'
+        ? cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0)
+        : getSheetPrice();
+      var deposit = (total * 0.5).toFixed(2);
+
+      return actions.order.create({
+        purchase_units: [{ description: 'La Cosinita de Vanessa — Deposit (50%)', amount: { currency_code: 'USD', value: deposit } }]
+      });
+    },
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        if (currentCheckoutFlow === 'cart') { submitCartOrder(details); }
+        else { submitProductOrder(details); }
+      });
+    },
+
+    onError: function(err) {
+      console.error('PayPal error:', err);
+      showToast('Payment error — please try again or contact us directly.');
+    },
+
+    onCancel: function() {
+      showToast("Payment cancelled — complete payment when you're ready.");
+    }
+  }).render('#co-paypal-container');
+}
+
+async function submitProductOrder(paypalDetails) {
+  var paypalOrderId = paypalDetails ? paypalDetails.id : null;
+  var required = ['co-fname','co-lname','co-email','co-phone','co-date','co-address'];
+  var ok = true;
+  required.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el || !el.value.trim()) {
+      if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function(){ el.style.borderColor = ''; }, {once:true}); }
+      ok = false;
+    }
+  });
+  if (!ok) { showToast('Please fill in all required fields ✶'); return; }
+
+  /* Loading state handled by PayPal SDK */
+
+  /* Product info from current sheet state */
+  var p      = PRODUCTS[currentProduct];
+  var size   = p.sizes[currentSizeIdx];
+  var flavorEl  = document.getElementById('sheet-flavor');
+  var fillingEl = document.getElementById('sheet-filling');
+  var dulceEl   = document.getElementById('sheet-dulce');
+  var detail = flavorEl ? flavorEl.value : '';
+  if (fillingEl && fillingEl.value) detail += ' · ' + fillingEl.value;
+  if (dulceEl && dulceEl.checked) detail += ' · Dulce de Leche (+$5)';
+  var price = getSheetPrice();
+
+  /* Collect form values */
+  var fname    = document.getElementById('co-fname').value.trim();
+  var lname    = document.getElementById('co-lname').value.trim();
+  var email    = document.getElementById('co-email').value.trim();
+  var phone    = document.getElementById('co-phone').value.trim();
+  var date     = document.getElementById('co-date').value;
+  var timeEl   = document.getElementById('co-time');
+  var time     = timeEl ? timeEl.value : '';
+  var address  = document.getElementById('co-address').value.trim();
+  var notesEl  = document.getElementById('co-notes');
+  var notes    = notesEl ? notesEl.value.trim() : '';
+  var algEl    = document.getElementById('co-allergies');
+  var allergies = algEl ? algEl.value.trim() : '';
+
+  var items = JSON.stringify([{
+    key: currentProduct, name: p.badge, size: size.label,
+    detail: detail, price: price, qty: 1
+  }]);
+
+  try {
+    var prodOrderRef = generateOrderRef();
+    var custRes = await _sb
+      .from('customers')
+      .upsert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' }, { onConflict: 'email', ignoreDuplicates: false })
+      .select()
+      .single();
+    if (custRes.error) throw custRes.error;
+
+    var orderRes = await _sb
+      .from('orders')
+      .insert({
+        customer_id:      custRes.data.id,
+        order_reference:  prodOrderRef,
+        order_type:       'product',
+        order_items:      items,
+        order_subtotal:   price,
+        order_total:      price,
+        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        paypal_order_id:  paypalOrderId,
+        delivery_date:    date,
+        delivery_time:    time,
+        delivery_address: address,
+        theme_notes:      notes,
+        allergies:        allergies,
+        source:           'web_order'
+      });
+    if (orderRes.error) throw orderRes.error;
+
+    var prodItemSummary = size.label + ' ' + p.badge + (detail ? ' — ' + detail : '') + ' — $' + price;
+    sendOrderEmails({ name: fname + ' ' + lname, email: email, phone: phone,
+      orderRef: prodOrderRef, items: prodItemSummary,
+      date: date, time: time, address: address, notes: notes });
+
+    document.getElementById('sheet-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('success-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } catch (err) {
+    console.error('Order error:', err);
+    showToast('Something went wrong — please try again or call us directly.');
+    if (btn) { btn.disabled = false; btn.textContent = '🎂 Submit Order Request'; }
+  }
+}
+
+function toggleCustomAck() {
+  var ack       = document.getElementById('custom-ack');
+  var container = document.getElementById('paypal-button-container');
+  var hint      = document.getElementById('paypal-ack-hint');
+  if (!ack) return;
+  if (ack.checked) {
+    if (container) container.style.display = 'block';
+    if (hint)      hint.style.display      = 'none';
+  } else {
+    if (container) container.style.display = 'none';
+    if (hint)      hint.style.display      = 'block';
+  }
+}
+
+const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooters:'🥤', flan:'🍮', cheesecake:'🧁', testproduct:'🧪' };
+
+
+/* ── Load product images from Supabase products table ── */
+async function loadProductImages() {
+  try {
+    const SUPA_URL = 'https://jelikmeqjkbidgxndapo.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ';
+    const resp = await fetch(
+      SUPA_URL + '/rest/v1/products?select=key,image_url&is_available=eq.true',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!resp.ok) return;
+    const rows = await resp.json();
+    if (!Array.isArray(rows)) return;
+
+    rows.forEach(function(row) {
+      if (!row.key || !row.image_url) return;
+
+      // Update PRODUCTS object so detail sheet shows the image
+      if (PRODUCTS[row.key]) {
+        PRODUCTS[row.key].img = row.image_url;
+      }
+
+      // Update product grid card: show img, hide emoji
+      var card = document.querySelector('[data-key="' + row.key + '"]');
+      if (!card) return;
+      var img   = card.querySelector('.product-card-img img');
+      var emoji = card.querySelector('.product-card-emoji');
+      if (img) {
+        img.src              = row.image_url;
+        img.style.display    = '';
+        img.style.objectFit  = 'cover';
+      }
+      if (emoji) emoji.style.display = 'none';
+    });
+  } catch(err) {
+    console.warn('loadProductImages failed:', err);
+  }
+}
+
+/* Initialize */
+renderCart();
+loadGallery();
+loadProductImages();
+
+
+/* ── Email confirmations (EmailJS) ── */
+function sendOrderEmails(params) {
+  var ep = {
+    customer_name:    params.name,
+    customer_email:   params.email,
+    to_email:         params.email,
+    customer_phone:   params.phone,
+    order_ref:        params.orderRef,
+    order_items:      params.items,
+    delivery_date:    params.date,
+    delivery_time:    params.time || 'TBD',
+    delivery_address: params.address,
+    notes:            params.notes || '—'
+  };
+  emailjs.send('service_wa7tjhr', 'template_cntjooa', ep)
+    .catch(function(e){ console.warn('Customer email failed:', e); });
+  emailjs.send('service_wa7tjhr', 'template_vwweyef',
+    Object.assign({}, ep, { to_email: 'lacosinitadevanessa@gmail.com' }))
+    .catch(function(e){ console.warn('Owner email failed:', e); });
+}
+
+/* ── Category filter ── */
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+  });
+}
+
+/* ── Gallery — loads from Supabase ── */
+let _galleryItems = [];
+
+async function loadGallery() {
+  const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
+  try {
+    const SUPA_URL  = 'https://jelikmeqjkbidgxndapo.supabase.co';
+    const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ';
+    const resp = await fetch(
+      SUPA_URL + '/rest/v1/gallery?select=id,title,tag,photo_url&order=sort_order.asc,created_at.desc',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!resp.ok) throw new Error('Gallery fetch failed: ' + resp.status);
+    const data = await resp.json();
+
+    _galleryItems = Array.isArray(data) ? data : [];
+
+    if (_galleryItems.length === 0) {
+      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:48px 0;color:var(--text-mid);font-size:13px;">Photos coming soon — check back! 📸</p>';
+      return;
+    }
+
+    grid.innerHTML = _galleryItems.map((item, i) => `
+      <div class="gallery-card" onclick="openLightbox(${i})">
+        <img src="${item.photo_url}" alt="${escapeHtml(item.title)}"
+             style="width:100%;height:100%;object-fit:contain;display:block;"/>
+        <div class="gallery-card-overlay">
+          <div class="gallery-card-name">${escapeHtml(item.title)}</div>
+          ${item.tag ? `<div class="gallery-card-tag">${escapeHtml(item.tag)}</div>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (err) {
+    console.error('Gallery load error:', err);
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:48px 0;color:var(--text-mid);font-size:13px;">Unable to load gallery right now.</p>';
+  }
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openLightbox(i) {
+  const c = _galleryItems[i];
+  if (!c) return;
+  document.getElementById('lb-img').src = c.photo_url;
+  document.getElementById('lb-img').alt = c.title;
+  document.getElementById('lb-caption').textContent = c.title;
+  document.getElementById('lb-sub').textContent = c.tag || '';
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (!e || e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+/* ── Date min (7-day lead time) ── */
+(function () {
+  const d = new Date(); d.setDate(d.getDate() + 7);
+  const el = document.getElementById('delivery-date');
+  if (el) { el.min = el.value = d.toISOString().split('T')[0]; }
+})();
+
+/* ── Deposit amount helper ── */
+function getDepositAmount() {
+  var checked = document.querySelector('input[name="cust-sz"]:checked');
+  var price   = checked ? parseFloat(checked.value) : 98;
+  return (price * 0.5).toFixed(2);
+}
+function updateDepositDisplay() {
+  var el = document.getElementById('deposit-amount-text');
+  if (el) el.textContent = '$' + getDepositAmount();
+}
+document.querySelectorAll('input[name="cust-sz"]').forEach(function(inp) {
+  inp.addEventListener('change', updateDepositDisplay);
+});
+
+/* ── PayPal button init ── */
+(function initPayPal() {
+  if (!window.paypal) { console.warn('PayPal SDK not loaded'); return; }
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+
+    createOrder: function(data, actions) {
+      var required = ['fname','lname','email','phone','delivery-date','address','address-city','address-zip'];
+      var ok = true;
+      required.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+          if (el) { el.style.borderColor = '#E91E8C'; el.addEventListener('input', function(){ el.style.borderColor=''; }, {once:true}); }
+          ok = false;
+        }
+      });
+      if (!ok) { showToast('Please fill in all required fields ✦'); return Promise.reject(new Error('validation')); }
+      return actions.order.create({
+        purchase_units: [{ description: 'La Cosinita de Vanessa — Custom Cake Deposit (50%)', amount: { currency_code: 'USD', value: getDepositAmount() } }]
+      });
+    },
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        handleSubmit(details);
+      });
+    },
+
+    onError: function(err) {
+      console.error('PayPal error:', err);
+      showToast('Payment error — please try again or call us directly.');
+    },
+
+    onCancel: function() {
+      showToast("Payment cancelled — complete payment when you're ready.");
+    }
+  }).render('#paypal-button-container');
+})();
+
+/* ── Custom order form submit (called by PayPal onApprove) ── */
+async function handleSubmit(paypalDetails) {
+  const paypalOrderId = paypalDetails ? paypalDetails.id : null;
+
+  const fname     = document.getElementById('fname').value.trim();
+  const lname     = document.getElementById('lname').value.trim();
+  const email     = document.getElementById('email').value.trim();
+  const phone     = document.getElementById('phone').value.trim();
+  const date      = document.getElementById('delivery-date').value;
+  const timeEl    = document.getElementById('delivery-time');
+  const time      = timeEl ? timeEl.value : '';
+  const address   = document.getElementById('address').value.trim();
+  const addrApt   = (document.getElementById('address-apt')  || {value:''}).value.trim();
+  const addrCity  = document.getElementById('address-city').value.trim();
+  const addrState = document.getElementById('address-state').value.trim();
+  const addrZip   = document.getElementById('address-zip').value.trim();
+  const fullAddress = [address, addrApt, addrCity, addrState, addrZip].filter(Boolean).join(', ');
+  const notesEl   = document.getElementById('custom-notes') || document.getElementById('instructions');
+  const notes     = notesEl ? notesEl.value.trim() : '';
+  const allergies = (document.getElementById('allergies') || {value: ''}).value.trim();
+  const occasion  = (document.getElementById('occasion')  || {value: ''}).value.trim();
+  const sizeEl    = document.querySelector('input[name="cust-sz"]:checked');
+  const size      = sizeEl ? sizeEl.value : '';
+  const deposit   = getDepositAmount();
+
+  try {
+    const customOrderRef = generateOrderRef();
+    const { data: cust, error: custErr } = await _sb
+      .from('customers')
+      .upsert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' }, { onConflict: 'email', ignoreDuplicates: false })
+      .select('id')
+      .single();
+    if (custErr) throw custErr;
+
+    const { error: orderErr } = await _sb
+      .from('orders')
+      .insert({
+        customer_id:      cust.id,
+        order_reference:  customOrderRef,
+        order_type:       'custom',
+        order_items:      JSON.stringify([{ type: 'custom', occasion: occasion, size: size, notes: notes }]),
+        order_subtotal:   parseFloat(size) || null,
+        order_total:      parseFloat(size) || null,
+        delivery_date:    date,
+        delivery_time:    time,
+        delivery_address: fullAddress,
+        theme_notes:      notes,
+        allergies:        allergies,
+        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        paypal_order_id:  paypalOrderId,
+        source:           'web_order'
+      });
+    if (orderErr) throw orderErr;
+
+    sendOrderEmails({ name: fname + ' ' + lname, email: email, phone: phone,
+      orderRef: customOrderRef,
+      items: 'Custom Cake — ' + (size ? size + ' inch base ($' + size + ')' : 'size TBD') + '\nDeposit paid: $' + deposit + ' (PayPal ' + (paypalOrderId || 'N/A') + ')',
+      date: date, time: time, address: fullAddress, notes: notes });
+
+    document.getElementById('success-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } catch (err) {
+    console.error('Order error:', err);
+    showToast('Something went wrong — please try again or call us directly.');
+  }
+}
+
+function closeModal(e) {
+  if (!e || e.target.id === 'success-modal' || e.target.tagName === 'BUTTON') {
+    document.getElementById('success-modal').classList.remove('open');
+    document.body.style.overflow = '';
+    if (!e || e.target.tagName === 'BUTTON') window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+/* ── Toast ── */
+let _tt;
+function showToast(msg) {
+  clearTimeout(_tt);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  _tt = setTimeout(() => t.classList.remove('show'), 3400);
+}
+
+/* ── Scroll reveal ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, {threshold: 0.1});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ── SES fix: expose all inline-handler functions to window ── */
+window.openSheet          = openSheet;
+window.closeSheet         = closeSheet;
+window.sheetSizeChange    = sheetSizeChange;
+window.sheetFlavorChange  = sheetFlavorChange;
+window.updateSheetPrice   = updateSheetPrice;
+window.toggleServeGuide   = toggleServeGuide;
+window.addToOrder         = addToOrder;
+window.renderCart         = renderCart;
+window.changeQty          = changeQty;
+window.removeItem         = removeItem;
+window.openCart           = openCart;
+window.closeCart          = closeCart;
+window.proceedToCheckout  = proceedToCheckout;
+window.closeCheckout      = closeCheckout;
+window.submitCartOrder    = submitCartOrder;
+window.showCheckoutStep   = showCheckoutStep;
+window.togglePlaceBtn     = togglePlaceBtn;
+window.submitProductOrder = submitProductOrder;
+window.toggleCustomAck    = toggleCustomAck;
+window.filterCat          = filterCat;
+window.loadGallery        = loadGallery;
+window.openLightbox       = openLightbox;
+window.closeLightbox      = closeLightbox;
+window.handleSubmit       = handleSubmit;
+window.closeModal         = closeModal;
+window.showToast          = showToast;
+</script>
+</body>
+</html>
