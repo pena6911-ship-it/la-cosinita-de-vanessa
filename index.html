@@ -584,106 +584,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
   </div>
 
   <div class="product-grid reveal" id="product-grid">
-
-    <!-- Tres Leches — FEATURED -->
-    <div class="product-card featured-card" data-cat="leches" data-key="leches" onclick="openSheet('leches')">
-      <div class="product-card-img">
-        <img src="" style="display:none" alt="Tres Leches Cake"/>
-        <div class="product-card-emoji" style="font-size:clamp(44px,12vw,64px)">🍰</div>
-        <span class="product-card-badge" style="background:linear-gradient(135deg,#E91E8C,#B5206E)">★ Our Specialty</span>
-      </div>
-      <div class="product-card-body">
-        <div class="product-card-name">Tres Leches Cake</div>
-        <div class="product-card-desc">Three-milk soaked, made fresh — our house specialty in 6 sizes &amp; endless flavors.</div>
-        <div class="product-card-from">From $35</div>
-        <div class="product-card-serves">Serves 6–50 · 5" to 14"</div>
-      </div>
-    </div>
-
-    <!-- Signature Whole Cake -->
-    <div class="product-card" data-cat="whole" data-key="signature" onclick="openSheet('signature')">
-      <div class="product-card-img">
-        <img src="" style="display:none" alt="La Cosinita Signature Cake"/>
-        <span class="product-card-badge">Signature</span>
-      </div>
-      <div class="product-card-body">
-        <div class="product-card-name">La Cosinita Signature Cake</div>
-        <div class="product-card-desc">Our handcrafted Dominican-style whole cake. Choose your size &amp; flavor.</div>
-        <div class="product-card-from">From $98</div>
-        <div class="product-card-serves">Serves 10–60 · 7" or 10"</div>
-      </div>
-    </div>
-
-
-
-    <!-- Chocoflan -->
-    <div class="product-card" data-cat="chocoflan" data-key="chocoflan" onclick="openSheet('chocoflan')">
-      <div class="product-card-img">
-        <img src="" style="display:none" alt="Chocoflan" style="width:100%;height:100%;object-fit:cover;"/>
-      </div>
-      <div class="product-card-body">
-        <div class="product-card-name">Chocoflan</div>
-        <div class="product-card-desc">Rich chocolate cake with silky flan — a showstopping Dominican classic.</div>
-        <div class="product-card-from">From $20</div>
-        <div class="product-card-serves">Serves 6–30 · 5" to 10"</div>
-      </div>
-    </div>
-
-    <!-- Shooters -->
-    <div class="product-card" data-cat="shooters" data-key="shooters" onclick="openSheet('shooters')">
-      <div class="product-card-img">
-        <img src="" style="display:none" alt="Shooters Tres Leche" style="width:100%;height:100%;object-fit:cover;object-position:center top;"/>
-      </div>
-      <div class="product-card-body">
-        <div class="product-card-name">Shooters Tres Leche</div>
-        <div class="product-card-desc">Our Tres Leches in a cup — perfect for parties, events &amp; sweet tables.</div>
-        <div class="product-card-from">$40 / dozen</div>
-        <div class="product-card-serves">1 Dozen · 12 cups</div>
-      </div>
-    </div>
-
-    <!-- Flan Dozen -->
-    <div class="product-card" data-cat="flan" data-key="flan" onclick="openSheet('flan')">
-      <div class="product-card-img">
-        <img src="" style="display:none" alt="Flan Dozen Mini Treats"/>
-        <div class="product-card-emoji">🍮</div>
-        <span class="product-card-badge">Flan</span>
-      </div>
-      <div class="product-card-body">
-        <div class="product-card-name">Flan Dozen Mini Treats</div>
-        <div class="product-card-desc">Silky Dominican mini flans — Classic, Coconut, or Vanilla.</div>
-        <div class="product-card-from">$35 / dozen</div>
-        <div class="product-card-serves">12 mini flans per order</div>
-      </div>
-    </div>
-
-    <!-- Cheesecake -->
-    <div class="product-card" data-cat="cheesecake" data-key="cheesecake" onclick="openSheet('cheesecake')">
-      <div class="product-card-img">
-        <img src="" style="display:none" alt="Cheesecake"/>
-        <div class="product-card-emoji">🧁</div>
-        <span class="product-card-badge">Cheesecake</span>
-      </div>
-      <div class="product-card-body">
-        <div class="product-card-name">Cheesecake</div>
-        <div class="product-card-desc">Rich, creamy cheesecake by the dozen — Regular, Oreo, or Strawberry.</div>
-        <div class="product-card-from">From $40 / dozen</div>
-        <div class="product-card-serves">Price varies by flavor &amp; design</div>
-      </div>
-    </div>
-
-    <div class="product-card" data-cat="test" onclick="openSheet('testproduct')" style="opacity:0.6;border:2px dashed #E91E8C;">
-      <div class="product-card-img">
-        <div class="product-card-emoji">🧪</div>
-        <span class="product-card-badge" style="background:#888;">TEST</span>
-      </div>
-      <div class="product-card-body">
-        <div class="product-card-name">Test Product</div>
-        <div class="product-card-desc">Internal test only — do not order.</div>
-        <div class="product-card-from">$2.00</div>
-      </div>
-    </div>
-
+    <!-- Populated dynamically by loadProducts() from Supabase -->
   </div>
 </section>
 
@@ -980,194 +881,39 @@ function generateOrderRef() {
 }
 
 /* ── PRODUCT DATA ── */
-const PRODUCTS = {
-  signature: {
-    name: 'La Cosinita <em>Signature Cake</em>',
-    badge: 'Signature',
-    desc: 'Our handcrafted Dominican-style whole cake, beautifully frosted and decorated. Perfect for birthdays, anniversaries, and every celebration in between. Select your size and flavor below.',
-    img: null,
-    emoji: null,
-    type: 'whole',
-    /* Sizes mirror Evercake: 7" and 10" with serving guide */
-    sizes: [
-      {id:'sig-7', label:'7"', price:98,  priceGF:118, serves:'10–12'},
-      {id:'sig-10',label:'10"',price:135, priceGF:155, serves:'25–30'},
-    ],
-    flavors: [
-      'Vanilla','Chocolate','Strawberry','Oreo','Pistachio',
-      'Lemon Cake','Carrot Cake','Red Velvet','Pumpkin Spice','Piña'
-    ],
-    fillings: [
-      'Piña (Pineapple)','Dulce de Leche','Strawberry',
-      'Chinola (Passion Fruit)','Chocolate Ganache','Cream Cheese Filling'
-    ],
-    serveGuide: [
-      ['7" Regular','Serves 10–12'],
-      ['7" Extra Tall','Serves 16–18'],
-      ['7" Double Height','Serves 20–24'],
-      ['10" Regular','Serves 25–30'],
-      ['10" Extra Tall','Serves 30–36'],
-      ['10" Double Height','Serves 50–60'],
-    ]
-  },
-  leches: {
-    name: 'Tres Leches <em>Cake</em>',
-    badge: 'Tres Leches',
-    desc: 'New York\'s finest Tres Leches — light, incredibly moist, soaked in three milks and made fresh to order. Available in 6 sizes and a variety of fillings.',
-    img: null, emoji: null,
-    emojiStyle: '',
-    type: 'leches',
-    sizes: [
-      {id:'tl-5s', label:'5"',  price:35,  serves:'6'},
-      {id:'tl-6s', label:'6"',  price:90,  serves:'10'},
-      {id:'tl-8s', label:'8"',  price:120, serves:'20'},
-      {id:'tl-10s',label:'10"', price:160, serves:'30'},
-      {id:'tl-12s',label:'12"', price:200, serves:'40'},
-      {id:'tl-14s',label:'14"', price:250, serves:'50'},
-    ],
-    flavors: [
-      {label:'Classic Tres Leches', gf:false},
-      {label:'Tres Leches w/ Dulce de Leche (+$5)', gf:false},
-      {label:'Tres Leches w/ Strawberry Filling', gf:false},
-      {label:'Tres Leches w/ Guava Filling', gf:false},
-      {label:'Tres Leches w/ Pineapple Jam', gf:false},
-      {label:'Tres Leches w/ Coconut Cream', gf:false},
-    ],
-    priceNote: '& up — varies by design',
-    serveGuide: null
-  },
-  chocoflan: {
-    name: '<em>Chocoflan</em>',
-    badge: 'Chocoflan',
-    desc: 'A stunning two-in-one dessert: rich Dominican chocolate cake on the bottom, silky smooth flan on top. A guaranteed crowd-pleaser at any event.',
-    img: null, emoji: null,
-    emojiStyle: '',
-    type: 'chocoflan',
-    sizes: [
-      {id:'cf-dozs',label:'1 Dozen Mini', price:40, serves:'12'},
-      {id:'cf-6s', label:'6"',            price:40, serves:'10'},
-      {id:'cf-8s', label:'8"',            price:60, serves:'20'},
-      {id:'cf-10s',label:'10"',           price:80, serves:'30'},
-    ],
-    dulceUpgrade: true,
-    flavors: [
-      {label:'Classic Chocoflan', gf:false},
-      {label:'Chocoflan w/ Coconut Flan', gf:false},
-      {label:'Chocoflan w/ Vanilla Flan', gf:false},
-    ],
-    serveGuide: null
-  },
-  shooters: {
-    name: 'Shooters <em>Tres Leche</em>',
-    badge: 'Shooters',
-    desc: 'Our signature Tres Leches in individual cups — the perfect party favor or sweet table centerpiece. Sold by the dozen in your choice of flavor.',
-    img: null, emoji: '🥤',
-    emojiStyle: '',
-    type: 'shooters',
-    sizes: [
-      {id:'sh-doz',label:'1 Dozen',price:40,serves:'12 cups'},
-    ],
-    flavors: [
-      {label:'Classic Tres Leches', gf:false},
-      {label:'Dulce de Leche', gf:false},
-      {label:'Strawberry', gf:false},
-      {label:'Guava', gf:false},
-      {label:'Pistachio', gf:false},
-      {label:'Oreo', gf:false},
-      {label:'Chocolate', gf:false},
-      {label:'Carrot', gf:false},
-      {label:'Lemon Cake', gf:false},
-      {label:'Pineapple', gf:false},
-      {label:'Vanilla', gf:false},
-      {label:'Pumpkin Spice', gf:false},
-    ],
-    freshFruitsUpgrade: true,
-    serveGuide: null
-  },
-
-  flan: {
-    name: 'Flan <em>Dozen</em>',
-    badge: 'Flan',
-    desc: 'Silky, creamy Dominican-style mini flan treats — sold by the dozen. A rich, velvety dessert perfect for any occasion.',
-    img: null, emoji: '🍮',
-    emojiStyle: '',
-    type: 'flan',
-    sizes: [
-      {id:'fl-doz',label:'1 Dozen',price:35,serves:'12 mini flans'},
-    ],
-    flavors: [
-      {label:'Classic Flan', gf:false},
-      {label:'Coconut Flan', gf:false},
-      {label:'Vanilla Flan', gf:false},
-    ],
-    serveGuide: null
-  },
-
-  cheesecake: {
-    name: '<em>Cheesecake</em>',
-    badge: 'Cheesecake',
-    desc: 'Rich, creamy cheesecake sold by the dozen. Choose your flavor — price may vary based on design and filling.',
-    img: null, emoji: '🧁',
-    emojiStyle: '',
-    type: 'cheesecake',
-    sizes: [
-      {id:'cc-reg',  label:'Regular', price:40, serves:'1 Dozen'},
-      {id:'cc-oreo', label:'Oreo',    price:40, serves:'1 Dozen'},
-      {id:'cc-str',  label:'Strawberry', price:45, serves:'1 Dozen'},
-    ],
-    flavors: [],
-    priceNote: '& up',
-    serveGuide: null
-  },
-  testproduct: {
-    name: '🧪 <em>Test Product</em>',
-    badge: 'TEST',
-    desc: 'Internal test item — do not order. Used to verify payment flow.',
-    img: null, emoji: '🧪',
-    emojiStyle: '',
-    type: 'test',
-    sizes: [
-      {id:'test-1', label:'Test', price:2, serves:'N/A'},
-    ],
-    flavors: [],
-    priceNote: '',
-    serveGuide: null
-  }
-};
+let PRODUCTS = {};
 
 let currentProduct = null;
 let currentSizeIdx = 0;
-let currentFlavorGF = false;
 
 /* ── Open product sheet ── */
 function openSheet(key) {
   currentProduct = key;
   currentSizeIdx = 0;
-  currentFlavorGF = false;
   const p = PRODUCTS[key];
   const body = document.getElementById('sheet-body');
 
   /* Build image */
   let imgHTML = '';
   if (p.img) {
-    imgHTML = `<div class="sheet-img-wrap"><img src="${p.img}" alt="${p.name}"/></div>`;
+    imgHTML = `<div class="sheet-img-wrap"><img src="${p.img}" alt="${stripHtmlSimple(p.name)}"/></div>`;
   } else {
-    imgHTML = `<div class="sheet-img-wrap"><div class="sheet-img-emoji" style="${p.emojiStyle||''}">${p.emoji}</div></div>`;
+    imgHTML = `<div class="sheet-img-wrap"><div class="sheet-img-emoji" style="${p.emojiStyle||''}">${p.emoji||'🎂'}</div></div>`;
   }
 
   /* Build size chips */
   const sizeChips = p.sizes.map((s,i) => `
-    <input type="radio" name="sheet-size" id="${s.id}" class="sz-radio" value="${i}" ${i===0?'checked':''} onchange="sheetSizeChange(${i})"/>
-    <label for="${s.id}" class="sz-label">
+    <input type="radio" name="sheet-size" id="sz-${i}" class="sz-radio" value="${i}" ${i===0?'checked':''} onchange="sheetSizeChange(${i})"/>
+    <label for="sz-${i}" class="sz-label">
       <span class="sz-inch">${s.label}</span>
-      <span class="sz-serves">${s.serves}</span>
+      <span class="sz-serves">${s.serves||''}</span>
       <span class="sz-price">$${s.price}${p.priceNote?'+':''}</span>
     </label>
   `).join('');
 
   /* Build serving guide */
   let serveHTML = '';
-  if (p.serveGuide) {
+  if (p.serveGuide && p.serveGuide.length) {
     const rows = p.serveGuide.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
     serveHTML = `
       <div class="serve-toggle" onclick="toggleServeGuide(this)">
@@ -1178,31 +924,44 @@ function openSheet(key) {
     `;
   }
 
+  /* Build flavor / filling selects (plain strings from DB) */
+  const hasFlavors  = p.flavors  && p.flavors.length  > 0;
+  const hasFillings = p.fillings && p.fillings.length > 0;
   let flavorHTML = '';
-  if (!p.flavors || p.flavors.length === 0) {
-    flavorHTML = ''; // no flavor selector needed (e.g. cheesecake — size = flavor)
-  } else if (p.fillings) {
-    const flavorOpts = p.flavors.map(f=>`<option>${f}</option>`).join('');
-    const fillingOpts = p.fillings.map(f=>`<option>${f}</option>`).join('');
-    flavorHTML = `
-      <div class="flavor-wrap" style="margin-top:16px">
-        <span class="sel-label">Cake Flavor</span>
-        <select class="flavor-sel" id="sheet-flavor">${flavorOpts}</select>
-      </div>
-      <div class="flavor-wrap">
-        <span class="sel-label">Cake Filling</span>
-        <select class="flavor-sel" id="sheet-filling">${fillingOpts}</select>
-      </div>`;
-  } else {
-    const flavorOpts = p.flavors.map(f=>`<option data-gf="${f.gf}">${f.label}</option>`).join('');
-    const gfNote = p.flavors.some(f=>f.gf) ? `<div class="gf-note">✦ GF options add $20 to base price</div>` : '';
-    flavorHTML = `
-      <div class="flavor-wrap" style="margin-top:16px">
-        <span class="sel-label">Flavor</span>
-        <select class="flavor-sel" id="sheet-flavor" onchange="sheetFlavorChange(this)">${flavorOpts}</select>
-        ${gfNote}
-      </div>`;
+  if (hasFlavors && hasFillings) {
+    flavorHTML = `<div class="flavor-wrap" style="margin-top:16px">
+      <span class="sel-label">Cake Flavor</span>
+      <select class="flavor-sel" id="sheet-flavor">${p.flavors.map(f=>`<option>${f}</option>`).join('')}</select>
+    </div>
+    <div class="flavor-wrap">
+      <span class="sel-label">Cake Filling</span>
+      <select class="flavor-sel" id="sheet-filling">${p.fillings.map(f=>`<option>${f}</option>`).join('')}</select>
+    </div>`;
+  } else if (hasFlavors) {
+    flavorHTML = `<div class="flavor-wrap" style="margin-top:16px">
+      <span class="sel-label">Flavor</span>
+      <select class="flavor-sel" id="sheet-flavor">${p.flavors.map(f=>`<option>${f}</option>`).join('')}</select>
+    </div>`;
+  } else if (hasFillings) {
+    flavorHTML = `<div class="flavor-wrap" style="margin-top:16px">
+      <span class="sel-label">Filling</span>
+      <select class="flavor-sel" id="sheet-filling">${p.fillings.map(f=>`<option>${f}</option>`).join('')}</select>
+    </div>`;
   }
+
+  /* Gluten-Free checkbox (only if any size has priceGF) */
+  let gfHTML = p.hasGF ? `<div class="flavor-wrap" style="margin-top:12px">
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#4A0E2E;font-weight:600">
+      <input type="checkbox" id="sheet-gf" style="accent-color:#E91E8C;width:18px;height:18px" onchange="updateSheetPrice()">
+      Gluten-Free <span style="color:#E91E8C">+$20</span>
+    </label></div>` : '';
+
+  /* Extras checkboxes (from serve_guide.extras) */
+  let extrasHTML = (p.extras||[]).map((ex,i)=>`<div class="flavor-wrap" style="margin-top:12px">
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#4A0E2E;font-weight:600">
+      <input type="checkbox" id="sheet-extra-${i}" data-price="${ex.price}" style="accent-color:#E91E8C;width:18px;height:18px" onchange="updateSheetPrice()">
+      ${ex.label} <span style="color:#E91E8C">+$${ex.price}</span>
+    </label></div>`).join('');
 
   body.innerHTML = `
     ${imgHTML}
@@ -1218,26 +977,14 @@ function openSheet(key) {
     <div class="size-chips">${sizeChips}</div>
     ${serveHTML}
     ${flavorHTML}
-    ${p.dulceUpgrade ? `
-    <div class="flavor-wrap" style="margin-top:12px">
-      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#4A0E2E;font-weight:600">
-        <input type="checkbox" id="sheet-dulce" style="accent-color:#E91E8C;width:18px;height:18px">
-        Add Dulce de Leche upgrade <span style="color:#E91E8C">+$5</span>
-      </label>
-    </div>` : ''}
-    ${p.freshFruitsUpgrade ? `
-    <div class="flavor-wrap" style="margin-top:12px">
-      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#4A0E2E;font-weight:600">
-        <input type="checkbox" id="sheet-fresh-fruits" style="accent-color:#E91E8C;width:18px;height:18px" onchange="updateSheetPrice()">
-        Add Fresh Fruits <span style="color:#E91E8C">+$5</span>
-      </label>
-    </div>` : ''}
+    ${gfHTML}
+    ${extrasHTML}
 
     <div class="zone-box">
       <span class="zone-icon">🗺️</span>
       <div class="zone-text">
         <strong>Delivery Zone</strong>
-        Manhattan &amp; The Bronx only · 2-hour windows, 9 AM – 6 PM daily · Rush orders available — contact Vanessa first.
+        Manhattan &amp; The Bronx only · 2-hour windows, 9 AM– 6 PM daily · Rush orders available — contact Vanessa first.
       </div>
     </div>
 
@@ -1248,7 +995,6 @@ function openSheet(key) {
   document.getElementById('sheet-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeSheet(e) {
   if (!e || e.target.id==='sheet-overlay') {
     document.getElementById('sheet-overlay').classList.remove('open');
@@ -1261,18 +1007,17 @@ function sheetSizeChange(idx) {
   updateSheetPrice();
 }
 
-function sheetFlavorChange(sel) {
-  const opt = sel.options[sel.selectedIndex];
-  currentFlavorGF = opt.getAttribute('data-gf') === 'true';
-  updateSheetPrice();
-}
-
 function updateSheetPrice() {
   const p = PRODUCTS[currentProduct];
   const size = p.sizes[currentSizeIdx];
   let price = size.price;
-  if (currentFlavorGF && size.priceGF) price = size.priceGF;
-  else if (currentFlavorGF) price += 20;
+  const gfEl = document.getElementById('sheet-gf');
+  if (gfEl && gfEl.checked) {
+    price = size.priceGF ? size.priceGF : price + 20;
+  }
+  document.querySelectorAll('[id^="sheet-extra-"]').forEach(function(cb) {
+    if (cb.checked) price += parseFloat(cb.dataset.price) || 0;
+  });
   const el = document.getElementById('sheet-price-display');
   if (el) el.innerHTML = `$${price}${p.priceNote?'<small> & up</small>':''}`;
 }
@@ -1288,42 +1033,53 @@ function getSheetPrice() {
   const p = PRODUCTS[currentProduct];
   const size = p.sizes[currentSizeIdx];
   let price = size.price;
-  if (currentFlavorGF && size.priceGF) price = size.priceGF;
-  else if (currentFlavorGF) price += 20;
-  const dulceEl = document.getElementById('sheet-dulce');
-  if (dulceEl && dulceEl.checked) price += 5;
-  const freshEl = document.getElementById('sheet-fresh-fruits');
-  if (freshEl && freshEl.checked) price += 5;
+  const gfEl = document.getElementById('sheet-gf');
+  if (gfEl && gfEl.checked) {
+    price = size.priceGF ? size.priceGF : price + 20;
+  }
+  document.querySelectorAll('[id^="sheet-extra-"]').forEach(function(cb) {
+    if (cb.checked) price += parseFloat(cb.dataset.price) || 0;
+  });
   return price;
 }
 
 function addToOrder() {
   const p = PRODUCTS[currentProduct];
   const size = p.sizes[currentSizeIdx];
-  const flavorEl = document.getElementById('sheet-flavor');
-  const flavor = flavorEl ? flavorEl.value : '';
+  const flavorEl  = document.getElementById('sheet-flavor');
   const fillingEl = document.getElementById('sheet-filling');
-  const dulceEl = document.getElementById('sheet-dulce');
-  const freshEl = document.getElementById('sheet-fresh-fruits');
-  let detail = fillingEl ? (flavor ? `${flavor} · ${fillingEl.value}` : fillingEl.value) : flavor;
-  if (dulceEl && dulceEl.checked) detail += ' · Dulce de Leche (+$5)';
-  if (freshEl && freshEl.checked) detail += ' · Fresh Fruits (+$5)';
+  const gfEl      = document.getElementById('sheet-gf');
+  let detail = '';
+  if (flavorEl && fillingEl) {
+    detail = flavorEl.value + ' · ' + fillingEl.value;
+  } else if (flavorEl) {
+    detail = flavorEl.value;
+  } else if (fillingEl) {
+    detail = fillingEl.value;
+  }
+  if (gfEl && gfEl.checked) detail += ' · Gluten-Free (+$20)';
+  document.querySelectorAll('[id^="sheet-extra-"]').forEach(function(cb) {
+    if (cb.checked) {
+      const lbl   = cb.parentElement.textContent.trim().replace(/\+\$[\d.]+[^+]*$/, '').trim();
+      const price = parseFloat(cb.dataset.price) || 0;
+      detail += ' · ' + lbl + ' (+$' + price + ')';
+    }
+  });
   const price = getSheetPrice();
   cart.push({
-    id: `${currentProduct}-${size.id}-${Date.now()}`,
-    key: currentProduct,
+    id:    `${currentProduct}-${(size.id||size.label)}-${Date.now()}`,
+    key:   currentProduct,
     badge: p.badge,
-    size: size.label,
+    size:  size.label,
     detail,
     price,
-    qty: 1
+    qty:   1
   });
   renderCart();
   closeSheet();
   showToast(`✓ ${size.label} ${p.badge} added to cart!`);
   setTimeout(() => openCart(), 520);
 }
-
 function renderCart() {
   const list   = document.getElementById('cart-items-list');
   const badge  = document.getElementById('cart-badge');
@@ -1355,7 +1111,7 @@ function renderCart() {
 
   list.innerHTML = cart.map((item, idx) => `
     <div class="cart-item">
-      <div class="cart-item-emoji">${CART_EMOJIS[item.key] || '🎂'}</div>
+      <div class="cart-item-emoji">${(PRODUCTS[item.key] && PRODUCTS[item.key].emoji) || '🎂'}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.badge} · ${item.size}</div>
         <div class="cart-item-detail" title="${item.detail}">${item.detail}</div>
@@ -1797,51 +1553,102 @@ function toggleCustomAck() {
   }
 }
 
-const CART_EMOJIS = { signature:'🎂', leches:'🍰', chocoflan:'🍫', shooters:'🥤', flan:'🍮', cheesecake:'🧁', testproduct:'🧪' };
 
+function stripHtmlSimple(s) { return String(s||'').replace(/<[^>]*>/g,''); }
 
-/* ── Load product images from Supabase products table ── */
-async function loadProductImages() {
+/* ── Load all products from Supabase and render the product grid ── */
+async function loadProducts() {
   try {
     const SUPA_URL = 'https://jelikmeqjkbidgxndapo.supabase.co';
     const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ';
     const resp = await fetch(
-      SUPA_URL + '/rest/v1/products?select=key,image_url&is_available=eq.true',
+      SUPA_URL + '/rest/v1/products?select=*&order=sort_order.asc',
       { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
     );
     if (!resp.ok) return;
     const rows = await resp.json();
     if (!Array.isArray(rows)) return;
 
+    PRODUCTS = {};
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = '';
+
     rows.forEach(function(row) {
-      if (!row.key || !row.image_url) return;
+      if (!row.is_available) return;
 
-      // Update PRODUCTS object so detail sheet shows the image
-      if (PRODUCTS[row.key]) {
-        PRODUCTS[row.key].img = row.image_url;
+      /* Normalise serve_guide → {rows, extras} */
+      let sg = row.serve_guide, serveGuide = null, extras = [];
+      if (sg) {
+        if (Array.isArray(sg))   { serveGuide = sg; }
+        else if (sg.rows)        { serveGuide = sg.rows; extras = sg.extras || []; }
+        else if (sg.extras)      { extras = sg.extras; }
       }
 
-      // Update product grid card: show img, hide emoji
-      var card = document.querySelector('[data-key="' + row.key + '"]');
-      if (!card) return;
-      var img   = card.querySelector('.product-card-img img');
-      var emoji = card.querySelector('.product-card-emoji');
-      if (img) {
-        img.src              = row.image_url;
-        img.style.display    = '';
-        img.style.objectFit  = 'cover';
-      }
-      if (emoji) emoji.style.display = 'none';
+      const hasGF = (row.sizes || []).some(function(s) { return s.priceGF; });
+
+      PRODUCTS[row.key] = {
+        name:      row.name,
+        badge:     row.badge,
+        desc:      row.description,
+        img:       row.image_url || null,
+        emoji:     row.emoji || '🎂',
+        emojiStyle:'',
+        type:      row.category,
+        sizes:     row.sizes    || [],
+        flavors:   row.flavors  || [],
+        fillings:  row.fillings || [],
+        priceNote: row.price_note || '',
+        serveGuide:serveGuide,
+        extras:    extras,
+        hasGF:     hasGF
+      };
+
+      /* Render card DOM element */
+      const p = PRODUCTS[row.key];
+      const minPrice = p.sizes.length ? p.sizes[0].price : 0;
+      const imgPart  = p.img
+        ? `<img src="${p.img}" alt="${stripHtmlSimple(p.name)}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`
+        : '';
+      const emojiPart = `<div class="product-card-emoji" style="${p.emojiStyle}${p.img?';display:none':''}">${p.emoji}</div>`;
+
+      const card = document.createElement('div');
+      card.className   = 'product-card reveal';
+      card.dataset.key = row.key;
+      card.dataset.cat = row.category;
+      card.onclick     = function() { openSheet(row.key); };
+      card.innerHTML   = `
+        <div class="product-card-img">
+          ${imgPart}
+          ${emojiPart}
+          <div class="product-card-badge">${p.badge}</div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-name">${p.name}</div>
+          <div class="product-card-desc">${stripHtmlSimple(p.desc).slice(0,80)}…</div>
+          <div class="product-card-from">From $${minPrice}${p.priceNote?' & up':''}</div>
+        </div>`;
+      grid.appendChild(card);
+      io.observe(card);
     });
+
+    /* Re-apply active category filter */
+    const activeBtn = document.querySelector('.cat-pill.active');
+    if (activeBtn) {
+      const m = activeBtn.getAttribute('onclick').match(/'([^']+)'/);
+      const cat = m ? m[1] : 'all';
+      document.querySelectorAll('.product-card').forEach(function(c) {
+        c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
+      });
+    }
   } catch(err) {
-    console.warn('loadProductImages failed:', err);
+    console.warn('loadProducts failed:', err);
   }
 }
 
 /* Initialize */
 renderCart();
 loadGallery();
-loadProductImages();
+loadProducts();
 
 
 /* ── Email confirmations (EmailJS) ── */
@@ -2087,7 +1894,6 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 window.openSheet          = openSheet;
 window.closeSheet         = closeSheet;
 window.sheetSizeChange    = sheetSizeChange;
-window.sheetFlavorChange  = sheetFlavorChange;
 window.updateSheetPrice   = updateSheetPrice;
 window.toggleServeGuide   = toggleServeGuide;
 window.addToOrder         = addToOrder;
@@ -2105,6 +1911,7 @@ window.submitProductOrder = submitProductOrder;
 window.toggleCustomAck    = toggleCustomAck;
 window.filterCat          = filterCat;
 window.loadGallery        = loadGallery;
+window.loadProducts       = loadProducts;
 window.openLightbox       = openLightbox;
 window.closeLightbox      = closeLightbox;
 window.handleSubmit       = handleSubmit;
@@ -2113,3 +1920,4 @@ window.showToast          = showToast;
 </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
