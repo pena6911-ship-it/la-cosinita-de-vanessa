@@ -284,12 +284,12 @@ tbody td{padding:10px 12px;vertical-align:middle}
 
 /* sizes table */
 .sizesHeader{
-  display:grid;grid-template-columns:1fr 90px 90px 1fr 36px;
+  display:grid;grid-template-columns:1fr 90px 90px 1fr 64px 36px;
   gap:8px;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
   color:var(--muted);margin-bottom:6px;
 }
 .sizeRow{
-  display:grid;grid-template-columns:1fr 90px 90px 1fr 36px;
+  display:grid;grid-template-columns:1fr 90px 90px 1fr 64px 36px;
   gap:8px;margin-bottom:6px;align-items:center;
 }
 .sizeRow input{
@@ -297,6 +297,7 @@ tbody td{padding:10px 12px;vertical-align:middle}
   font-family:'DM Mono',monospace;font-size:.76rem;color:var(--charcoal);outline:none;width:100%;
 }
 .sizeRow input:focus{border-color:var(--terra)}
+.sizeRow input[type=checkbox]{width:18px;height:18px;padding:0;justify-self:center;accent-color:var(--terra);cursor:pointer}
 
 /* flavors/fillings */
 .tagsSection{display:flex;flex-direction:column;gap:6px}
@@ -421,7 +422,7 @@ tbody td{padding:10px 12px;vertical-align:middle}
   .summaryGrid{grid-template-columns:1fr 1fr}
   #productModalBox{width:100%;max-height:100vh;align-self:flex-end;border-radius:0}
   .col2,.col3{grid-template-columns:1fr}
-  .sizesHeader,.sizeRow{grid-template-columns:1fr 80px 80px 1fr 32px;font-size:.65rem}
+  .sizesHeader,.sizeRow{grid-template-columns:1fr 80px 80px 1fr 52px 32px;font-size:.65rem}
   .imageSection{flex-direction:column}
   .imgPreviewBox{width:100%;height:140px}
 }
@@ -620,7 +621,7 @@ tbody td{padding:10px 12px;vertical-align:middle}
       <div class="pmSection">
         <h3>Sizes</h3>
         <div class="sizesHeader">
-          <span>Label</span><span>Price ($)</span><span>GF Price ($)</span><span>Serves</span><span></span>
+          <span>Label</span><span>Price ($)</span><span>GF Price ($)</span><span>Serves</span><span>Filling?</span><span></span>
         </div>
         <div id="sizesContainer"></div>
         <button class="btnAddRow" onclick="addSizeRow()">+ Add Size</button>
@@ -705,7 +706,9 @@ tbody td{padding:10px 12px;vertical-align:middle}
 // ══════════════════════════════════════════════
 const SUPABASE_URL = 'https://nqrlxslgstajryimndsx.supabase.co';
 const ANON_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xcmx4c2xnc3RhanJ5aW1uZHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODkyNjcsImV4cCI6MjA5NjY2NTI2N30.40pYlAIXARiKWqBVZGPIpagDCxo7-88pRgDIFLmgAgA';
-const SERVICE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xcmx4c2xnc3RhanJ5aW1uZHN4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTA4OTI2NywiZXhwIjoyMDk2NjY1MjY3fQ.yK105MvTGmVabvpEdeaZ6-NPR67GTPat2Mmpy1iRtWg';
+// SERVICE_KEY intentionally removed — never ship a service_role key to the browser.
+// Admin data access runs through the logged-in user's session (anon key + Supabase Auth),
+// enforced by RLS policies for the "authenticated" role.
 
 let authClient, adminClient;
 let allOrders = [], allCustomers = [];
@@ -720,7 +723,7 @@ let deleteConfirmed = false, deleteTimer = null;
 // ══════════════════════════════════════════════
 (function init() {
   authClient  = supabase.createClient(SUPABASE_URL, ANON_KEY);
-  adminClient = supabase.createClient(SUPABASE_URL, SERVICE_KEY);
+  adminClient = authClient; // all admin data ops run as the logged-in user (RLS-enforced)
 
   authClient.auth.onAuthStateChange((event, session) => {
     if (session) showApp(session.user);
@@ -1235,6 +1238,7 @@ function addSizeRow(sz) {
     <input type="number" placeholder="0.00" step="0.01" min="0" value="${sz.price != null ? sz.price : ''}">
     <input type="number" placeholder="0.00" step="0.01" min="0" value="${sz.priceGF != null ? sz.priceGF : ''}">
     <input type="text"   placeholder="e.g. 8–10" value="${escHtml(sz.serves||'')}">
+    <input type="checkbox" title="Offer a filling option for this size" ${sz.noFilling === true ? '' : 'checked'}>
     <button class="btnRm" onclick="this.parentElement.remove()">×</button>
   `;
   document.getElementById('sizesContainer').appendChild(row);
@@ -1378,8 +1382,10 @@ async function saveProduct() {
     const price   = parseFloat(inputs[1].value) || 0;
     const priceGF = inputs[2].value.trim() !== '' ? parseFloat(inputs[2].value) : undefined;
     const serves  = inputs[3].value.trim();
+    const fillingCb = row.querySelector('input[type=checkbox]');
     const obj = { id: key + '-' + i, label, price, serves };
     if (priceGF !== undefined) obj.priceGF = priceGF;
+    if (fillingCb && !fillingCb.checked) obj.noFilling = true;
     return obj;
   });
 
