@@ -965,27 +965,15 @@ function openSheet(key) {
     `;
   }
 
-  /* Build flavor / filling selects (plain strings from DB) */
+  /* Flavor select(s) render dynamically per size (a size may ask for several
+     flavor picks via size.flavorPicks). Filling rendered alongside. */
   const hasFlavors  = p.flavors  && p.flavors.length  > 0;
   const hasFillings = p.fillings && p.fillings.length > 0;
   let flavorHTML = '';
-  if (hasFlavors && hasFillings) {
-    flavorHTML = `<div class="flavor-wrap" style="margin-top:16px">
-      <span class="sel-label">Cake Flavor</span>
-      <select class="flavor-sel" id="sheet-flavor">${p.flavors.map(f=>`<option>${f}</option>`).join('')}</select>
-    </div>
-    <div class="flavor-wrap" id="sheet-filling-wrap">
-      <span class="sel-label">Cake Filling</span>
-      <select class="flavor-sel" id="sheet-filling">${p.fillings.map(f=>`<option>${f}</option>`).join('')}</select>
-    </div>`;
-  } else if (hasFlavors) {
-    flavorHTML = `<div class="flavor-wrap" style="margin-top:16px">
-      <span class="sel-label">Flavor</span>
-      <select class="flavor-sel" id="sheet-flavor">${p.flavors.map(f=>`<option>${f}</option>`).join('')}</select>
-    </div>`;
-  } else if (hasFillings) {
-    flavorHTML = `<div class="flavor-wrap" id="sheet-filling-wrap" style="margin-top:16px">
-      <span class="sel-label">Filling</span>
+  if (hasFlavors) flavorHTML += `<div id="sheet-flavor-wrap"></div>`;
+  if (hasFillings) {
+    flavorHTML += `<div class="flavor-wrap" id="sheet-filling-wrap"${hasFlavors ? '' : ' style="margin-top:16px"'}>
+      <span class="sel-label">${hasFlavors ? 'Cake Filling' : 'Filling'}</span>
       <select class="flavor-sel" id="sheet-filling">${p.fillings.map(f=>`<option>${f}</option>`).join('')}</select>
     </div>`;
   }
@@ -1033,9 +1021,34 @@ function openSheet(key) {
     <a href="#order" class="custom-order-link" onclick="closeSheet()">Need a fully custom design? →</a>
   `;
 
+  renderFlavorSelects();
   applyFillingVisibility();
   document.getElementById('sheet-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+/* Render one flavor dropdown per "pick" for the selected size.
+   A size can request multiple picks via size.flavorPicks (e.g. a 3-cake trio). */
+function renderFlavorSelects() {
+  const p = PRODUCTS[currentProduct];
+  const wrap = document.getElementById('sheet-flavor-wrap');
+  if (!wrap || !p || !p.flavors || !p.flavors.length) return;
+  const hasFillings = p.fillings && p.fillings.length > 0;
+  const size = p.sizes[currentSizeIdx] || {};
+  const picks = Math.max(1, parseInt(size.flavorPicks, 10) || 1);
+  const opts = p.flavors.map(f => `<option>${f}</option>`).join('');
+  let html = '';
+  for (let i = 0; i < picks; i++) {
+    const label = picks > 1 ? `Cake ${i + 1} flavor` : (hasFillings ? 'Cake Flavor' : 'Flavor');
+    html += `<div class="flavor-wrap" style="margin-top:16px">
+      <span class="sel-label">${label}</span>
+      <select class="flavor-sel js-flavor" id="sheet-flavor${i === 0 ? '' : '-' + (i + 1)}">${opts}</select>
+    </div>`;
+  }
+  wrap.innerHTML = html;
+}
+function collectFlavorValues() {
+  return Array.from(document.querySelectorAll('#sheet-flavor-wrap .js-flavor')).map(s => s.value);
 }
 function closeSheet(e) {
   if (!e || e.target.id==='sheet-overlay') {
@@ -1046,6 +1059,7 @@ function closeSheet(e) {
 
 function sheetSizeChange(idx) {
   currentSizeIdx = idx;
+  renderFlavorSelects();
   applyFillingVisibility();
   updateSheetPrice();
 }
@@ -1107,14 +1121,14 @@ function getSheetPrice() {
 function addToOrder() {
   const p = PRODUCTS[currentProduct];
   const size = p.sizes[currentSizeIdx];
-  const flavorEl  = document.getElementById('sheet-flavor');
+  const flavorText = collectFlavorValues().join(', ');
   const fillingEl = isFillingVisible() ? document.getElementById('sheet-filling') : null;
   const gfEl      = document.getElementById('sheet-gf');
   let detail = '';
-  if (flavorEl && fillingEl) {
-    detail = flavorEl.value + ' · ' + fillingEl.value;
-  } else if (flavorEl) {
-    detail = flavorEl.value;
+  if (flavorText && fillingEl) {
+    detail = flavorText + ' · ' + fillingEl.value;
+  } else if (flavorText) {
+    detail = flavorText;
   } else if (fillingEl) {
     detail = fillingEl.value;
   }
@@ -1382,10 +1396,10 @@ function showCheckoutStep() {
   _coPayPalRendered = false;
   var p    = PRODUCTS[currentProduct];
   var size = p.sizes[currentSizeIdx];
-  var flavorEl  = document.getElementById('sheet-flavor');
+  var flavorText = collectFlavorValues().join(', ');
   var fillingEl = isFillingVisible() ? document.getElementById('sheet-filling') : null;
   var dulceEl   = document.getElementById('sheet-dulce');
-  var detail = flavorEl ? flavorEl.value : '';
+  var detail = flavorText;
   if (fillingEl) detail += ' · ' + fillingEl.value;
   if (dulceEl && dulceEl.checked) detail += ' · Dulce de Leche (+$5)';
   var price = getSheetPrice();
@@ -1528,10 +1542,10 @@ async function submitProductOrder(paypalDetails) {
   /* Product info from current sheet state */
   var p      = PRODUCTS[currentProduct];
   var size   = p.sizes[currentSizeIdx];
-  var flavorEl  = document.getElementById('sheet-flavor');
+  var flavorText = collectFlavorValues().join(', ');
   var fillingEl = isFillingVisible() ? document.getElementById('sheet-filling') : null;
   var dulceEl   = document.getElementById('sheet-dulce');
-  var detail = flavorEl ? flavorEl.value : '';
+  var detail = flavorText;
   if (fillingEl && fillingEl.value) detail += ' · ' + fillingEl.value;
   if (dulceEl && dulceEl.checked) detail += ' · Dulce de Leche (+$5)';
   var price = getSheetPrice();
@@ -1981,4 +1995,4 @@ window.showToast          = showToast;
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     

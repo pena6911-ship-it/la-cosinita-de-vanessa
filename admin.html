@@ -284,12 +284,12 @@ tbody td{padding:10px 12px;vertical-align:middle}
 
 /* sizes table */
 .sizesHeader{
-  display:grid;grid-template-columns:1fr 90px 90px 1fr 64px 36px;
+  display:grid;grid-template-columns:1fr 84px 84px 1fr 58px 58px 34px;
   gap:8px;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
   color:var(--muted);margin-bottom:6px;
 }
 .sizeRow{
-  display:grid;grid-template-columns:1fr 90px 90px 1fr 64px 36px;
+  display:grid;grid-template-columns:1fr 84px 84px 1fr 58px 58px 34px;
   gap:8px;margin-bottom:6px;align-items:center;
 }
 .sizeRow input{
@@ -297,7 +297,12 @@ tbody td{padding:10px 12px;vertical-align:middle}
   font-family:'DM Mono',monospace;font-size:.76rem;color:var(--charcoal);outline:none;width:100%;
 }
 .sizeRow input:focus{border-color:var(--terra)}
-.sizeRow input[type=checkbox]{width:18px;height:18px;padding:0;justify-self:center;accent-color:var(--terra);cursor:pointer}
+.sizeRow input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--terra);cursor:pointer;flex:0 0 auto}
+.fillToggle{display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+.fillToggle span{display:none}
+.fpToggle{display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+.fpToggle span{display:none}
+.fpToggle input{width:46px;text-align:center}
 
 /* flavors/fillings */
 .tagsSection{display:flex;flex-direction:column;gap:6px}
@@ -422,7 +427,21 @@ tbody td{padding:10px 12px;vertical-align:middle}
   .summaryGrid{grid-template-columns:1fr 1fr}
   #productModalBox{width:100%;max-height:100vh;align-self:flex-end;border-radius:0}
   .col2,.col3{grid-template-columns:1fr}
-  .sizesHeader,.sizeRow{grid-template-columns:1fr 80px 80px 1fr 52px 32px;font-size:.65rem}
+  .sizesHeader{display:none}
+  .sizeRow{
+    grid-template-columns:repeat(4,1fr);
+    grid-template-areas:"label label label remove" "price price gf gf" "serves serves serves serves" "fill fill flavors flavors";
+    gap:8px;padding:10px;border:0.5px solid var(--border);border-radius:8px;margin-bottom:10px;font-size:.72rem;align-items:center;
+  }
+  .sizeRow>*:nth-child(1){grid-area:label}
+  .sizeRow>*:nth-child(2){grid-area:price}
+  .sizeRow>*:nth-child(3){grid-area:gf}
+  .sizeRow>*:nth-child(4){grid-area:serves}
+  .sizeRow>*:nth-child(5){grid-area:fill}
+  .sizeRow>*:nth-child(6){grid-area:flavors}
+  .sizeRow>*:nth-child(7){grid-area:remove;justify-self:end}
+  .fillToggle,.fpToggle{justify-content:flex-start}
+  .fillToggle span,.fpToggle span{display:inline;font-size:.66rem;color:var(--muted)}
   .imageSection{flex-direction:column}
   .imgPreviewBox{width:100%;height:140px}
 }
@@ -621,7 +640,7 @@ tbody td{padding:10px 12px;vertical-align:middle}
       <div class="pmSection">
         <h3>Sizes</h3>
         <div class="sizesHeader">
-          <span>Label</span><span>Price ($)</span><span>GF Price ($)</span><span>Serves</span><span>Filling?</span><span></span>
+          <span>Label</span><span>Price ($)</span><span>GF Price ($)</span><span>Serves</span><span>Filling?</span><span>Flavors</span><span></span>
         </div>
         <div id="sizesContainer"></div>
         <button class="btnAddRow" onclick="addSizeRow()">+ Add Size</button>
@@ -1238,7 +1257,8 @@ function addSizeRow(sz) {
     <input type="number" placeholder="0.00" step="0.01" min="0" value="${sz.price != null ? sz.price : ''}">
     <input type="number" placeholder="0.00" step="0.01" min="0" value="${sz.priceGF != null ? sz.priceGF : ''}">
     <input type="text"   placeholder="e.g. 8–10" value="${escHtml(sz.serves||'')}">
-    <input type="checkbox" title="Offer a filling option for this size" ${sz.noFilling === true ? '' : 'checked'}>
+    <label class="fillToggle" title="Offer a filling option for this size"><input type="checkbox" ${sz.noFilling === true ? '' : 'checked'}><span>Filling</span></label>
+    <label class="fpToggle" title="How many flavors the customer picks for this size (e.g. 3 for a trio)"><span>Flavors</span><input type="number" class="fpInput" min="1" max="12" step="1" value="${parseInt(sz.flavorPicks,10) > 1 ? parseInt(sz.flavorPicks,10) : 1}"></label>
     <button class="btnRm" onclick="this.parentElement.remove()">×</button>
   `;
   document.getElementById('sizesContainer').appendChild(row);
@@ -1383,9 +1403,12 @@ async function saveProduct() {
     const priceGF = inputs[2].value.trim() !== '' ? parseFloat(inputs[2].value) : undefined;
     const serves  = inputs[3].value.trim();
     const fillingCb = row.querySelector('input[type=checkbox]');
+    const fpEl      = row.querySelector('.fpInput');
+    const fp        = fpEl ? parseInt(fpEl.value, 10) : 1;
     const obj = { id: key + '-' + i, label, price, serves };
     if (priceGF !== undefined) obj.priceGF = priceGF;
     if (fillingCb && !fillingCb.checked) obj.noFilling = true;
+    if (fp > 1) obj.flavorPicks = fp;
     return obj;
   });
 
