@@ -323,12 +323,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .submit-btn:active{transform:scale(0.98);box-shadow:0 4px 10px rgba(233,30,140,0.18);}
 
 /* CONTACT */
-#contact{background:linear-gradient(160deg,#4A0E2E,#3D1040);padding:52px 20px calc(52px + var(--safe-bottom));text-align:center;}
-#contact .section-title{color:var(--cream);}
-#contact .section-desc{color:rgba(249,243,236,0.52);margin:0 auto 28px;}
+#contact{background:linear-gradient(155deg,#FFF7FB 0%,#F8BBD9 48%,#F48FB1 100%);padding:52px 20px calc(52px + var(--safe-bottom));text-align:center;position:relative;overflow:hidden;}
+#contact::before{content:'';position:absolute;width:min(380px,90vw);height:min(380px,90vw);border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.38) 0%,transparent 68%);top:-100px;right:-80px;pointer-events:none;z-index:0;}
+#contact::after{content:'';position:absolute;width:min(240px,65vw);height:min(240px,65vw);border-radius:50%;background:radial-gradient(circle,rgba(255,240,247,0.45) 0%,transparent 70%);bottom:40px;left:-60px;pointer-events:none;z-index:0;}
+#contact .section-title{color:#4A0E2E;}
+#contact .section-desc{color:rgba(74,14,46,0.68);margin:0 auto 28px;}
 .contact-links{display:flex;flex-direction:column;gap:10px;align-items:center;}
-.contact-link{display:flex;align-items:center;gap:12px;color:var(--cream);text-decoration:none;font-size:14px;min-height:var(--tap);padding:0 20px;border-radius:100px;border:1px solid rgba(249,243,236,0.13);width:100%;max-width:310px;-webkit-tap-highlight-color:transparent;transition:border-color 0.18s,color 0.18s;}
-.contact-link:active{border-color:#E91E8C;color:#E91E8C;}
+.contact-link{display:flex;align-items:center;gap:12px;color:#4A0E2E;text-decoration:none;font-size:14px;min-height:var(--tap);padding:0 20px;border-radius:100px;border:1px solid rgba(233,30,140,0.28);background:rgba(255,255,255,0.42);width:100%;max-width:310px;-webkit-tap-highlight-color:transparent;transition:border-color 0.18s,color 0.18s,background 0.18s;}
+.contact-link:active{border-color:#E91E8C;color:#E91E8C;background:rgba(255,255,255,0.65);}
 .contact-link-icon{font-size:18px;flex-shrink:0;}
 
 /* FOOTER */
@@ -716,7 +718,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
     <!-- PRODUCT — Custom Cake -->
     <div class="custom-product-card">
       <div class="custom-product-img-wrap">
-        <img src="https://jelikmeqjkbidgxndapo.supabase.co/storage/v1/object/public/gallery/cake3.jpg" alt="La Cosinita Signature Custom Cake" style="display:block;width:100%;height:100%;object-fit:cover;object-position:center 60%;"/>
+        <img src="https://nqrlxslgstajryimndsx.supabase.co/storage/v1/object/public/gallery/cake3.jpg" alt="La Cosinita Signature Custom Cake" style="display:block;width:100%;height:100%;object-fit:cover;object-position:center 60%;"/>
         <div class="custom-product-emoji" style="display:none">🎂</div>
         <span class="custom-product-badge">Custom Order</span>
       </div>
@@ -804,8 +806,8 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 
 <!-- CONTACT -->
 <section id="contact">
-  <div class="section-label" style="color:#A8DCE8">✦ Get In Touch</div>
-  <h2 class="section-title" style="color:var(--cream);text-align:center">Questions?<br><em>Let's talk.</em></h2>
+  <div class="section-label" style="color:#AD1457">✦ Get In Touch</div>
+  <h2 class="section-title" style="text-align:center">Questions?<br><em>Let's talk.</em></h2>
   <p class="section-desc">We love talking cake. Vanessa replies within 24 hours.</p>
   <div class="contact-links">
     <a href="tel:+16462800105" class="contact-link"><span class="contact-link-icon">📞</span>(646) 280-0105</a>
@@ -868,8 +870,8 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 <script>
 /* ══ Supabase ══════════════════════════════════════════════ */
 const _sb = window.supabase.createClient(
-  'https://jelikmeqjkbidgxndapo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ'
+  'https://nqrlxslgstajryimndsx.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xcmx4c2xnc3RhanJ5aW1uZHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODkyNjcsImV4cCI6MjA5NjY2NTI2N30.40pYlAIXARiKWqBVZGPIpagDCxo7-88pRgDIFLmgAgA'
 );
 emailjs.init('q62O3cYHsOLIk7497');
 
@@ -1559,8 +1561,8 @@ function stripHtmlSimple(s) { return String(s||'').replace(/<[^>]*>/g,''); }
 /* ── Load all products from Supabase and render the product grid ── */
 async function loadProducts() {
   try {
-    const SUPA_URL = 'https://jelikmeqjkbidgxndapo.supabase.co';
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ';
+    const SUPA_URL = 'https://nqrlxslgstajryimndsx.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xcmx4c2xnc3RhanJ5aW1uZHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODkyNjcsImV4cCI6MjA5NjY2NTI2N30.40pYlAIXARiKWqBVZGPIpagDCxo7-88pRgDIFLmgAgA';
     const resp = await fetch(
       SUPA_URL + '/rest/v1/products?select=*&order=sort_order.asc',
       { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
@@ -1688,8 +1690,8 @@ async function loadGallery() {
   const grid = document.getElementById('gallery-grid');
   if (!grid) return;
   try {
-    const SUPA_URL  = 'https://jelikmeqjkbidgxndapo.supabase.co';
-    const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbGlrbWVxamtiaWRneG5kYXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Mzc5ODUsImV4cCI6MjA5NDIxMzk4NX0.M9Nh_3bSYI77bY1_oVV3e44NN6TCmmAtP7cHNoVyUKQ';
+    const SUPA_URL  = 'https://nqrlxslgstajryimndsx.supabase.co';
+    const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xcmx4c2xnc3RhanJ5aW1uZHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODkyNjcsImV4cCI6MjA5NjY2NTI2N30.40pYlAIXARiKWqBVZGPIpagDCxo7-88pRgDIFLmgAgA';
     const resp = await fetch(
       SUPA_URL + '/rest/v1/gallery?select=id,title,tag,photo_url&order=sort_order.asc,created_at.desc',
       { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
