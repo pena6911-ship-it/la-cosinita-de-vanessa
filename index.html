@@ -550,7 +550,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
     <div class="tl-pillar">
       <div class="tl-pillar-icon">🥛</div>
       <div class="tl-pillar-title">The Three-Milk Soak</div>
-      <p class="tl-pillar-desc">Every cake is drenched in the perfect blend of evaporated milk, condensed milk, and heavy cream — soaked until every bite is impossibly moist.</p>
+      <p class="tl-pillar-desc">Every cake is drenched in the perfect blend of evaporated milk, condensed milk, and lactose free milk — soaked until every bite is impossibly moist.</p>
     </div>
     <div class="tl-pillar">
       <div class="tl-pillar-icon">🍰</div>
@@ -699,17 +699,41 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
       <div class="cust-pricing-eye">✦ Starting Price</div>
       <div class="cust-pricing-ttl">La Cosinita <em style="font-style:italic;color:#F48FB1">Signature Cake</em></div>
       <div class="cust-sz-wrap">
-        <input type="radio" name="cust-sz" id="csz-7" class="csz-radio" value="98" checked/>
-        <label for="csz-7" class="csz-label">
-          <span class="csz-inch">7&quot;</span>
-          <span class="csz-serves">Serves 10–12</span>
-          <span class="csz-price">$98</span>
+        <input type="radio" name="cust-sz" id="csz-5" class="csz-radio" value="25" checked/>
+        <label for="csz-5" class="csz-label">
+          <span class="csz-inch">5&quot;</span>
+          <span class="csz-serves">Serves 6</span>
+          <span class="csz-price">$25</span>
         </label>
-        <input type="radio" name="cust-sz" id="csz-10" class="csz-radio" value="135"/>
+        <input type="radio" name="cust-sz" id="csz-6" class="csz-radio" value="60"/>
+        <label for="csz-6" class="csz-label">
+          <span class="csz-inch">6&quot;</span>
+          <span class="csz-serves">Serves 10</span>
+          <span class="csz-price">$60</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-8" class="csz-radio" value="80"/>
+        <label for="csz-8" class="csz-label">
+          <span class="csz-inch">8&quot;</span>
+          <span class="csz-serves">Serves 20</span>
+          <span class="csz-price">$80</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-10" class="csz-radio" value="140"/>
         <label for="csz-10" class="csz-label">
           <span class="csz-inch">10&quot;</span>
-          <span class="csz-serves">Serves 25–30</span>
-          <span class="csz-price">$135</span>
+          <span class="csz-serves">Serves 30</span>
+          <span class="csz-price">$140</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-12" class="csz-radio" value="160"/>
+        <label for="csz-12" class="csz-label">
+          <span class="csz-inch">12&quot;</span>
+          <span class="csz-serves">Serves 40</span>
+          <span class="csz-price">$160</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-14" class="csz-radio" value="180"/>
+        <label for="csz-14" class="csz-label">
+          <span class="csz-inch">14&quot;</span>
+          <span class="csz-serves">Serves 50</span>
+          <span class="csz-price">$180</span>
         </label>
       </div>
       <div class="cust-pricing-note">Base price shown. Final price confirmed after design consultation.</div>
@@ -796,7 +820,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
     <div class="deposit-note"><strong>50% deposit required to confirm your order.</strong> The deposit is charged today via PayPal. The remaining balance will be agreed with Vanessa before your order is confirmed, and is due 48 hrs before delivery.</div>
     <div class="deposit-amount-display">
       <span>Deposit due today (50%)</span>
-      <strong id="deposit-amount-text">$49.00</strong>
+      <strong id="deposit-amount-text">$12.50</strong>
     </div>
     <div id="paypal-button-container" class="paypal-wrapper" style="display:none;"></div>
     <div class="paypal-ack-hint" id="paypal-ack-hint">☝️ Check the acknowledgement above to unlock payment</div>
@@ -1752,7 +1776,7 @@ function closeLightbox(e) {
 /* ── Deposit amount helper ── */
 function getDepositAmount() {
   var checked = document.querySelector('input[name="cust-sz"]:checked');
-  var price   = checked ? parseFloat(checked.value) : 98;
+  var price   = checked ? parseFloat(checked.value) : 25;
   return (price * 0.5).toFixed(2);
 }
 function updateDepositDisplay() {
@@ -1922,4 +1946,4 @@ window.showToast          = showToast;
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
