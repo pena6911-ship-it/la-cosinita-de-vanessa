@@ -90,6 +90,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .section-title em{font-style:italic;color:#E91E8C;}
 .section-desc{font-size:14px;font-weight:300;line-height:1.8;color:var(--text-mid);margin-bottom:32px;}
 
+/* ── Centered content column (mobile + desktop) ── */
+.nav-inner{max-width:1180px;margin-left:auto;margin-right:auto;width:100%;}
+.section{display:flex;flex-direction:column;align-items:center;}
+.section > *{width:100%;max-width:1120px;margin-left:auto;margin-right:auto;}
+.section-label,.section-title{text-align:center;}
+.section-desc{text-align:center;max-width:640px;margin-left:auto;margin-right:auto;}
+.form-card{max-width:680px;}
+.about-strip{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.about-strip > *{width:100%;max-width:1120px;margin-left:auto;margin-right:auto;}
+.hero-content{max-width:1180px;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.hero-logo{margin-left:0;margin-right:0;}
+.hero-sub{margin-left:auto;margin-right:auto;}
+.hero-ctas{justify-content:center;}
+
 /* ══ SHOP CATALOG ══ */
 #shop{background:var(--warm-white);}
 .cat-pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:none;}
@@ -418,6 +432,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 }
 @media(min-width:600px){
   .form-card{padding:36px 32px;} .product-grid{grid-template-columns:repeat(3,1fr);}
+  .cat-pills{justify-content:center;}
   .modal-overlay,.sheet-overlay{align-items:center;}
   .modal{border-radius:28px;max-width:420px;}
   .sheet{max-width:520px;border-radius:24px;}
@@ -959,7 +974,7 @@ function openSheet(key) {
       <span class="sel-label">Cake Flavor</span>
       <select class="flavor-sel" id="sheet-flavor">${p.flavors.map(f=>`<option>${f}</option>`).join('')}</select>
     </div>
-    <div class="flavor-wrap">
+    <div class="flavor-wrap" id="sheet-filling-wrap">
       <span class="sel-label">Cake Filling</span>
       <select class="flavor-sel" id="sheet-filling">${p.fillings.map(f=>`<option>${f}</option>`).join('')}</select>
     </div>`;
@@ -969,7 +984,7 @@ function openSheet(key) {
       <select class="flavor-sel" id="sheet-flavor">${p.flavors.map(f=>`<option>${f}</option>`).join('')}</select>
     </div>`;
   } else if (hasFillings) {
-    flavorHTML = `<div class="flavor-wrap" style="margin-top:16px">
+    flavorHTML = `<div class="flavor-wrap" id="sheet-filling-wrap" style="margin-top:16px">
       <span class="sel-label">Filling</span>
       <select class="flavor-sel" id="sheet-filling">${p.fillings.map(f=>`<option>${f}</option>`).join('')}</select>
     </div>`;
@@ -1018,6 +1033,7 @@ function openSheet(key) {
     <a href="#order" class="custom-order-link" onclick="closeSheet()">Need a fully custom design? →</a>
   `;
 
+  applyFillingVisibility();
   document.getElementById('sheet-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1030,7 +1046,26 @@ function closeSheet(e) {
 
 function sheetSizeChange(idx) {
   currentSizeIdx = idx;
+  applyFillingVisibility();
   updateSheetPrice();
+}
+
+/* A size has no filling option if Vanessa unchecked "Filling?" for it in the
+   admin dashboard, which stores "noFilling":true on that size in the DB. */
+function fillingAllowedForSize(size) {
+  if (!size) return true;
+  return size.noFilling !== true;
+}
+function applyFillingVisibility() {
+  const p = PRODUCTS[currentProduct];
+  if (!p) return;
+  const w = document.getElementById('sheet-filling-wrap');
+  if (!w) return;
+  w.style.display = fillingAllowedForSize(p.sizes[currentSizeIdx]) ? '' : 'none';
+}
+function isFillingVisible() {
+  const w = document.getElementById('sheet-filling-wrap');
+  return !!w && w.style.display !== 'none';
 }
 
 function updateSheetPrice() {
@@ -1073,7 +1108,7 @@ function addToOrder() {
   const p = PRODUCTS[currentProduct];
   const size = p.sizes[currentSizeIdx];
   const flavorEl  = document.getElementById('sheet-flavor');
-  const fillingEl = document.getElementById('sheet-filling');
+  const fillingEl = isFillingVisible() ? document.getElementById('sheet-filling') : null;
   const gfEl      = document.getElementById('sheet-gf');
   let detail = '';
   if (flavorEl && fillingEl) {
@@ -1348,7 +1383,7 @@ function showCheckoutStep() {
   var p    = PRODUCTS[currentProduct];
   var size = p.sizes[currentSizeIdx];
   var flavorEl  = document.getElementById('sheet-flavor');
-  var fillingEl = document.getElementById('sheet-filling');
+  var fillingEl = isFillingVisible() ? document.getElementById('sheet-filling') : null;
   var dulceEl   = document.getElementById('sheet-dulce');
   var detail = flavorEl ? flavorEl.value : '';
   if (fillingEl) detail += ' · ' + fillingEl.value;
@@ -1494,7 +1529,7 @@ async function submitProductOrder(paypalDetails) {
   var p      = PRODUCTS[currentProduct];
   var size   = p.sizes[currentSizeIdx];
   var flavorEl  = document.getElementById('sheet-flavor');
-  var fillingEl = document.getElementById('sheet-filling');
+  var fillingEl = isFillingVisible() ? document.getElementById('sheet-filling') : null;
   var dulceEl   = document.getElementById('sheet-dulce');
   var detail = flavorEl ? flavorEl.value : '';
   if (fillingEl && fillingEl.value) detail += ' · ' + fillingEl.value;
@@ -1946,4 +1981,4 @@ window.showToast          = showToast;
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
