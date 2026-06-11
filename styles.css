@@ -333,12 +333,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(10px + var(--sa
 .contact-link:active{border-color:#E91E8C;color:#E91E8C;background:rgba(255,255,255,0.65);}
 .contact-link-icon{font-size:18px;flex-shrink:0;}
 
-/* FOOTER */
-footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text-align:center;}
-.footer-logo{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--cream);margin-bottom:8px;}
-.footer-logo em{font-style:italic;color:#F48FB1;}
-.footer-tagline{font-size:10px;color:rgba(249,243,236,0.26);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:14px;}
-.footer-legal{font-size:10px;color:rgba(249,243,236,0.17);line-height:1.9;}
+/* FOOTER — matches header theme */
+footer{background:rgba(255,240,247,0.97);border-top:3px solid #F8BBD9;box-shadow:0 -2px 18px rgba(233,30,140,0.06);padding:26px 20px calc(26px + var(--safe-bottom));text-align:center;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--mocha);margin-bottom:8px;}
+.footer-logo em{font-style:italic;color:var(--caramel);}
+.footer-tagline{font-size:10px;color:#8A2858;letter-spacing:0.13em;text-transform:uppercase;margin-bottom:14px;}
+.footer-legal{font-size:10px;color:rgba(136,14,79,0.7);line-height:1.9;}
 
 /* MODALS */
 .modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(74,14,46,0.82);align-items:flex-end;justify-content:center;}
@@ -490,3 +490,7 @@ footer{background:#2D0A1E;padding:26px 20px calc(26px + var(--safe-bottom));text
 .tl-pillar-icon { font-size: 38px; margin-bottom: 12px; }
 .tl-pillar-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--mocha); margin-bottom: 8px; }
 .tl-pillar-desc { font-size: 13px; color: var(--text-mid); line-height: 1.75; }
+
+/* ── Custom-order reference photo upload ── */
+.ref-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.ref-thumb{font-size:11px;background:rgba(233,30,140,0.08);border:1px solid rgba(233,30,140,0.22);color:#AD1457;border-radius:8px;padding:4px 9px;}

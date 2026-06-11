@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#E91E8C"/>
+<title>Custom Order — La Cosinita de Vanessa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AUFMTLWkfArSRabV7iwL8a9wG8XL0q0jwH_AwhoRrAMFbOqnr4QVfXlMDldaWVrm2HHksfe1ZjK1nx3A&currency=USD" data-sdk-integration-source="button-factory"></script>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html" style="text-decoration:none">La <span>Cosinita</span> de Vanessa</a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html#shop">Shop</a>
+      <a href="projects.html">Gallery</a>
+      <a href="custom-order.html">Custom Order</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="location.href='index.html#cart'" aria-label="View cart">🛒<span class="cart-badge" id="cart-badge" style="display:none">0</span></button>
+      <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- CUSTOM ORDER FORM -->
+<section class="section" id="order">
+  <div class="reveal">
+    <div class="section-label">✦ Custom Order</div>
+    <h2 class="section-title">Design your<br><em>dream cake</em></h2>
+    <p class="section-desc">For fully custom designs — Vanessa will reach out to finalize every detail before confirming.</p>
+  </div>
+  <div class="form-card reveal">
+    <div class="form-section-title">👤 Your Information</div>
+    <div class="field-row">
+      <div class="field"><label>First Name</label><input type="text" id="fname" placeholder="María" autocomplete="given-name"/></div>
+      <div class="field"><label>Last Name</label><input type="text" id="lname" placeholder="Rodríguez" autocomplete="family-name"/></div>
+    </div>
+    <div class="field"><label>Email</label><input type="email" id="email" placeholder="maria@email.com" autocomplete="email" inputmode="email"/></div>
+    <div class="field"><label>Phone</label><input type="tel" id="phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel"/></div>
+
+    <div class="form-section-title">🎂 Cake Details</div>
+    <div class="field">
+      <label>Occasion</label>
+      <select id="occasion">
+        <option value="">Select occasion...</option>
+        <option>Birthday · Cumpleaños</option><option>Wedding · Boda</option>
+        <option>Quinceañera</option><option>Baby Shower</option>
+        <option>Anniversary · Aniversario</option><option>Baptism · Bautizo</option>
+        <option>Graduation · Graduación</option><option>Corporate Event</option><option>Other</option>
+      </select>
+    </div>
+    <!-- Starting Price Card -->
+    <div class="cust-pricing">
+      <div class="cust-pricing-eye">✦ Starting Price</div>
+      <div class="cust-pricing-ttl">La Cosinita <em style="font-style:italic;color:#F48FB1">Signature Cake</em></div>
+      <div class="cust-sz-wrap">
+        <input type="radio" name="cust-sz" id="csz-5" class="csz-radio" value="25" checked/>
+        <label for="csz-5" class="csz-label">
+          <span class="csz-inch">5&quot;</span>
+          <span class="csz-serves">Serves 6</span>
+          <span class="csz-price">$25</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-6" class="csz-radio" value="60"/>
+        <label for="csz-6" class="csz-label">
+          <span class="csz-inch">6&quot;</span>
+          <span class="csz-serves">Serves 10</span>
+          <span class="csz-price">$60</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-8" class="csz-radio" value="80"/>
+        <label for="csz-8" class="csz-label">
+          <span class="csz-inch">8&quot;</span>
+          <span class="csz-serves">Serves 20</span>
+          <span class="csz-price">$80</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-10" class="csz-radio" value="140"/>
+        <label for="csz-10" class="csz-label">
+          <span class="csz-inch">10&quot;</span>
+          <span class="csz-serves">Serves 30</span>
+          <span class="csz-price">$140</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-12" class="csz-radio" value="160"/>
+        <label for="csz-12" class="csz-label">
+          <span class="csz-inch">12&quot;</span>
+          <span class="csz-serves">Serves 40</span>
+          <span class="csz-price">$160</span>
+        </label>
+        <input type="radio" name="cust-sz" id="csz-14" class="csz-radio" value="180"/>
+        <label for="csz-14" class="csz-label">
+          <span class="csz-inch">14&quot;</span>
+          <span class="csz-serves">Serves 50</span>
+          <span class="csz-price">$180</span>
+        </label>
+      </div>
+      <div class="cust-pricing-note">Base price shown. Final price confirmed after design consultation.</div>
+    </div>
+
+    <!-- PRODUCT — Custom Cake -->
+    <div class="custom-product-card">
+      <div class="custom-product-img-wrap">
+        <img src="https://nqrlxslgstajryimndsx.supabase.co/storage/v1/object/public/product-images/cake3.jpg" alt="La Cosinita Signature Custom Cake" style="display:block;width:100%;height:100%;object-fit:cover;object-position:center 60%;"/>
+        <div class="custom-product-emoji" style="display:none">🎂</div>
+        <span class="custom-product-badge">Custom Order</span>
+      </div>
+      <div class="custom-product-info">
+        <div class="custom-product-name">La Cosinita <em>Signature Cake</em></div>
+        <div class="custom-product-desc">A fully custom Dominican cake designed just for you. Tell us your vision below — colors, theme, occasion, decorations — and Vanessa will bring it to life.</div>
+        <div class="custom-product-tags">
+          <span class="custom-tag">🎨 Fully Custom Design</span>
+          <span class="custom-tag">🎂 Any Size</span>
+          <span class="custom-tag">📍 Manhattan &amp; Bronx</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section-title">📅 Delivery Details</div>
+    <div class="datetime-row">
+      <div class="field"><label>Delivery Date</label><input type="date" id="delivery-date"/></div>
+      <div class="field">
+        <label>Delivery Time</label>
+        <select id="delivery-time">
+          <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+          <option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option>
+          <option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option>
+        </select>
+      </div>
+    </div>
+    <p class="datetime-info">ℹ️ Please book at least 7 days in advance. Delivery to Manhattan &amp; the Bronx only.</p>
+    <div class="field" style="margin-top:12px">
+      <label>Street Address</label>
+      <input type="text" id="address" placeholder="123 Main St" autocomplete="address-line1"/>
+    </div>
+    <div class="field">
+      <label>Apt / Suite / Floor <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input type="text" id="address-apt" placeholder="Apt 4B" autocomplete="address-line2"/>
+    </div>
+    <div class="field-row" style="margin-bottom:14px">
+      <div class="field" style="margin-bottom:0">
+        <label>City</label>
+        <input type="text" id="address-city" placeholder="Bronx" autocomplete="address-level2"/>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>State</label>
+        <input type="text" id="address-state" value="NY" readonly
+               style="background:var(--warm-white);color:var(--text-mid);cursor:default;"
+               autocomplete="address-level1"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>ZIP Code</label>
+      <input type="text" id="address-zip" placeholder="10451" autocomplete="postal-code" maxlength="10" inputmode="numeric"/>
+    </div>
+
+    <div class="form-section-title">✏️ Design Instructions</div>
+    <div class="field">
+      <label>Tell Vanessa Your Vision</label>
+      <textarea id="instructions" placeholder="Describe your dream cake! Colors, themes, decorations, text, inspiration — the more detail the better. ¡Escribe en inglés o español!"></textarea>
+    </div>
+    <div class="field">
+      <label>Allergies / Dietary Notes</label>
+      <input type="text" id="allergies" placeholder="e.g. nut-free, no dairy..."/>
+    </div>
+
+    <div class="field">
+      <label>Reference Photos <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional · up to 5)</span></label>
+      <input type="file" id="reference-photos" accept="image/*" multiple onchange="previewRefPhotos()" style="padding:10px 12px"/>
+      <div id="ref-photo-preview" class="ref-preview"></div>
+      <p class="datetime-info">Share inspiration or examples for Vanessa — JPG or PNG, up to 5 images.</p>
+    </div>
+
+    <div class="price-notice" style="margin-top:22px;">
+      <div class="price-notice-title">⚠️ Pricing Notice</div>
+      <div class="price-notice-text">The base price for your selected size is shown above. Depending on <strong>materials, customization options, and your required timeframe</strong>, there may be an additional agreed-upon charge that Vanessa will communicate before confirming your order. Any additional amount is due at delivery.</div>
+    </div>
+    <div class="ack-wrap">
+      <label class="ack-label">
+        <input type="checkbox" id="custom-ack" onchange="toggleCustomAck()"/>
+        <span>I understand the listed price is the <strong>base price</strong> and additional charges for customization, materials, and timeframe may apply — to be agreed upon before my order is confirmed.</span>
+      </label>
+    </div>
+
+    <div class="form-section-title">💳 Secure Payment</div>
+    <div class="deposit-note"><strong>50% deposit required to confirm your order.</strong> The deposit is charged today via PayPal. The remaining balance will be agreed with Vanessa before your order is confirmed, and is due 48 hrs before delivery.</div>
+    <div class="deposit-amount-display">
+      <span>Deposit due today (50%)</span>
+      <strong id="deposit-amount-text">$12.50</strong>
+    </div>
+    <div id="paypal-button-container" class="paypal-wrapper" style="display:none;"></div>
+    <div class="paypal-ack-hint" id="paypal-ack-hint">☝️ Check the acknowledgement above to unlock payment</div>
+    <div class="secure-badge">🔒 Payments processed securely via PayPal — PCI DSS Compliant</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">La <em>Cosinita</em> de Vanessa</div>
+  <div class="footer-tagline">Tres Leches Specialist · Manhattan &amp; The Bronx</div>
+  <div class="footer-legal">© 2026 La Cosinita de Vanessa. All rights reserved.<br>Payments processed securely via PayPal.</div>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="success-modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h3 class="modal-title">¡Gracias!<br>Order <em>Received</em></h3>
+    <p class="modal-body">Vanessa has received your order! Expect a message within 24 hours to finalize your design. ¡Tu pastel será hermoso!</p>
+    <button class="btn-primary" style="width:100%;justify-content:center;font-size:15px" onclick="closeModal()">Perfect — Back to Home</button>
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

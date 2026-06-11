@@ -109,7 +109,7 @@ function openSheet(key) {
     </div>
 
     <button class="add-btn" onclick="addToOrder()">🛒 &nbsp;Add to Cart</button>
-    <a href="#order" class="custom-order-link" onclick="closeSheet()">Need a fully custom design? →</a>
+    <a href="custom-order.html" class="custom-order-link" onclick="closeSheet()">Need a fully custom design? →</a>
   `;
 
   renderFlavorSelects();
@@ -193,7 +193,32 @@ function toggleServeGuide(el) {
 }
 
 /* ── CART ── */
-let cart = [];
+let cart = loadCart();
+function loadCart() {
+  try { return JSON.parse(localStorage.getItem('lcv_cart') || '[]') || []; }
+  catch (e) { return []; }
+}
+function saveCart() {
+  try { localStorage.setItem('lcv_cart', JSON.stringify(cart)); } catch (e) {}
+  updateCartBadge();
+}
+function updateCartBadge() {
+  var badge = document.getElementById('cart-badge');
+  if (!badge) return;
+  var totalQty = cart.reduce(function (s, i) { return s + (i.qty || 0); }, 0);
+  if (totalQty > 0) { badge.textContent = totalQty; badge.style.display = 'flex'; }
+  else { badge.style.display = 'none'; }
+}
+function setActiveNav() {
+  var file = location.pathname.split('/').pop() || 'index.html';
+  if (file === '') file = 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(function (a) {
+    var href = a.getAttribute('href') || '';
+    var hrefFile = href.split('#')[0].split('/').pop();
+    var active = (file === 'index.html') ? (href === '#shop' || hrefFile === 'index.html') : (hrefFile === file);
+    a.classList.toggle('active', active);
+  });
+}
 
 function getSheetPrice() {
   const p = PRODUCTS[currentProduct];
@@ -241,6 +266,7 @@ function addToOrder() {
     price,
     qty:   1
   });
+  saveCart();
   renderCart();
   closeSheet();
   showToast(`✓ ${size.label} ${p.badge} added to cart!`);
@@ -296,11 +322,13 @@ function renderCart() {
 
 function changeQty(idx, delta) {
   cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+  saveCart();
   renderCart();
 }
 
 function removeItem(idx) {
   cart.splice(idx, 1);
+  saveCart();
   renderCart();
   if (cart.length === 0) showToast('Cart cleared ✦');
 }
@@ -470,6 +498,7 @@ async function submitCartOrder(paypalDetails) {
     document.getElementById('checkout-overlay').classList.remove('open');
     document.body.style.overflow = '';
     cart = [];
+    saveCart();
     renderCart();
     document.getElementById('success-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -817,6 +846,8 @@ if (document.getElementById('cart-items-list')) renderCart();
 loadGallery();
 loadProducts();
 if (location.hash === '#cart' && document.getElementById('cart-drawer')) openCart();
+updateCartBadge();
+setActiveNav();
 
 /* ── Mobile hamburger menu ── */
 function toggleMobileMenu() {
@@ -968,6 +999,7 @@ document.querySelectorAll('input[name="cust-sz"]').forEach(function(inp) {
 /* ── PayPal button init ── */
 (function initPayPal() {
   if (!window.paypal) { console.warn('PayPal SDK not loaded'); return; }
+  if (!document.getElementById('paypal-button-container')) return;
   paypal.Buttons({
     style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
 
@@ -1004,6 +1036,38 @@ document.querySelectorAll('input[name="cust-sz"]').forEach(function(inp) {
   }).render('#paypal-button-container');
 })();
 
+/* ── Custom-order reference photo upload (Supabase Storage) ── */
+async function uploadReferenceImages(orderRef) {
+  const input = document.getElementById('reference-photos');
+  if (!input || !input.files || !input.files.length) return [];
+  const files = Array.from(input.files).slice(0, 5);
+  const urls = [];
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    if (!f.type || f.type.indexOf('image/') !== 0) continue;
+    const ext = ((f.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '')) || 'jpg';
+    const path = orderRef + '/' + Date.now() + '-' + i + '.' + ext;
+    try {
+      const up = await _sb.storage.from('order-references').upload(path, f, { cacheControl: '3600', upsert: false });
+      if (up.error) { console.warn('Reference upload failed:', up.error); continue; }
+      const pub = _sb.storage.from('order-references').getPublicUrl(path);
+      if (pub.data && pub.data.publicUrl) urls.push(pub.data.publicUrl);
+    } catch (e) { console.warn('Reference upload error:', e); }
+  }
+  return urls;
+}
+function previewRefPhotos() {
+  const input = document.getElementById('reference-photos');
+  const box = document.getElementById('ref-photo-preview');
+  if (!input || !box) return;
+  let files = Array.from(input.files || []);
+  if (files.length > 5) { showToast('Up to 5 photos — extra ones will be skipped.'); files = files.slice(0, 5); }
+  box.innerHTML = files.map(function (f) {
+    var n = f.name.length > 18 ? f.name.slice(0, 16) + '…' : f.name;
+    return '<span class="ref-thumb">🖼️ ' + n + '</span>';
+  }).join('');
+}
+
 /* ── Custom order form submit (called by PayPal onApprove) ── */
 async function handleSubmit(paypalDetails) {
   const paypalOrderId = paypalDetails ? paypalDetails.id : null;
@@ -1031,6 +1095,7 @@ async function handleSubmit(paypalDetails) {
 
   try {
     const customOrderRef = generateOrderRef();
+    const refImages = await uploadReferenceImages(customOrderRef);
     const { data: cust, error: custErr } = await _sb
       .from('customers')
       .upsert({ first_name: fname, last_name: lname, email: email, phone: phone, source: 'web_order' }, { onConflict: 'email', ignoreDuplicates: false })
@@ -1054,6 +1119,7 @@ async function handleSubmit(paypalDetails) {
         allergies:        allergies,
         payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
         paypal_order_id:  paypalOrderId,
+        reference_images: refImages,
         source:           'web_order'
       });
     if (orderErr) throw orderErr;
@@ -1061,7 +1127,8 @@ async function handleSubmit(paypalDetails) {
     sendOrderEmails({ name: fname + ' ' + lname, email: email, phone: phone,
       orderRef: customOrderRef,
       items: 'Custom Cake — ' + (size ? size + ' inch base ($' + size + ')' : 'size TBD') + '\nDeposit paid: $' + deposit + ' (PayPal ' + (paypalOrderId || 'N/A') + ')',
-      date: date, time: time, address: fullAddress, notes: notes });
+      date: date, time: time, address: fullAddress,
+      notes: notes + (refImages.length ? '\nReference photos: ' + refImages.join('  ') : '') });
 
     document.getElementById('success-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -1113,6 +1180,7 @@ window.showCheckoutStep   = showCheckoutStep;
 window.togglePlaceBtn     = togglePlaceBtn;
 window.submitProductOrder = submitProductOrder;
 window.toggleCustomAck    = toggleCustomAck;
+window.previewRefPhotos   = previewRefPhotos;
 window.filterCat          = filterCat;
 window.loadGallery        = loadGallery;
 window.loadProducts
