@@ -16,16 +16,18 @@
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="index.html" style="text-decoration:none">La <span>Cosinita</span> de Vanessa</a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <a href="index.html#shop">Shop</a>
       <a href="projects.html">Gallery</a>
       <a href="index.html#order">Custom Order</a>
       <a href="about.html">About</a>
     </div>
-    <button class="cart-btn" onclick="location.href='index.html#cart'" aria-label="View cart">🛒<span class="cart-badge" id="cart-badge" style="display:none">0</span></button>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="location.href='index.html#cart'" aria-label="View cart">🛒<span class="cart-badge" id="cart-badge" style="display:none">0</span></button>
+      <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
   </div>
 </nav>
-<button class="mobile-cart-fab" onclick="location.href='index.html#cart'" aria-label="View cart">🛒</button>
 
 <!-- ABOUT STRIP -->
 <div class="about-strip reveal">
