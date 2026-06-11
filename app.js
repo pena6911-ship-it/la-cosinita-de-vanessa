@@ -818,6 +818,26 @@ loadGallery();
 loadProducts();
 if (location.hash === '#cart' && document.getElementById('cart-drawer')) openCart();
 
+/* ── Mobile hamburger menu ── */
+function toggleMobileMenu() {
+  var nav = document.querySelector('nav');
+  if (!nav) return;
+  var open = nav.classList.toggle('open');
+  var h = nav.querySelector('.nav-hamburger');
+  if (h) { h.setAttribute('aria-expanded', open ? 'true' : 'false'); h.textContent = open ? '\u2715' : '\u2630'; }
+}
+window.toggleMobileMenu = toggleMobileMenu;
+document.addEventListener('click', function (e) {
+  var nav = document.querySelector('nav');
+  if (!nav || !nav.classList.contains('open')) return;
+  var clickedLink = e.target.closest && e.target.closest('.nav-links a');
+  if (clickedLink || !nav.contains(e.target)) {
+    nav.classList.remove('open');
+    var h = nav.querySelector('.nav-hamburger');
+    if (h) { h.setAttribute('aria-expanded', 'false'); h.textContent = '\u2630'; }
+  }
+});
+
 
 /* ── Email confirmations ──
    Switch providers with EMAIL_PROVIDER below.
