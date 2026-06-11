@@ -2,6 +2,10 @@
   publish = "."
   command = ""
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_ANON_KEY"
 
@@ -12,9 +16,7 @@
       default-src 'self';
       script-src 'self' 'unsafe-inline'
         https://cdn.jsdelivr.net
-        https://fonts.googleapis.com
-        https://www.paypal.com
-        https://www.paypalobjects.com;
+        https://fonts.googleapis.com;
       style-src 'self' 'unsafe-inline'
         https://fonts.googleapis.com;
       style-src-elem 'self' 'unsafe-inline'
@@ -24,11 +26,4 @@
       connect-src 'self'
         https://*.supabase.co
         https://cdn.jsdelivr.net
-        https://api.emailjs.com
-        https://*.paypal.com
-        https://*.braintree-api.com;
-      frame-src
-        https://www.paypal.com
-        https://www.sandbox.paypal.com;
-      img-src 'self' data: https:;
-    """
+ 
