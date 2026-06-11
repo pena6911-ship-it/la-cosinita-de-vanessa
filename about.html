@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#E91E8C"/>
+<title>About & Contact — La Cosinita de Vanessa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html" style="text-decoration:none">La <span>Cosinita</span> de Vanessa</a>
+    <div class="nav-links">
+      <a href="index.html#shop">Shop</a>
+      <a href="projects.html">Gallery</a>
+      <a href="index.html#order">Custom Order</a>
+      <a href="about.html">About</a>
+    </div>
+    <button class="cart-btn" onclick="location.href='index.html#cart'" aria-label="View cart">🛒<span class="cart-badge" id="cart-badge" style="display:none">0</span></button>
+  </div>
+</nav>
+<button class="mobile-cart-fab" onclick="location.href='index.html#cart'" aria-label="View cart">🛒</button>
+
+<!-- ABOUT STRIP -->
+<div class="about-strip reveal">
+  <div class="section-label" style="color:#A8DCE8">✦ Why Choose Us</div>
+  <h2 class="section-title">Masters of<br><em>Tres Leches</em></h2>
+  <p class="section-desc">Vanessa has spent years perfecting the art of the Dominican Tres Leches — soaked in three milks, crafted by hand, and made to order for every occasion.</p>
+  <div class="about-stats">
+    <div class="stat reveal reveal-d1"><span class="stat-num">500+</span><span class="stat-label">Cakes Created</span></div>
+    <div class="stat reveal reveal-d2"><span class="stat-num">8</span><span class="stat-label">Years Experience</span></div>
+    <div class="stat reveal reveal-d3"><span class="stat-num">★5.0</span><span class="stat-label">Avg Rating</span></div>
+  </div>
+</div>
+
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label" style="color:#AD1457">✦ Get In Touch</div>
+  <h2 class="section-title" style="text-align:center">Questions?<br><em>Let's talk.</em></h2>
+  <p class="section-desc">We love talking cake. Vanessa replies within 24 hours.</p>
+  <div class="contact-links">
+    <a href="tel:+16462800105" class="contact-link"><span class="contact-link-icon">📞</span>(646) 280-0105</a>
+    <a href="mailto:lacosinitadevanessa@gmail.com" class="contact-link"><span class="contact-link-icon">✉️</span>lacosinitadevanessa@gmail.com</a>
+    <a href="https://www.instagram.com/la_cosinita_de_vanessa" target="_blank" rel="noopener" class="contact-link"><span class="contact-link-icon">📸</span>@la_cosinita_de_vanessa</a>
+    <a href="https://wa.me/16462800105" target="_blank" rel="noopener" class="contact-link"><span class="contact-link-icon">💬</span>WhatsApp Vanessa</a>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">La <em>Cosinita</em> de Vanessa</div>
+  <div class="footer-tagline">Tres Leches Specialist · Manhattan &amp; The Bronx</div>
+  <div class="footer-legal">© 2026 La Cosinita de Vanessa. All rights reserved.<br>Payments processed securely via PayPal.</div>
+</footer>
+
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
