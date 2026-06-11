@@ -2,12 +2,12 @@
   publish = "."
   command = ""
 
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_ANON_KEY"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-
-[build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_ANON_KEY"
 
 [[headers]]
   for = "/*"
@@ -26,4 +26,6 @@
       connect-src 'self'
         https://*.supabase.co
         https://cdn.jsdelivr.net
- 
+        https://api.emailjs.com;
+      img-src 'self' data: https:;
+    """
