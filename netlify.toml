@@ -31,7 +31,8 @@
         https://*.supabase.co
         https://cdn.jsdelivr.net
         https://api.emailjs.com
-        https://*.paypal.com;
+        https://*.paypal.com
+        https://api.geoapify.com;
       frame-src https://*.paypal.com;
       img-src 'self' data: https:;
     """

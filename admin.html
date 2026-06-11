@@ -731,6 +731,14 @@ const ANON_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 let authClient, adminClient;
 let allOrders = [], allCustomers = [];
+function parseRefImages(v){ if(!v) return []; if(Array.isArray(v)) return v.filter(Boolean); if(typeof v==='string'){ try{ var p=JSON.parse(v); return Array.isArray(p)?p.filter(Boolean):(v?[v]:[]); }catch(e){ return v?[v]:[]; } } return []; }
+function customerForOrder(o){ return (allCustomers||[]).find(function(c){ return o && c.id === o.customer_id; }) || null; }
+function customerNameFor(o){
+  if (o.customer_first_name || o.customer_last_name) return [o.customer_first_name, o.customer_last_name].filter(Boolean).join(' ');
+  var c = customerForOrder(o);
+  if (c) return [c.first_name, c.last_name].filter(Boolean).join(' ') || c.email || o.customer_id || '—';
+  return o.customer_id || '—';
+}
 let currentPeriod = 'all', filteredOrders = [];
 let currentOrderId = null;
 let currentEditKey = null;
@@ -789,7 +797,8 @@ document.getElementById('signOutBtn').addEventListener('click', async () => {
 // LOAD ALL DATA
 // ══════════════════════════════════════════════
 async function loadAll() {
-  await Promise.all([loadOrders(), loadCustomers()]);
+  await loadCustomers();
+  await loadOrders();
   updateStats();
   loadProducts();
 }
@@ -935,7 +944,7 @@ function parseOrderItems(raw) {
 function filterOrders() {
   const q = document.getElementById('orderSearch').value.toLowerCase();
   const shown = filteredOrders.filter(o => {
-    const name = ((o.customer_first_name||'') + ' ' + (o.customer_last_name||'')).toLowerCase();
+    const name = customerNameFor(o).toLowerCase();
     return (o.order_reference||'').toLowerCase().includes(q)
       || name.includes(q)
       || (o.order_type||'').toLowerCase().includes(q)
@@ -955,7 +964,7 @@ function renderOrders(list) {
     const itemSummary = items.length
       ? items.map(it => escHtml(it.name||it.label||it.key||'Item')).join(', ')
       : '—';
-    const custName = [o.customer_first_name, o.customer_last_name].filter(Boolean).join(' ') || o.customer_id || '—';
+    const custName = customerNameFor(o);
     const date = o.created_at ? new Date(o.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
     const delivery = o.delivery_date ? new Date(o.delivery_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
     return `<tr onclick="openOrderModal('${escHtml(o.id)}')">
@@ -979,9 +988,13 @@ function openOrderModal(id) {
   const o = allOrders.find(x => x.id === id);
   if (!o) return;
   currentOrderId = id;
+  var refImgs = parseRefImages(o.reference_images);
+  var refHtml = refImgs.length
+    ? '<div style="display:flex;flex-wrap:wrap;gap:8px">' + refImgs.map(function(u){ return '<a href="'+escHtml(u)+'" target="_blank" rel="noopener"><img src="'+escHtml(u)+'" alt="reference" style="width:74px;height:74px;object-fit:cover;border-radius:8px;border:1px solid rgba(0,0,0,0.12);cursor:pointer;display:block"/></a>'; }).join('') + '</div>'
+    : '<span style="color:var(--muted)">\u2014</span>';
   document.getElementById('orderModalTitle').textContent = 'Order ' + (o.order_reference || id);
   const items = parseOrderItems(o.order_items);
-  const custName = [o.customer_first_name, o.customer_last_name].filter(Boolean).join(' ') || '—';
+  const custName = customerNameFor(o) || '—';
   const itemsHtml = items.length
     ? items.map(it => {
         const parts = [it.name||it.label||it.key||'Item'];
@@ -998,8 +1011,8 @@ function openOrderModal(id) {
 
   document.getElementById('orderModalBody').innerHTML = `
     <div class="modal-row"><label>Customer</label><div class="val">${escHtml(custName)}</div></div>
-    <div class="modal-row"><label>Email</label><div class="val">${escHtml(o.customer_email||'—')}</div></div>
-    <div class="modal-row"><label>Phone</label><div class="val">${escHtml(o.customer_phone||'—')}</div></div>
+    <div class="modal-row"><label>Email</label><div class="val">${escHtml((customerForOrder(o)||{}).email||o.customer_email||'—')}</div></div>
+    <div class="modal-row"><label>Phone</label><div class="val">${escHtml((customerForOrder(o)||{}).phone||o.customer_phone||'—')}</div></div>
     <div class="modal-row"><label>Order Type</label><div class="val">${mkTypeBadge(o.order_type)}</div></div>
     <div class="modal-row"><label>Source</label><div class="val">${escHtml(o.source||'—')}</div></div>
     <div class="modal-row"><label>Items</label><div class="orderItems">${itemsHtml}</div></div>
@@ -1011,7 +1024,7 @@ function openOrderModal(id) {
     <div class="modal-row"><label>Occasion</label><div class="val">${escHtml(o.occasion||'—')}</div></div>
     <div class="modal-row"><label>Theme Notes</label><div class="val">${escHtml(o.theme_notes||'—')}</div></div>
     <div class="modal-row"><label>Allergies</label><div class="val">${escHtml(o.allergies||'—')}</div></div>
-    <div class="modal-row"><label>Custom Size</label><div class="val">${escHtml(o.custom_size||'—')}</div></div>
+    <div class="modal-row"><label>Reference Photos</label><div class="val">${refHtml}</div></div>\n    <div class="modal-row"><label>Custom Size</label><div class="val">${escHtml(o.custom_size||'—')}</div></div>
     <div class="orderSelects">
       <div>
         <label>Status</label>

@@ -494,3 +494,9 @@ footer{background:rgba(255,240,247,0.97);border-top:3px solid #F8BBD9;box-shadow
 /* ── Custom-order reference photo upload ── */
 .ref-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .ref-thumb{font-size:11px;background:rgba(233,30,140,0.08);border:1px solid rgba(233,30,140,0.22);color:#AD1457;border-radius:8px;padding:4px 9px;}
+
+/* ── Address autocomplete dropdown ── */
+.addr-suggest-box{position:absolute;left:0;right:0;top:100%;z-index:60;background:#fff;border:1px solid rgba(233,30,140,0.25);border-radius:10px;box-shadow:0 8px 22px rgba(74,14,46,0.12);max-height:230px;overflow-y:auto;margin-top:4px;}
+.addr-suggest-item{padding:10px 12px;font-size:13px;color:var(--text-dark);cursor:pointer;border-bottom:1px solid rgba(233,30,140,0.08);}
+.addr-suggest-item:last-child{border-bottom:none;}
+.addr-suggest-item:active,.addr-suggest-item:hover{background:rgba(233,30,140,0.07);}

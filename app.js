@@ -5,6 +5,53 @@ const _sb = window.supabase.createClient(
 );
 if (window.emailjs) emailjs.init('q62O3cYHsOLIk7497');
 
+/* ── Address autocomplete (Geoapify) ── */
+var GEOAPIFY_KEY = 'f958693b4ff14cf08e4ba6ed83778776';
+function _debounce(fn, ms){ var t; return function(){ var a=arguments, c=this; clearTimeout(t); t=setTimeout(function(){ fn.apply(c,a); }, ms); }; }
+function attachAddressAutocomplete(opts){
+  var input = document.getElementById(opts.streetId);
+  if (!input || !GEOAPIFY_KEY || GEOAPIFY_KEY === 'YOUR_GEOAPIFY_KEY') return;
+  if (input.dataset.acBound) return; input.dataset.acBound = '1';
+  input.setAttribute('autocomplete','off');
+  if (input.parentNode) input.parentNode.style.position = 'relative';
+  var box = document.createElement('div');
+  box.className = 'addr-suggest-box'; box.style.display = 'none';
+  (input.parentNode || document.body).appendChild(box);
+  function hide(){ box.style.display='none'; box.innerHTML=''; }
+  function setVal(id, v){ if(!id) return; var el=document.getElementById(id); if(el && v) el.value = v; }
+  function choose(r){
+    if (opts.singleField){ input.value = r.formatted || input.value; }
+    else {
+      input.value = r.address_line1 || ((r.housenumber||'')+' '+(r.street||'')).trim() || r.formatted || input.value;
+      setVal(opts.cityId,  r.city);
+      setVal(opts.stateId, r.state_code || r.state);
+      setVal(opts.zipId,   r.postcode);
+    }
+    hide();
+  }
+  var doSearch = _debounce(function(){
+    var q = input.value.trim();
+    if (q.length < 3){ hide(); return; }
+    var url = 'https://api.geoapify.com/v1/geocode/autocomplete?text=' + encodeURIComponent(q) +
+              '&format=json&limit=5&filter=countrycode:us&bias=proximity:-73.95,40.78&apiKey=' + GEOAPIFY_KEY;
+    fetch(url).then(function(res){ return res.json(); }).then(function(data){
+      var results = (data && data.results) || [];
+      if (!results.length){ hide(); return; }
+      box.innerHTML = '';
+      results.forEach(function(r){
+        var item = document.createElement('div');
+        item.className = 'addr-suggest-item';
+        item.textContent = r.formatted || [r.address_line1, r.address_line2].filter(Boolean).join(', ');
+        item.addEventListener('mousedown', function(e){ e.preventDefault(); choose(r); });
+        box.appendChild(item);
+      });
+      box.style.display = 'block';
+    }).catch(function(){ hide(); });
+  }, 300);
+  input.addEventListener('input', doSearch);
+  input.addEventListener('blur', function(){ setTimeout(hide, 150); });
+}
+
 function generateOrderRef() {
   var d   = new Date();
   var dt  = d.toISOString().slice(0, 10).replace(/-/g, '');
@@ -579,6 +626,7 @@ function showCheckoutStep() {
   var body = document.getElementById('sheet-body');
   body.innerHTML = html;
   body.scrollTop = 0;
+  attachAddressAutocomplete({ streetId:'co-address', singleField:true });
 }
 
 function togglePlaceBtn() {
@@ -848,6 +896,7 @@ loadProducts();
 if (location.hash === '#cart' && document.getElementById('cart-drawer')) openCart();
 updateCartBadge();
 setActiveNav();
+attachAddressAutocomplete({ streetId:'address', cityId:'address-city', stateId:'address-state', zipId:'address-zip' });
 
 /* ── Mobile hamburger menu ── */
 function toggleMobileMenu() {
