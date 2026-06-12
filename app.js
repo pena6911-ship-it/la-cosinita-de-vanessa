@@ -827,6 +827,7 @@ async function loadProducts() {
 
     rows.forEach(function(row) {
       if (!row.is_available) return;
+      if (row.category === 'config' || row.key === 'custom-cake') return;
 
       /* Normalise serve_guide → {rows, extras} */
       let sg = row.serve_guide, serveGuide = null, extras = [];
@@ -905,6 +906,7 @@ if (location.hash === '#cart' && document.getElementById('cart-drawer')) openCar
 updateCartBadge();
 setActiveNav();
 attachAddressAutocomplete({ streetId:'address', cityId:'address-city', stateId:'address-state', zipId:'address-zip' });
+loadCustomOrderImage();
 
 /* ── Mobile hamburger menu ── */
 function toggleMobileMenu() {
@@ -975,6 +977,14 @@ function filterCat(cat, btn) {
 
 /* ── Gallery — loads from Supabase ── */
 let _galleryItems = [];
+
+function loadCustomOrderImage() {
+  var img = document.getElementById('custom-order-image');
+  if (!img) return;
+  _sb.from('products').select('image_url').eq('key', 'custom-cake').maybeSingle()
+    .then(function(res){ if (res && res.data && res.data.image_url) img.src = res.data.image_url; })
+    .catch(function(){});
+}
 
 async function loadGallery() {
   const grid = document.getElementById('gallery-grid');
