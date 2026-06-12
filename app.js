@@ -402,7 +402,7 @@ function proceedToCheckout() {
   closeCart();
 
   const minDate = new Date();
-  minDate.setDate(minDate.getDate() + 7);
+  minDate.setDate(minDate.getDate() + 1);
   const minStr = minDate.toISOString().split('T')[0];
   const total  = cart.reduce((s,i) => s + i.price * i.qty, 0);
 
@@ -577,7 +577,7 @@ function showCheckoutStep() {
   var pKey  = currentProduct;
 
   var minDate = new Date();
-  minDate.setDate(minDate.getDate() + 7);
+  minDate.setDate(minDate.getDate() + 1);
   var minStr = minDate.toISOString().split('T')[0];
 
   var html = '';
@@ -1032,9 +1032,9 @@ function closeLightbox(e) {
   }
 }
 
-/* ── Date min (7-day lead time) ── */
+/* ── Date min (3-day lead time: today + 2) ── */
 (function () {
-  const d = new Date(); d.setDate(d.getDate() + 7);
+  const d = new Date(); d.setDate(d.getDate() + 2);
   const el = document.getElementById('delivery-date');
   if (el) { el.min = el.value = d.toISOString().split('T')[0]; }
 })();
@@ -1126,6 +1126,20 @@ function previewRefPhotos() {
 }
 
 /* ── Custom order form submit (called by PayPal onApprove) ── */
+function resetCustomOrderForm() {
+  ['fname','lname','email','phone','address','address-apt','address-city','address-zip','allergies','instructions'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var occ = document.getElementById('occasion');        if (occ) occ.selectedIndex = 0;
+  var dt  = document.getElementById('delivery-date');   if (dt)  dt.value = dt.min || '';
+  var tm  = document.getElementById('delivery-time');   if (tm)  tm.selectedIndex = 0;
+  var rp  = document.getElementById('reference-photos');if (rp)  rp.value = '';
+  var pv  = document.getElementById('ref-photo-preview');if (pv) pv.innerHTML = '';
+  var firstSz = document.querySelector('input[name="cust-sz"]'); if (firstSz) firstSz.checked = true;
+  var ack = document.getElementById('custom-ack');      if (ack) { ack.checked = false; if (typeof toggleCustomAck === 'function') toggleCustomAck(); }
+  if (typeof updateDepositDisplay === 'function') updateDepositDisplay();
+}
+
 async function handleSubmit(paypalDetails) {
   const paypalOrderId = paypalDetails ? paypalDetails.id : null;
 
@@ -1193,6 +1207,7 @@ async function handleSubmit(paypalDetails) {
 
     document.getElementById('success-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
+    resetCustomOrderForm();
   } catch (err) {
     console.error('Order error:', err);
     showToast('Something went wrong — please try again or call us directly.');
