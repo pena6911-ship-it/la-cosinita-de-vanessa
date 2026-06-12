@@ -449,6 +449,12 @@ tbody td{padding:10px 12px;vertical-align:middle}
   .statsRow{grid-template-columns:1fr}
   .summaryGrid{grid-template-columns:1fr}
 }
+.psTable{width:100%;border-collapse:collapse;font-size:.74rem;}
+.psTable th{text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-size:.6rem;cursor:pointer;white-space:nowrap;user-select:none;}
+.psTable th:hover{color:#AD1457;}
+.psTable th:not(:first-child),.psTable td:not(:first-child){text-align:right;}
+.psTable td{padding:7px 9px;border-bottom:1px solid rgba(0,0,0,0.06);font-variant-numeric:tabular-nums;}
+.psTable tbody tr:hover{background:rgba(233,30,140,0.04);}
 </style>
 </head>
 <body>
@@ -515,8 +521,21 @@ tbody td{padding:10px 12px;vertical-align:middle}
           <div class="sumCard"><div class="sumLabel">Avg Order</div><div class="sumVal" id="sumAvg">—</div></div>
         </div>
         <div class="chartArea">
-          <div class="chartTitle">Top Selling Items</div>
-          <div class="barChart" id="topItemsChart"></div>
+          <div class="chartTitle">Sales by Product</div>
+          <div class="barChart" id="prodSalesChart"></div>
+          <div class="tableWrap" style="margin-top:12px">
+            <table id="prodSalesTable" class="psTable">
+              <thead><tr>
+                <th onclick="sortProdSales('name')">Product</th>
+                <th onclick="sortProdSales('units')">Units</th>
+                <th onclick="sortProdSales('orders')">Orders</th>
+                <th onclick="sortProdSales('revenue')">Revenue</th>
+                <th onclick="sortProdSales('pct')">% Rev</th>
+                <th onclick="sortProdSales('avg')">Avg/Unit</th>
+              </tr></thead>
+              <tbody id="prodSalesBody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="searchWrap"><input type="text" id="orderSearch" placeholder="Search by reference, customer, type…" oninput="filterOrders()"></div>
@@ -904,8 +923,55 @@ function renderSummary() {
   document.getElementById('sumOrders').textContent  = filteredOrders.length;
   document.getElementById('sumCustomers').textContent = uniqCust;
   document.getElementById('sumAvg').textContent = '$' + avg.toFixed(2);
-  renderTopItems();
+  renderProductSales();
 }
+
+function aggregateProductSales(orders){
+  var map={};
+  function bucket(n){ if(!map[n]) map[n]={name:n,units:0,revenue:0,orders:new Set()}; return map[n]; }
+  (orders||[]).forEach(function(o){
+    var items=parseOrderItems(o.order_items);
+    var isCustom = o.order_type==='custom' || (items[0] && items[0].type==='custom');
+    if(isCustom){
+      var bc=bucket('Custom Orders'); bc.units+=1; bc.revenue+=parseFloat(o.order_total)||0; bc.orders.add(o.id);
+    } else {
+      items.forEach(function(it){
+        var name=it.name||it.label||it.key||'Item';
+        var qty=parseFloat(it.qty||it.quantity||1)||1;
+        var price=parseFloat(it.price)||0;
+        var b=bucket(name); b.units+=qty; b.revenue+=price*qty; b.orders.add(o.id);
+      });
+    }
+  });
+  return Object.keys(map).map(function(k){ var b=map[k]; return {name:b.name,units:b.units,revenue:b.revenue,orders:b.orders.size}; });
+}
+var _prodSales=[], _psSort={key:'revenue',dir:-1};
+function renderProductSales(){
+  var rows=aggregateProductSales(filteredOrders);
+  var totalRev=rows.reduce(function(s,r){return s+r.revenue;},0)||0;
+  rows.forEach(function(r){ r.pct=totalRev?(r.revenue/totalRev*100):0; r.avg=r.units?(r.revenue/r.units):0; });
+  _prodSales=rows;
+  var chartRows=rows.slice().sort(function(a,b){return b.revenue-a.revenue;}).slice(0,8);
+  var maxRev=chartRows.length?chartRows[0].revenue:1;
+  var chart=document.getElementById('prodSalesChart');
+  if(chart){
+    chart.innerHTML=chartRows.map(function(r){
+      return '<div class="barRow"><span class="barLabel">'+escHtml(r.name)+'</span><div class="barTrack"><div class="barFill" style="width:'+(maxRev?(r.revenue/maxRev*100).toFixed(1):0)+'%"></div></div><span class="barQty">$'+r.revenue.toFixed(0)+'</span></div>';
+    }).join('') || '<span style="font-size:.72rem;color:var(--muted)">No sales in this period.</span>';
+  }
+  renderProdSalesTable();
+}
+function renderProdSalesTable(){
+  var rows=_prodSales.slice();
+  var k=_psSort.key, dir=_psSort.dir;
+  rows.sort(function(a,b){ if(k==='name') return dir*String(a.name).localeCompare(String(b.name)); return dir*(((a[k])||0)-((b[k])||0)); });
+  var body=document.getElementById('prodSalesBody'); if(!body) return;
+  if(!rows.length){ body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:18px">No sales in this period.</td></tr>'; return; }
+  body.innerHTML=rows.map(function(r){
+    return '<tr><td>'+escHtml(r.name)+'</td><td>'+r.units+'</td><td>'+r.orders+'</td><td>$'+r.revenue.toFixed(2)+'</td><td>'+r.pct.toFixed(1)+'%</td><td>$'+r.avg.toFixed(2)+'</td></tr>';
+  }).join('');
+}
+function sortProdSales(key){ if(_psSort.key===key) _psSort.dir*=-1; else { _psSort.key=key; _psSort.dir=(key==='name'?1:-1); } renderProdSalesTable(); }
 
 function renderTopItems() {
   const counts = {};
@@ -1591,6 +1657,7 @@ function mkPayBadge(s) {
 // ══════════════════════════════════════════════
 window.switchTab       = switchTab;
 window.setPeriod       = setPeriod;
+window.sortProdSales   = sortProdSales;
 window.filterOrders    = filterOrders;
 window.filterCustomers = filterCustomers;
 window.openOrderModal  = openOrderModal;
