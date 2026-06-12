@@ -1011,8 +1011,8 @@ function openOrderModal(id) {
 
   document.getElementById('orderModalBody').innerHTML = `
     <div class="modal-row"><label>Customer</label><div class="val">${escHtml(custName)}</div></div>
-    <div class="modal-row"><label>Email</label><div class="val">${escHtml((customerForOrder(o)||{}).email||o.customer_email||'—')}</div></div>
-    <div class="modal-row"><label>Phone</label><div class="val">${escHtml((customerForOrder(o)||{}).phone||o.customer_phone||'—')}</div></div>
+    <div class="modal-row"><label>Email</label><div class="val">${escHtml(o.customer_email||(customerForOrder(o)||{}).email||'—')}</div></div>
+    <div class="modal-row"><label>Phone</label><div class="val">${escHtml(o.customer_phone||(customerForOrder(o)||{}).phone||'—')}</div></div>
     <div class="modal-row"><label>Order Type</label><div class="val">${mkTypeBadge(o.order_type)}</div></div>
     <div class="modal-row"><label>Source</label><div class="val">${escHtml(o.source||'—')}</div></div>
     <div class="modal-row"><label>Items</label><div class="orderItems">${itemsHtml}</div></div>

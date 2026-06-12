@@ -533,6 +533,10 @@ async function submitCartOrder(paypalDetails) {
         delivery_address: address,
         theme_notes:      notes,
         allergies:        allergies,
+        customer_first_name: fname,
+        customer_last_name:  lname,
+        customer_email:      email,
+        customer_phone:      phone,
         source:           'web_order'
       });
     if (orderErr) throw orderErr;
@@ -762,6 +766,10 @@ async function submitProductOrder(paypalDetails) {
         delivery_address: address,
         theme_notes:      notes,
         allergies:        allergies,
+        customer_first_name: fname,
+        customer_last_name:  lname,
+        customer_email:      email,
+        customer_phone:      phone,
         source:           'web_order'
       });
     if (orderRes.error) throw orderRes.error;
@@ -1169,6 +1177,10 @@ async function handleSubmit(paypalDetails) {
         payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
         paypal_order_id:  paypalOrderId,
         reference_images: refImages,
+        customer_first_name: fname,
+        customer_last_name:  lname,
+        customer_email:      email,
+        customer_phone:      phone,
         source:           'web_order'
       });
     if (orderErr) throw orderErr;
