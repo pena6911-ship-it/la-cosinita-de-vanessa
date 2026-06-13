@@ -418,7 +418,7 @@ function proceedToCheckout() {
       '<div class="section-label" style="margin-bottom:4px">✦ Order Summary</div>' +
       summaryRows +
       '<div style="display:flex;justify-content:space-between;padding:12px 0 0;font-size:15px;font-weight:600;">' +
-        '<span>Base Total</span><span style="color:#E91E8C">$' + total + '</span>' +
+        '<span>Total</span><span style="color:#E91E8C">$' + total.toFixed(2) + '</span>' +
       '</div>' +
     '</div>' +
 
@@ -443,25 +443,15 @@ function proceedToCheckout() {
     '<div class="co-field"><label>Theme, Colors & Decorations</label><textarea id="co-notes" placeholder="Describe your vision — theme, color palette, decorations, text on cake, style... ¡Inglés o español!"></textarea></div>' +
     '<div class="co-field"><label>Allergies / Dietary Notes <span style="font-size:9px;font-weight:400;letter-spacing:0;text-transform:none">(optional)</span></label><input type="text" id="co-allergies" placeholder="e.g. nut-free, gluten-free, no dairy..."/></div>' +
 
-    '<div class="price-notice">' +
-      '<div class="price-notice-title">⚠️ Pricing Notice</div>' +
-      '<div class="price-notice-text">The total shown (<strong>$' + total + '</strong>) reflects <strong>base prices only</strong>. Depending on materials, customization, and your required timeframe, there may be an <strong>additional agreed-upon charge</strong> communicated before confirmation and due at delivery.</div>' +
-    '</div>' +
-    '<div class="ack-wrap">' +
-      '<label class="ack-label">' +
-        '<input type="checkbox" id="co-ack" onchange="togglePlaceBtn()"/>' +
-        '<span>I understand that <strong>$' + total + '</strong> is the base total and additional charges for customization may apply — to be agreed upon before my order is confirmed.</span>' +
-      '</label>' +
-    '</div>' +
-    '<div class="deposit-amount-display" style="margin:14px 0 10px">' +'<span>Deposit due today (50%)</span><strong id="co-deposit-text">$' + (total * 0.5).toFixed(2) + '</strong></div>' +
-    '<div id="co-paypal-container" class="paypal-wrapper" style="display:none;"></div>' +
-    '<div class="paypal-ack-hint" id="co-paypal-hint">☝️ Check the acknowledgement above to unlock payment</div>' +
+    '<div class="deposit-amount-display" style="margin:14px 0 10px">' +'<span>Total due today</span><strong id="co-deposit-text">$' + total.toFixed(2) + '</strong></div>' +
+    '<div id="co-paypal-container" class="paypal-wrapper"></div>' +
     '<div class="secure-badge">🔒 Payments processed securely via PayPal — PCI DSS Compliant</div>' +
     '<div class="co-footer-note">📍 Manhattan & The Bronx only · Vanessa will contact you within 24 hrs.</div>';
 
   body.scrollTop = 0;
   document.getElementById('checkout-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  renderCheckoutPayPal();
 }
 
 function closeCheckout(e) {
@@ -526,7 +516,7 @@ async function submitCartOrder(paypalDetails) {
         order_items:      items,
         order_subtotal:   subtotal,
         order_total:      subtotal,
-        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        payment_status:   paypalOrderId ? 'paid_in_full' : 'pending',
         paypal_order_id:  paypalOrderId,
         delivery_date:    date,
         delivery_time:    time,
@@ -610,20 +600,9 @@ function showCheckoutStep() {
   html += '<div class="co-field"><label>Theme, Colors &amp; Decorations</label><textarea id="co-notes" placeholder="Describe your vision — theme, color palette, decorations, text on cake, style... ¡Inglés o español!"></textarea></div>';
   html += '<div class="co-field"><label>Allergies / Dietary Notes <span style="font-size:9px;font-weight:400;letter-spacing:0;text-transform:none">(optional)</span></label><input type="text" id="co-allergies" placeholder="e.g. nut-free, gluten-free, no dairy..."/></div>';
 
-  html += '<div class="price-notice">';
-  html +=   '<div class="price-notice-title">&#9888;&#65039; Pricing Notice</div>';
-  html +=   '<div class="price-notice-text">The price shown (<strong>$' + price + '</strong>) is the <strong>base price</strong>. Depending on materials, customization options, and your required timeframe, there may be an <strong>additional agreed-upon charge</strong> communicated before confirmation and due at delivery.</div>';
-  html += '</div>';
-  html += '<div class="ack-wrap">';
-  html +=   '<label class="ack-label">';
-  html +=     '<input type="checkbox" id="co-ack" onchange="togglePlaceBtn()"/>';
-  html +=     '<span>I understand that <strong>$' + price + '</strong> is the base price and additional charges for customization may apply — to be agreed upon before my order is confirmed.</span>';
-  html +=   '</label>';
-  html += '</div>';
   html += '<div class="deposit-amount-display" style="margin:14px 0 10px">' +
-           '<span>Deposit due today (50%)</span><strong id="co-deposit-text">$' + (price * 0.5).toFixed(2) + '</strong></div>';
-  html += '<div id="co-paypal-container" class="paypal-wrapper" style="display:none;"></div>';
-  html += '<div class="paypal-ack-hint" id="co-paypal-hint">&#9757;&#65039; Check the acknowledgement above to unlock payment</div>';
+           '<span>Total due today</span><strong id="co-deposit-text">$' + price.toFixed(2) + '</strong></div>';
+  html += '<div id="co-paypal-container" class="paypal-wrapper"></div>';
   html += '<div class="secure-badge">&#128274; Payments processed securely via PayPal &mdash; PCI DSS Compliant</div>';
   html += '<div class="co-footer-note">&#128205; Delivery to Manhattan &amp; The Bronx only<br>Vanessa will contact you within 24 hours to confirm.</div>';
 
@@ -631,6 +610,7 @@ function showCheckoutStep() {
   body.innerHTML = html;
   body.scrollTop = 0;
   attachAddressAutocomplete({ streetId:'co-address', singleField:true });
+  renderCheckoutPayPal();
 }
 
 function togglePlaceBtn() {
@@ -671,10 +651,10 @@ function renderCheckoutPayPal() {
       var total = currentCheckoutFlow === 'cart'
         ? cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0)
         : getSheetPrice();
-      var deposit = (total * 0.5).toFixed(2);
+      var amount = total.toFixed(2);
 
       return actions.order.create({
-        purchase_units: [{ description: 'La Cosinita de Vanessa — Deposit (50%)', amount: { currency_code: 'USD', value: deposit } }]
+        purchase_units: [{ description: 'La Cosinita de Vanessa — Order Total', amount: { currency_code: 'USD', value: amount } }]
       });
     },
 
@@ -759,7 +739,7 @@ async function submitProductOrder(paypalDetails) {
         order_items:      items,
         order_subtotal:   price,
         order_total:      price,
-        payment_status:   paypalOrderId ? 'deposit_paid' : 'pending',
+        payment_status:   paypalOrderId ? 'paid_in_full' : 'pending',
         paypal_order_id:  paypalOrderId,
         delivery_date:    date,
         delivery_time:    time,
@@ -1269,4 +1249,4 @@ window.toggleCustomAck    = toggleCustomAck;
 window.previewRefPhotos   = previewRefPhotos;
 window.filterCat          = filterCat;
 window.loadGallery        = loadGallery;
-window.loadProducts
+window.loadProducts    = loadProducts;

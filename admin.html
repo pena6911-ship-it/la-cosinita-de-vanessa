@@ -502,6 +502,7 @@ tbody td{padding:10px 12px;vertical-align:middle}
       <button class="tabBtn active" onclick="switchTab('orders')">Orders</button>
       <button class="tabBtn" onclick="switchTab('customers')">Customers</button>
       <button class="tabBtn" onclick="switchTab('products')">Products</button>
+      <button class="tabBtn" onclick="switchTab('gallery')">Gallery</button>
     </div>
 
     <!-- ── ORDERS TAB ── -->
@@ -580,6 +581,21 @@ tbody td{padding:10px 12px;vertical-align:middle}
         </div>
       </div>
       <div class="productGrid" id="productGrid"></div>
+    </div>
+
+    <!-- ── GALLERY TAB ── -->
+    <div class="tabPanel" id="tab-gallery">
+      <div class="productGridHeader">
+        <div>
+          <strong style="font-size:.9rem;color:var(--brown)">Gallery Photos</strong>
+          <p>These appear on the Projects page. Changes go live immediately.</p>
+        </div>
+        <div class="productGridHeaderRight">
+          <button class="btnRefresh" onclick="loadGallery()">↻ Refresh</button>
+          <button class="btnAddProduct" onclick="openAddGallery()">+ Add Photo</button>
+        </div>
+      </div>
+      <div class="productGrid" id="galleryGrid"></div>
     </div>
   </div>
 </div>
@@ -738,6 +754,52 @@ tbody td{padding:10px 12px;vertical-align:middle}
   </div>
 </div>
 
+<!-- ══════════════ GALLERY MODAL ══════════════ -->
+<div class="modalOverlay" id="galleryModal">
+  <div class="modalBox" id="galleryModalBox">
+    <div class="modalHeader">
+      <h2 id="gmTitle">Add Photo</h2>
+      <button class="modalClose" onclick="closeGalleryModal()">×</button>
+    </div>
+    <div class="modalBody">
+      <div class="pmSection">
+        <div class="col2" style="margin-bottom:14px">
+          <div class="pmField">
+            <label>Title</label>
+            <input type="text" id="gmTitleInput" placeholder="e.g. Birthday Tres Leches">
+          </div>
+          <div class="pmField">
+            <label>Tag <span class="hint">(optional)</span></label>
+            <input type="text" id="gmTag" placeholder="e.g. Birthdays, Weddings">
+          </div>
+        </div>
+        <div class="pmField" style="margin-bottom:14px;max-width:160px">
+          <label>Sort Order</label>
+          <input type="number" id="gmSortOrder" value="0" min="0">
+        </div>
+        <div class="imageSection">
+          <div class="imgPreviewBox" id="gmPreviewBox">
+            <span class="imgEmoji">🖼️</span>
+          </div>
+          <div class="imgRight">
+            <input type="text" id="gmImageUrl" placeholder="https://… or upload below" oninput="updateGmPreview()">
+            <div class="uploadZone" id="gmUploadZone" onclick="document.getElementById('gmFileInput').click()">
+              <div>Click or drag to upload image</div>
+              <div class="uploadHint" id="gmUploadHint">PNG, JPG, WEBP accepted</div>
+            </div>
+            <input type="file" id="gmFileInput" accept="image/*">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modalFooter">
+      <button class="btnDelete" id="gmDeleteBtn" style="display:none;margin-right:auto" onclick="handleGalleryDelete()">Delete Photo</button>
+      <div id="gmSaveMsg" class="saveMsg"></div>
+      <button class="btnSave" onclick="saveGalleryItem()">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══════════════════════════════════════════════
 // CONFIG
@@ -820,6 +882,7 @@ async function loadAll() {
   await loadOrders();
   updateStats();
   loadProducts();
+  loadGallery();
 }
 
 async function loadOrders() {
@@ -868,7 +931,7 @@ function updateStats() {
 // ══════════════════════════════════════════════
 function switchTab(name) {
   document.querySelectorAll('.tabBtn').forEach((b,i) => {
-    const tabs = ['orders','customers','products'];
+    const tabs = ['orders','customers','products','gallery'];
     b.classList.toggle('active', tabs[i] === name);
   });
   document.querySelectorAll('.tabPanel').forEach(p => p.classList.remove('active'));
@@ -1653,6 +1716,200 @@ function mkPayBadge(s) {
 }
 
 // ══════════════════════════════════════════════
+// GALLERY
+// ══════════════════════════════════════════════
+let allGallery = [];
+let currentGalleryId = null;
+let gmFile = null;
+let gmDeleteConfirmed = false, gmDeleteTimer = null;
+
+async function loadGallery() {
+  const { data, error } = await adminClient
+    .from('gallery')
+    .select('*')
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: false });
+  if (error) { console.error(error); return; }
+  allGallery = data || [];
+  renderGalleryGrid(allGallery);
+}
+
+function renderGalleryGrid(items) {
+  const grid = document.getElementById('galleryGrid');
+  if (!items.length) {
+    grid.innerHTML = '<p style="color:var(--muted);font-size:.8rem">No gallery photos yet. Click “+ Add Photo” to add one.</p>';
+    return;
+  }
+  grid.innerHTML = items.map((g, i) => {
+    const imgHtml = g.photo_url
+      ? `<img src="${escHtml(g.photo_url)}" alt="${escHtml(g.title||'')}">`
+      : `<span class="pcEmoji">🖼️</span>`;
+    return `<div class="productCard">
+      <div class="pcImgArea">${imgHtml}</div>
+      <div class="pcBody">
+        <div class="pcName">${escHtml(g.title||'Untitled')}</div>
+        ${g.tag ? `<span class="pcKeyBadge">${escHtml(g.tag)}</span>` : ''}
+        <div class="pcSortOrder">Sort: ${g.sort_order||0}</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="btnRefresh" title="Move up" onclick="moveGallery('${g.id}',-1)" ${i===0?'disabled':''}>↑</button>
+          <button class="btnRefresh" title="Move down" onclick="moveGallery('${g.id}',1)" ${i===items.length-1?'disabled':''}>↓</button>
+        </div>
+        <button class="btnEditProduct" onclick="openEditGallery('${g.id}')">✏ Edit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAddGallery() {
+  currentGalleryId = null;
+  gmFile = null;
+  resetGalleryDeleteState();
+  document.getElementById('gmTitle').textContent = 'Add Photo';
+  document.getElementById('gmDeleteBtn').style.display = 'none';
+  document.getElementById('gmTitleInput').value = '';
+  document.getElementById('gmTag').value = '';
+  const maxSort = allGallery.reduce((m,g) => Math.max(m, g.sort_order||0), 0);
+  document.getElementById('gmSortOrder').value = allGallery.length ? maxSort + 1 : 0;
+  document.getElementById('gmImageUrl').value = '';
+  document.getElementById('gmUploadHint').textContent = 'PNG, JPG, WEBP accepted';
+  document.getElementById('gmSaveMsg').textContent = '';
+  updateGmPreview();
+  document.getElementById('galleryModal').classList.add('open');
+}
+
+function openEditGallery(id) {
+  const g = allGallery.find(x => String(x.id) === String(id));
+  if (!g) { alert('Could not load photo.'); return; }
+  currentGalleryId = g.id;
+  gmFile = null;
+  resetGalleryDeleteState();
+  document.getElementById('gmTitle').textContent = 'Edit Photo';
+  document.getElementById('gmDeleteBtn').style.display = 'inline-flex';
+  document.getElementById('gmTitleInput').value = g.title || '';
+  document.getElementById('gmTag').value = g.tag || '';
+  document.getElementById('gmSortOrder').value = g.sort_order || 0;
+  document.getElementById('gmImageUrl').value = g.photo_url || '';
+  document.getElementById('gmUploadHint').textContent = 'PNG, JPG, WEBP accepted';
+  document.getElementById('gmSaveMsg').textContent = '';
+  updateGmPreview();
+  document.getElementById('galleryModal').classList.add('open');
+}
+
+function closeGalleryModal() {
+  document.getElementById('galleryModal').classList.remove('open');
+  gmFile = null;
+}
+
+function updateGmPreview() {
+  const url = document.getElementById('gmImageUrl').value.trim();
+  const box = document.getElementById('gmPreviewBox');
+  box.innerHTML = url ? `<img src="${escHtml(url)}" alt="preview">` : '<span class="imgEmoji">🖼️</span>';
+}
+
+document.getElementById('gmFileInput').addEventListener('change', function() {
+  if (this.files[0]) handleGmFile(this.files[0]);
+});
+(function(){
+  const z = document.getElementById('gmUploadZone');
+  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over'); });
+  z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
+  z.addEventListener('drop', e => {
+    e.preventDefault(); z.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleGmFile(f);
+  });
+})();
+function handleGmFile(f) {
+  gmFile = f;
+  document.getElementById('gmUploadHint').textContent = f.name;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('gmPreviewBox').innerHTML = `<img src="${e.target.result}" alt="preview">`; };
+  reader.readAsDataURL(f);
+}
+
+async function saveGalleryItem() {
+  const msgEl = document.getElementById('gmSaveMsg');
+  msgEl.className = 'saveMsg';
+  const title = document.getElementById('gmTitleInput').value.trim();
+  if (!title) { msgEl.textContent = 'Title is required.'; msgEl.className = 'saveMsg error'; return; }
+
+  let photoUrl = document.getElementById('gmImageUrl').value.trim();
+  if (gmFile) {
+    msgEl.textContent = 'Uploading image…';
+    const ext = gmFile.name.split('.').pop();
+    const path = `gallery/${Date.now()}.${ext}`;
+    const { error: upErr } = await adminClient.storage.from('gallery').upload(path, gmFile, { upsert: true });
+    if (upErr) { msgEl.textContent = 'Upload failed: ' + upErr.message; msgEl.className = 'saveMsg error'; return; }
+    photoUrl = adminClient.storage.from('gallery').getPublicUrl(path).data.publicUrl;
+  }
+  if (!photoUrl) { msgEl.textContent = 'A photo is required.'; msgEl.className = 'saveMsg error'; return; }
+
+  const payload = {
+    title,
+    tag: document.getElementById('gmTag').value.trim() || null,
+    sort_order: parseInt(document.getElementById('gmSortOrder').value) || 0,
+    photo_url: photoUrl,
+  };
+
+  msgEl.textContent = 'Saving…';
+  let error;
+  if (currentGalleryId) {
+    ({ error } = await adminClient.from('gallery').update(payload).eq('id', currentGalleryId));
+  } else {
+    ({ error } = await adminClient.from('gallery').insert(payload));
+  }
+  if (error) { msgEl.textContent = 'Error: ' + error.message; msgEl.className = 'saveMsg error'; return; }
+  msgEl.textContent = 'Saved!';
+  gmFile = null;
+  setTimeout(() => { closeGalleryModal(); loadGallery(); }, 700);
+}
+
+function handleGalleryDelete() {
+  const btn = document.getElementById('gmDeleteBtn');
+  if (!gmDeleteConfirmed) {
+    gmDeleteConfirmed = true;
+    btn.textContent = '⚠ Confirm Delete';
+    btn.classList.add('confirm-state');
+    gmDeleteTimer = setTimeout(resetGalleryDeleteState, 3000);
+  } else {
+    doDeleteGallery();
+  }
+}
+function resetGalleryDeleteState() {
+  gmDeleteConfirmed = false;
+  clearTimeout(gmDeleteTimer);
+  gmDeleteTimer = null;
+  const btn = document.getElementById('gmDeleteBtn');
+  btn.textContent = 'Delete Photo';
+  btn.classList.remove('confirm-state');
+}
+async function doDeleteGallery() {
+  if (!currentGalleryId) return;
+  const msgEl = document.getElementById('gmSaveMsg');
+  msgEl.className = 'saveMsg';
+  msgEl.textContent = 'Deleting…';
+  const { error } = await adminClient.from('gallery').delete().eq('id', currentGalleryId);
+  if (error) { msgEl.textContent = 'Error: ' + error.message; msgEl.className = 'saveMsg error'; return; }
+  msgEl.textContent = 'Deleted.';
+  setTimeout(() => { closeGalleryModal(); loadGallery(); }, 600);
+}
+
+async function moveGallery(id, dir) {
+  const idx = allGallery.findIndex(g => String(g.id) === String(id));
+  const swap = idx + dir;
+  if (idx < 0 || swap < 0 || swap >= allGallery.length) return;
+  const arr = allGallery.slice();
+  const [moved] = arr.splice(idx, 1);
+  arr.splice(swap, 0, moved);
+  for (let i = 0; i < arr.length; i++) {
+    if ((arr[i].sort_order || 0) !== i) {
+      await adminClient.from('gallery').update({ sort_order: i }).eq('id', arr[i].id);
+    }
+  }
+  loadGallery();
+}
+
+// ══════════════════════════════════════════════
 // SES LOCKDOWN — export all inline handlers
 // ══════════════════════════════════════════════
 window.switchTab       = switchTab;
@@ -1677,6 +1934,14 @@ window.updateAvailLabel= updateAvailLabel;
 window.saveProduct     = saveProduct;
 window.handleDelete    = handleDelete;
 window.resetDeleteState= resetDeleteState;
+window.loadGallery     = loadGallery;
+window.openAddGallery  = openAddGallery;
+window.openEditGallery = openEditGallery;
+window.closeGalleryModal = closeGalleryModal;
+window.updateGmPreview = updateGmPreview;
+window.saveGalleryItem = saveGalleryItem;
+window.handleGalleryDelete = handleGalleryDelete;
+window.moveGallery     = moveGallery;
 </script>
 </body>
 </html>
