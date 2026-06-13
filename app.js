@@ -934,7 +934,7 @@ document.addEventListener('click', function (e) {
    'resend'  → posts to the Netlify function (requires a verified domain +
                RESEND_API_KEY / RESEND_FROM env vars in Netlify).
    'emailjs' → the original client-side EmailJS path (active until the domain is ready). */
-var EMAIL_PROVIDER = 'emailjs';
+var EMAIL_PROVIDER = 'resend';
 
 function sendOrderEmails(params) {
   if (EMAIL_PROVIDER === 'resend') {
