@@ -267,6 +267,24 @@ function setActiveNav() {
   });
 }
 
+/* ── Phone number formatting — standardize to (XXX) XXX-XXXX ── */
+function formatUSPhone(raw) {
+  if (raw == null) return '';
+  var d = String(raw).replace(/\D/g, '');
+  if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
+  if (d.length === 10) return '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
+  return String(raw).trim();
+}
+function maskPhoneInput(el) {
+  var d = el.value.replace(/\D/g, '');
+  if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
+  d = d.slice(0, 10);
+  if (d.length === 0)    el.value = '';
+  else if (d.length < 4) el.value = '(' + d;
+  else if (d.length < 7) el.value = '(' + d.slice(0,3) + ') ' + d.slice(3);
+  else                   el.value = '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
+}
+
 function getSheetPrice() {
   const p = PRODUCTS[currentProduct];
   const size = p.sizes[currentSizeIdx];
@@ -428,7 +446,7 @@ function proceedToCheckout() {
       '<div class="co-field"><label>Last Name</label><input type="text" id="co-lname" placeholder="Rodríguez" autocomplete="family-name"/></div>' +
     '</div>' +
     '<div class="co-field"><label>Email</label><input type="email" id="co-email" placeholder="maria@email.com" autocomplete="email" inputmode="email"/></div>' +
-    '<div class="co-field"><label>Phone</label><input type="tel" id="co-phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel"/></div>' +
+    '<div class="co-field"><label>Phone</label><input type="tel" id="co-phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel" oninput="maskPhoneInput(this)"/></div>' +
 
     '<div class="co-step-label">📅 Delivery Details</div>' +
     '<div class="co-field-row">' +
@@ -482,7 +500,7 @@ async function submitCartOrder(paypalDetails) {
   const fname    = document.getElementById('co-fname').value.trim();
   const lname    = document.getElementById('co-lname').value.trim();
   const email    = document.getElementById('co-email').value.trim();
-  const phone    = document.getElementById('co-phone').value.trim();
+  const phone    = formatUSPhone(document.getElementById('co-phone').value);
   const date     = document.getElementById('co-date').value;
   const timeEl   = document.getElementById('co-time');
   const time     = timeEl ? timeEl.value : '';
@@ -586,7 +604,7 @@ function showCheckoutStep() {
   html +=   '<div class="co-field"><label>Last Name</label><input type="text" id="co-lname" placeholder="Rodríguez" autocomplete="family-name"/></div>';
   html += '</div>';
   html += '<div class="co-field"><label>Email</label><input type="email" id="co-email" placeholder="maria@email.com" autocomplete="email" inputmode="email"/></div>';
-  html += '<div class="co-field"><label>Phone</label><input type="tel" id="co-phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel"/></div>';
+  html += '<div class="co-field"><label>Phone</label><input type="tel" id="co-phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel" oninput="maskPhoneInput(this)"/></div>';
 
   html += '<div class="co-step-label">&#128197; Delivery Details</div>';
   html += '<div class="co-field-row">';
@@ -706,7 +724,7 @@ async function submitProductOrder(paypalDetails) {
   var fname    = document.getElementById('co-fname').value.trim();
   var lname    = document.getElementById('co-lname').value.trim();
   var email    = document.getElementById('co-email').value.trim();
-  var phone    = document.getElementById('co-phone').value.trim();
+  var phone    = formatUSPhone(document.getElementById('co-phone').value);
   var date     = document.getElementById('co-date').value;
   var timeEl   = document.getElementById('co-time');
   var time     = timeEl ? timeEl.value : '';
@@ -1137,7 +1155,7 @@ async function handleSubmit(paypalDetails) {
   const fname     = document.getElementById('fname').value.trim();
   const lname     = document.getElementById('lname').value.trim();
   const email     = document.getElementById('email').value.trim();
-  const phone     = document.getElementById('phone').value.trim();
+  const phone     = formatUSPhone(document.getElementById('phone').value);
   const date      = document.getElementById('delivery-date').value;
   const timeEl    = document.getElementById('delivery-time');
   const time      = timeEl ? timeEl.value : '';
@@ -1249,5 +1267,6 @@ window.submitProductOrder = submitProductOrder;
 window.toggleCustomAck    = toggleCustomAck;
 window.previewRefPhotos   = previewRefPhotos;
 window.filterCat          = filterCat;
+window.maskPhoneInput     = maskPhoneInput;
 window.loadGallery        = loadGallery;
 window.loadProducts    = loadProducts;

@@ -826,6 +826,7 @@ const ANON_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let authClient, adminClient;
 let allOrders = [], allCustomers = [];
 function parseRefImages(v){ if(!v) return []; if(Array.isArray(v)) return v.filter(Boolean); if(typeof v==='string'){ try{ var p=JSON.parse(v); return Array.isArray(p)?p.filter(Boolean):(v?[v]:[]); }catch(e){ return v?[v]:[]; } } return []; }
+function fmtPhone(v){ if(v==null||v==='—') return v||'—'; var d=String(v).replace(/\D/g,''); if(d.length===11&&d.charAt(0)==='1') d=d.slice(1); if(d.length===10) return '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6); return String(v); }
 function customerForOrder(o){ return (allCustomers||[]).find(function(c){ return o && c.id === o.customer_id; }) || null; }
 function customerNameFor(o){
   if (o.customer_first_name || o.customer_last_name) return [o.customer_first_name, o.customer_last_name].filter(Boolean).join(' ');
@@ -1154,7 +1155,7 @@ function openOrderModal(id) {
   document.getElementById('orderModalBody').innerHTML = `
     <div class="modal-row"><label>Customer</label><div class="val">${escHtml(custName)}</div></div>
     <div class="modal-row"><label>Email</label><div class="val">${escHtml(o.customer_email||(customerForOrder(o)||{}).email||'—')}</div></div>
-    <div class="modal-row"><label>Phone</label><div class="val">${escHtml(o.customer_phone||(customerForOrder(o)||{}).phone||'—')}</div></div>
+    <div class="modal-row"><label>Phone</label><div class="val">${escHtml(fmtPhone(o.customer_phone||(customerForOrder(o)||{}).phone||'—'))}</div></div>
     <div class="modal-row"><label>Order Type</label><div class="val">${mkTypeBadge(o.order_type)}</div></div>
     <div class="modal-row"><label>Source</label><div class="val">${escHtml(o.source||'—')}</div></div>
     <div class="modal-row"><label>Items</label><div class="orderItems">${itemsHtml}</div></div>
@@ -1245,7 +1246,7 @@ function renderCustomers(list) {
     return `<tr>
       <td class="tdCustomer">${escHtml(name)}</td>
       <td>${escHtml(c.email||'—')}</td>
-      <td>${escHtml(c.phone||'—')}</td>
+      <td>${escHtml(fmtPhone(c.phone||'—'))}</td>
       <td>${escHtml(c.source||'—')}</td>
       <td style="text-align:center">${c.email_opt_in ? '<span class="custCheckmark">✓</span>' : '<span class="custCross">✗</span>'}</td>
       <td>${joined}</td>
