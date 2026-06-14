@@ -745,6 +745,19 @@ tbody td{padding:10px 12px;vertical-align:middle}
         </div>
       </div>
 
+      <!-- GLUTEN-FREE -->
+      <div class="pmSection">
+        <h3>Gluten-Free Option</h3>
+        <p class="sectionSubtitle">When ON, customers can choose Gluten-Free on this product. Leave OFF until you offer it.</p>
+        <div class="availToggleRow">
+          <label class="toggleSwitch">
+            <input type="checkbox" id="pmGfAvailable">
+            <span class="toggleTrack"></span>
+          </label>
+          <span id="gfLabel">Not offered</span>
+        </div>
+      </div>
+
     </div><!-- /pmBody -->
     <div class="modalFooter" id="pmFooter">
       <button class="btnDelete" id="pmDeleteBtn" style="display:none;margin-right:auto" onclick="handleDelete()">Delete Product</button>
@@ -1321,6 +1334,8 @@ async function openEditProduct(key) {
   document.getElementById('pmImageUrl').value    = data.image_url || '';
   document.getElementById('pmAvailable').checked = data.is_available !== false;
   updateAvailLabel();
+  document.getElementById('pmGfAvailable').checked = data.gf_available === true;
+  updateGfLabel();
   updateImgPreview();
 
   // Sizes
@@ -1361,6 +1376,8 @@ function clearProductForm() {
   document.getElementById('pmKey').value = '';
   document.getElementById('pmAvailable').checked = true;
   updateAvailLabel();
+  document.getElementById('pmGfAvailable').checked = false;
+  updateGfLabel();
   document.getElementById('sizesContainer').innerHTML = '';
   document.getElementById('flavorsContainer').innerHTML = '';
   document.getElementById('fillingsContainer').innerHTML = '';
@@ -1511,6 +1528,13 @@ document.getElementById('pmEmoji').addEventListener('input', updateImgPreview);
 // ══════════════════════════════════════════════
 // AVAILABILITY TOGGLE
 // ══════════════════════════════════════════════
+document.getElementById('pmGfAvailable').addEventListener('change', updateGfLabel);
+function updateGfLabel() {
+  const chk = document.getElementById('pmGfAvailable');
+  document.getElementById('gfLabel').textContent = chk.checked ? 'Gluten-Free offered' : 'Not offered';
+  document.getElementById('gfLabel').style.color = chk.checked ? 'var(--success)' : 'var(--muted)';
+}
+
 document.getElementById('pmAvailable').addEventListener('change', updateAvailLabel);
 function updateAvailLabel() {
   const chk = document.getElementById('pmAvailable');
@@ -1614,6 +1638,7 @@ async function saveProduct() {
     serve_guide,
     image_url:    imageUrl || null,
     is_available: document.getElementById('pmAvailable').checked,
+    gf_available: document.getElementById('pmGfAvailable').checked,
   };
 
   msgEl.textContent = 'Saving…';

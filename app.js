@@ -817,7 +817,8 @@ async function loadProducts() {
         else if (sg.extras)      { extras = sg.extras; }
       }
 
-      const hasGF = (row.sizes || []).some(function(s) { return s.priceGF; });
+      // Gluten-Free option shows only when the admin has turned it on for this product.
+      const hasGF = row.gf_available === true;
 
       PRODUCTS[row.key] = {
         name:      row.name,
